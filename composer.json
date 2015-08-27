@@ -34,5 +34,11 @@
           "type": "vcs",
           "url":  "git@10.30.10.54:smartesb/core-bundle.git"
         }
-    ]
+    ],
+    "minimum-stability": "dev",
+    "extra": {
+      "branch-alias": {
+        "dev-master": "v0.1.0"
+      }
+    }
 }

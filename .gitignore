@@ -1,0 +1,10 @@
+# Cache and logs (Symfony2)
+/Tests/Fixtures/app/cache/*
+/Tests/Fixtures/app/logs/*
+
+# Composer
+/vendor/
+
+# Composer PHAR
+composer.lock
+/composer.phar

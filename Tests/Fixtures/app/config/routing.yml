@@ -1,0 +1,8 @@
+smartbox_api:
+    resource: "@SmartboxApiBundle/Resources/config/routing.yml"
+    prefix:   /api
+
+demo_v1_rest:
+    resource:  demo_v1
+    prefix:   /
+    type: 'smartapi_rest'

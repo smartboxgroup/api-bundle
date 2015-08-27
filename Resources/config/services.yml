@@ -1,0 +1,84 @@
+parameters:
+  smartapi.configurator.class: Smartbox\ApiBundle\Services\ApiConfigurator
+  smartapi.rest.loader.routes.class: Smartbox\ApiBundle\Services\Rest\RoutesLoader
+  smartapi.rest.listener.input.class: Smartbox\ApiBundle\Services\Rest\RestInputHandler
+  smartapi.soap.loader.soap_services.class: Smartbox\ApiBundle\Services\Soap\SoapServiceLoader
+  smartapi.soap.security.authentication.provider.class: Smartbox\ApiBundle\Services\Security\WSAuthProvider
+  smartapi.soap.security.authentication_filter.class: Smartbox\ApiBundle\Services\Soap\WsAuthenticationFilter
+  smartapi.doc.parser.jms_parser.class: Smartbox\ApiBundle\Services\Doc\JmsMetadataParser
+  smartapi.resolvers.location.class: Smartbox\ApiBundle\Services\HeaderResolvers\LocationResolver
+
+  # OVERRIDING REST
+  fos_rest.format_listener.class: Smartbox\ApiBundle\Services\Rest\FormatListener
+  fos_rest.body_listener.class: Smartbox\ApiBundle\Services\Rest\BodyListener
+
+  # OVERRIDING SOAP
+  besimple.soap.definition.loader.annot_complextype.class: Smartbox\ApiBundle\Services\Soap\ComplexTypeLoader
+  besimple.soap.context.class: Smartbox\ApiBundle\Services\Soap\WebServiceContext
+
+  # OVERRIDING DOC
+  nelmio_api_doc.extractor.api_doc_extractor.class: Smartbox\ApiBundle\Services\Doc\ApiDocExtractor
+  smartapi.doc.parser.validation_parser.class: Smartbox\ApiBundle\Services\Doc\ValidationParser
+
+services:
+    smartapi.configurator:
+       class: %smartapi.configurator.class%
+
+    smartapi.rest.loader.routes:
+      class: %smartapi.rest.loader.routes.class%
+      arguments: [@smartapi.configurator]
+      tags:
+          - { name: routing.loader }
+
+    smartapi.soap.loader.soap_services:
+      class: %smartapi.soap.loader.soap_services.class%
+      arguments:
+        - @smartapi.configurator
+        - @besimple.soap.type.repository
+      tags:
+        - { name: besimple.soap.definition.loader }
+
+    smartapi.rest.listener.input:
+      class: %smartapi.rest.listener.input.class%
+      arguments:
+        - @smartapi.configurator
+        - @fos_rest.converter.request_body
+        - @serializer
+        - @validator
+      tags:
+        - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 0 }
+
+    smartapi.doc.parser.jms_parser:
+      class: %smartapi.doc.parser.jms_parser.class%
+      arguments:
+        - @jms_serializer.metadata_factory
+        - @jms_serializer.naming_strategy
+        - @nelmio_api_doc.doc_comment_extractor
+      tags:
+        - { name: nelmio_api_doc.extractor.parser, priority: 50 }
+
+    smartapi.doc.parser.validation_parser:
+      class: %smartapi.doc.parser.validation_parser.class%
+      arguments:
+        - @validator
+        - @jms_serializer.metadata_factory
+      tags:
+        - { name: nelmio_api_doc.extractor.parser, priority: 50 }
+
+    smartapi.security.user_provider:
+        alias: "security.user.provider.concrete.in_memory"
+
+    smartapi.soap.security.authentication.provider:
+        class: %smartapi.soap.security.authentication.provider.class%
+        arguments:
+          - @smartapi.security.user_provider
+
+    smartapi.soap.security.authentication_filter:
+        class: %smartapi.soap.security.authentication_filter.class%
+        arguments:
+          - @smartapi.soap.security.authentication.provider
+          - @security.token_storage
+
+    smartapi.resolvers.location:
+        class: %smartapi.resolvers.location.class%
+        arguments: [ @router, @request_stack, @smartapi.configurator ]

@@ -1,0 +1,99 @@
+imports:
+    - { resource: security.yml }
+    - { resource: "@SmartboxApiBundle/Resources/config/config.yml" }
+
+framework:
+    secret: "5yg6u543wrftg34"
+    validation:      { enable_annotations: true }
+
+    router:
+        resource: routing.yml
+        strict_requirements: ~
+
+    templating:
+        engines: ['twig']
+
+be_simple_soap:
+    services:
+        demo_v1:
+            namespace:     http://smartesb/api/soap/demo_v1/
+            binding:       rpc-literal
+            resource:      demo_v1
+            resource_type: smartapi_soap
+
+smartbox_api:
+    default_controller: "SmartboxApiBundle:API:handleCall"
+
+    errorCodes:
+       400: Invalid message
+       401: Not authorized
+       403: Forbidden
+       404: Bad request
+
+    successCodes:
+       200: Sucess
+       201: Created
+       202: Accepted
+       204: Sucess
+
+    services:
+        demo_v1:
+            name: demo
+            version: v1
+            methods:
+
+            ## BOXES
+                createBox:
+                    description: Creates a box with the given information and returns its id
+                    successCode: 201
+                    input:
+                        box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: update, mode: body }
+                    output: { mode: header, type: Smartbox\ApiBundle\Entity\Location }
+                    rest:
+                        route: "/box"
+                        httpMethod: POST
+                getBox:
+                    description: Returns a box given its id
+                    input:
+                        id: { type: integer, description: Id of the box to be fetched, format: "\d+" }
+                    output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: public }
+                    rest:
+                      route: "/box/{id}"
+                      httpMethod: GET
+                    defaults:
+                      id: 90
+                updateBox:
+                    description: Updates a box
+                    successCode: 204
+                    input:
+                        box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: update, mode: body }
+                        id: { type: integer, description: Id of the box to be updated, format: "\d+" }
+                    rest:
+                        route: "/box/{id}"
+                        httpMethod: PUT
+                createBoxes:
+                    description: Creates boxes in a batch asynchronously
+                    successCode: 202
+                    input:
+                        boxes: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box[], group: update, mode: body }
+                    rest:
+                        route: "/box/batch"
+                        httpMethod: POST
+                setBoxPicked:
+                    description: Confirms the pick up of a box to the system.
+                    successCode: 204
+                    input:
+                        id: { type: integer, description: Id of the picked box, format: "\d+" }
+                    rest:
+                        route: "/box/{id}/picked"
+                        httpMethod: PUT
+                deleteBox:
+                    description: "Deletes a box"
+                    successCode: 204
+                    input:
+                        id: { type: integer, description: Id of the box to be deleted, format: "\d+" }
+                    rest:
+                        route: "/box/{id}"
+                        httpMethod: DELETE
+                    roles:
+                      - ROLE_ADMIN

@@ -1,0 +1,46 @@
+sensio_framework_extra:
+    request:
+        converters: true
+        auto_convert: false
+
+nelmio_api_doc: ~
+
+fos_rest:
+    param_fetcher_listener: false
+    body_listener: true
+    format_listener:
+      rules:
+        - { path: '^/api/rest', priorities: ['json', 'xml'], fallback_format: json, prefer_extension: true }
+
+    unauthorized_challenge: "Basic realm=\"Restricted Area\""
+
+    access_denied_listener:
+      json: true
+      xml: true
+
+    view:
+        formats:
+            json: true
+            xml: true
+            html: false
+        failed_validation: HTTP_BAD_REQUEST
+        default_engine: php
+        templating_formats:
+          html: false
+
+    routing_loader:
+        default_format: json
+
+    body_converter:
+        enabled: true
+        validate: false
+
+    exception:
+      messages:
+        'Symfony\Component\HttpKernel\Exception\BadRequestHttpException': true
+
+be_simple_soap:
+    cache:
+        type:     disk_memory
+        lifetime: 86400
+        limit:    5

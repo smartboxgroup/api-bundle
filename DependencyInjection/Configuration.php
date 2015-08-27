@@ -1,0 +1,277 @@
+<?php
+
+namespace Smartbox\ApiBundle\DependencyInjection;
+
+use Composer\Config;
+use Smartbox\ApiBundle\Services\ApiConfigurator;
+use Smartbox\CoreBundle\Entity\Entity;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+
+/**
+ * This is the class that validates and merges configuration from your app/config files
+ *
+ * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html#cookbook-bundles-extension-config-class}
+ */
+class Configuration implements ConfigurationInterface
+{
+    const API_CONTROLLER = 'SmartboxApiBundle:API:handleCall';
+
+    // TODO: Move this definitions to ApiConfigurator
+    const DATETIME = 'datetime';
+    const INTEGER = 'integer';
+    const FLOAT = 'float';
+    const BOOL = 'bool';
+    const STRING = 'string';
+
+    const MODE_FILTER = 'filter';
+    const MODE_BODY = 'body';
+    const MODE_REQUIREMENT = 'requirement';
+    const MODE_HEADER = 'header';
+
+    public static $INPUT_MODES = array(self::MODE_BODY, self::MODE_FILTER, self::MODE_REQUIREMENT);
+    public static $OUTPUT_MODES = array(self::MODE_BODY, self::MODE_HEADER);
+
+    public static $BASIC_TYPES = array(self::INTEGER, self::FLOAT, self::STRING, self::BOOL, self::DATETIME);
+    public static $KEYWORDS = array(
+        'filters',
+        '_controller',
+        '_generated',
+        'api',
+        'serviceId',
+        'version',
+        'serviceName',
+        'methodName',
+        'methodConfig',
+        'input'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigTreeBuilder()
+    {
+        $treeBuilder = new TreeBuilder();
+        $rootNode = $treeBuilder->root('smartbox_api');
+
+        $rootNode
+            ->children()
+            ->scalarNode('default_controller')->defaultValue(self::API_CONTROLLER)->end()
+            ->append($this->addErrorCodesNode())
+            ->append($this->addSuccessCodesNode())
+            ->append($this->addServicesNode())
+            ->end()
+            ->end();
+
+        return $treeBuilder;
+    }
+
+    public function addErrorCodesNode()
+    {
+        $treeBuilder = new TreeBuilder();
+        $node = $treeBuilder->root('errorCodes');
+
+        $node->isRequired()
+            ->requiresAtLeastOneElement()
+            ->useAttributeAsKey('id')
+            ->prototype('scalar')->end()
+            ->end();
+
+        return $node;
+    }
+
+    public function addSuccessCodesNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('successCodes');
+        $node->isRequired()
+            ->requiresAtLeastOneElement()
+            ->useAttributeAsKey('id')
+            ->prototype('scalar')->end()
+            ->end();
+
+        return $node;
+    }
+
+    public function addServicesNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('services');
+        $node->isRequired()
+            ->requiresAtLeastOneElement()
+            ->cannotBeEmpty()
+            ->useAttributeAsKey('id')
+            ->prototype('array')
+            ->children()
+            ->scalarNode('parent')->end()
+            ->scalarNode('name')->isRequired()->end()
+            ->scalarNode('version')->isRequired()->end()
+            ->arrayNode('removed')
+            ->prototype('scalar')->end()
+            ->end()
+            ->append($this->addMethodsNode())
+            ->end()
+            ->end()
+            ->end();
+
+        return $node;
+    }
+
+    public function addMethodsNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('methods');
+        $node->isRequired()
+            ->requiresAtLeastOneElement()
+            ->cannotBeEmpty()
+            ->useAttributeAsKey('name')
+            ->prototype('array')
+            ->children()
+            ->scalarNode('successCode')->defaultValue(200)->end()
+            ->scalarNode('description')->isRequired()->end()
+            ->scalarNode('controller')->defaultValue('default')->end()
+            ->arrayNode('roles')
+            ->useAttributeAsKey('role')
+            ->defaultValue(array('ROLE_USER'))
+            ->prototype('scalar')
+            ->end()
+            ->end()
+            ->arrayNode('defaults')
+            ->useAttributeAsKey('key')
+            ->defaultValue(array())
+            ->prototype('scalar')
+            ->end()
+            ->end()
+            ->append($this->addInputNode())
+            ->append($this->addOutputNode())
+            ->append($this->addRestNode())
+            ->end()
+            ->end()
+            ->end();
+
+        return $node;
+    }
+
+    public function addInputNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('input');
+        $node->useAttributeAsKey('name')
+            ->prototype('array')
+            ->children()
+            ->scalarNode('description')->defaultValue("")->end()
+            ->scalarNode('type')->isRequired()->end()
+            ->scalarNode('group')->defaultValue(Entity::GROUP_PUBLIC)->end()
+            ->scalarNode('mode')
+            ->defaultValue(Configuration::MODE_REQUIREMENT)
+            ->validate()
+            ->ifNotInArray(self::$INPUT_MODES)
+            ->thenInvalid('Invalid database driver "%s"')
+            ->end()
+            ->end()
+            ->scalarNode('format')->defaultValue("[a-zA-Z0-9]+")->end()
+            ->end()
+            ->validate()
+            ->ifTrue(
+                function ($input) {
+                    return ($input['mode'] == Configuration::MODE_BODY && !ApiConfigurator::isEntityOrArrayOfEntities(
+                            $input['type']
+                        ));
+                }
+            )
+            ->thenInvalid('The body type must be a class implementing EntityInterface or an array of those')
+            ->end()
+            ->validate()
+            ->ifTrue(
+                function ($input) {
+                    $isBasic = in_array($input['type'], Configuration::$BASIC_TYPES);
+
+                    return ($input['mode'] != Configuration::MODE_BODY && !$isBasic);
+                }
+            )
+            ->thenInvalid(
+                'Except the body, all other inputs must be of basic types: '.join(', ', Configuration::$BASIC_TYPES)
+            )
+            ->end()
+            ->end()
+            ->validate()
+            ->ifTrue(
+                function ($input) {
+                    $bodyCount = 0;
+                    foreach ($input as $name => $conf) {
+                        if ($conf['mode'] == Configuration::MODE_BODY) {
+                            $bodyCount++;
+                        }
+                    }
+
+                    return $bodyCount > 1;
+                }
+            )
+            ->thenInvalid('There can be only 1 input declared as body for a method but more were found.')
+            ->ifTrue(
+                function ($input) {
+                    foreach ($input as $name => $conf) {
+                        if (in_array($name, Configuration::$KEYWORDS)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+            )
+            ->thenInvalid('Invalid name. The names: ('.join(', ', self::$KEYWORDS).') are reserved for internal use')
+            ->end();
+
+        return $node;
+    }
+
+    public function addOutputNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('output');
+
+        $node->children()
+            ->scalarNode('type')->isRequired()->end()
+            ->scalarNode('group')->defaultValue(Entity::GROUP_PUBLIC)->end()
+            ->scalarNode('mode')->defaultValue(Configuration::MODE_BODY)->end()
+            ->end()
+            ->validate()
+            ->ifTrue(
+                function ($output) {
+                    return ($output['mode'] == Configuration::MODE_BODY && !ApiConfigurator::isEntityOrArrayOfEntities(
+                            $output['type']
+                        ));
+                }
+            )
+            ->thenInvalid('The body type must be a class implementing EntityInterface or an array of those')
+            ->end()
+            ->validate()
+            ->ifTrue(
+                function ($output) {
+                    return ($output['mode'] == Configuration::MODE_HEADER && !ApiConfigurator::isHeaderOrArrayOfHeaders(
+                            $output['type']
+                        ));
+                }
+            )
+            ->thenInvalid('The type for a header must be a class implementing HeaderInterface')
+            ->end()
+            ->end();
+
+        return $node;
+    }
+
+    public function addRestNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('rest');
+
+        $node->isRequired()
+            ->children()
+            ->scalarNode('route')->isRequired()->end()
+            ->scalarNode('httpMethod')->isRequired()->end()
+            ->end()
+            ->end();
+
+        return $node;
+    }
+}

@@ -254,7 +254,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
     public function getDocumentationFor($methodName, $methodConfig)
     {
         return $this->container->get('templating')->render(
-            'SmartboxApiBundle:Doc:documentation.html.twig',
+            'SmartboxApiBundle:doc:documentation.html.twig',
             array(
                 'methodName' => $methodName,
                 'methodConfig' => $methodConfig

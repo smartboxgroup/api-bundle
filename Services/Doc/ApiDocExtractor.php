@@ -179,7 +179,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                         }
 
                         $annotationExtracted->setParameters($parameters);
-                        $annotationExtracted->setDocumentation($this->getDocumentationFor($methodName, $methodConfig));
+                        $annotationExtracted->setDocumentation($this->getDocumentationFor($serviceId, $methodName, $methodConfig));
                     }
 
                     $array[] = array('annotation' => $annotationExtracted);
@@ -251,13 +251,15 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
         return $array;
     }
 
-    public function getDocumentationFor($methodName, $methodConfig)
+    public function getDocumentationFor($serviceId, $methodName, $methodConfig)
     {
+        $wsdlUrl = $this->container->get('router')->generate('_webservice_definition', ['webservice' => $serviceId]);
         return $this->container->get('templating')->render(
             'SmartboxApiBundle:doc:documentation.html.twig',
             array(
                 'methodName' => $methodName,
-                'methodConfig' => $methodConfig
+                'methodConfig' => $methodConfig,
+                'wsdlUrl' => $wsdlUrl,
             )
         );
     }

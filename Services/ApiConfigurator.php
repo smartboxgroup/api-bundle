@@ -259,11 +259,11 @@ class ApiConfigurator
      * Returns the equivalent BeSimpleSoap type to the given configuration or jms type
      *
      * @param string $type
-     * @return string|null
+     * @return string
      */
     public static function getSoapTypeFor($type)
     {
-        if(empty($type)){
+        if(empty($type)) {
             return null;
         }
 

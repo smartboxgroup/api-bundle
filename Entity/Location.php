@@ -9,7 +9,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Location extends ApiEntity implements HeaderInterface
 {
 
-    /** @var LocatableEntity */
+    /**
+     * @JMS\Type("string")
+     * @JMS\Exclude
+     * @var LocatableEntity
+     */
     protected $entity;
 
     /**
@@ -35,12 +39,23 @@ class Location extends ApiEntity implements HeaderInterface
      * @Assert\NotBlank
      * @JMS\Type("array<string, string>")
      * @JMS\Groups({"public"})
+     * @JMS\Accessor(getter="getParametersAsArray",setter="setParameters")
      * @var array
      */
     protected $parameters;
 
+    /**
+     * @JMS\Type("string")
+     * @JMS\Exclude
+     * @var string
+     */
     protected $url;
 
+    /**
+     * @JMS\Type("string")
+     * @JMS\Exclude
+     * @var bool
+     */
     protected $resolved = false;
 
     public function getHeaderName()
@@ -163,7 +178,9 @@ class Location extends ApiEntity implements HeaderInterface
      */
     public function setParameters($parameters)
     {
-        $this->parameters = $parameters;
+        foreach($parameters as $key => $value){
+            $this->addParameter($key,$value);
+        }
     }
 
     public function getParameter($key)

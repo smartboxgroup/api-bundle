@@ -8,6 +8,7 @@ use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\ApiBundle\Entity\HeaderInterface;
 use Smartbox\ApiBundle\Entity\Location;
+use Smartbox\ApiBundle\Entity\OK;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\CoreBundle\Entity\EntityInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -252,6 +253,10 @@ class APIController extends FOSRestController
      */
     protected function respond($data)
     {
+        if($data instanceof OK){
+            $data = null;
+        }
+
         $response = null;
         $request = $this->getRequest();
         $config = $request->get('methodConfig');

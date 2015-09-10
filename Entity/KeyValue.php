@@ -3,20 +3,61 @@
 namespace Smartbox\ApiBundle\Entity;
 
 
-use BeSimple\SoapCommon\Type\KeyValue\String;
+use JMS\Serializer\Annotation as JMS;
 use Smartbox\CoreBundle\Entity\EntityInterface;
-use Smartbox\CoreBundle\Entity\Traits\HasGroup;
-use Smartbox\CoreBundle\Entity\Traits\HasVersion;
 
-class KeyValue extends String implements EntityInterface
+class KeyValue extends ApiEntity implements EntityInterface
 {
+    /**
+     * @JMS\Type("string")
+     * @JMS\Groups({"public"})
+     * @var string
+     */
+    protected $key;
 
-    use HasGroup;
-    use HasVersion;
+    /**
+     * @JMS\Type("string")
+     * @JMS\Groups({"public"})
+     * @var string
+     */
+    protected $value;
+
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param string $key
+     */
+    public function setKey($key)
+    {
+        $this->key = $key;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
 
     public function __construct($key = null, $value = null)
     {
-        parent::__construct($key, $value);
+        $this->key = $key;
+        $this->value = $value;
     }
 
     /**

@@ -37,9 +37,8 @@ class Location extends ApiEntity implements HeaderInterface
     /**
      * Usual parameters to identify the entity (Usually id)
      * @Assert\NotBlank
-     * @JMS\Type("array<string, string>")
+     * @JMS\Type("array<Smartbox\ApiBundle\Entity\KeyValue>")
      * @JMS\Groups({"public"})
-     * @JMS\Accessor(getter="getParametersAsArray",setter="setParameters")
      * @var array
      */
     protected $parameters;
@@ -79,7 +78,7 @@ class Location extends ApiEntity implements HeaderInterface
         foreach ($entity->getIdParameters() as $param) {
             if ($accessor->isReadable($entity, $param)) {
                 $value = $accessor->getValue($entity, $param);
-                $this->addParameter($param, $value);
+                $this->addParameter(new KeyValue($param,$value));
             } else {
                 throw new \Exception(
                     "Parameter $param returned by getIdParameters by class "
@@ -162,12 +161,13 @@ class Location extends ApiEntity implements HeaderInterface
     public function getParametersAsArray()
     {
         $res = array();
+
         /**
          * @var string $key
          * @var KeyValue $param
          */
-        foreach ($this->parameters as $key => $param) {
-            $res[$key] = $param->getValue();
+        foreach ($this->parameters as $param) {
+            $res[$param->getKey()] = $param->getValue();
         }
 
         return $res;
@@ -178,26 +178,12 @@ class Location extends ApiEntity implements HeaderInterface
      */
     public function setParameters($parameters)
     {
-        foreach($parameters as $key => $value){
-            $this->addParameter($key,$value);
-        }
+        $this->parameters = $parameters;
     }
 
-    public function getParameter($key)
+    public function addParameter(KeyValue $param)
     {
-        $param = $this->parameters[$key];
-        if ($param) {
-            return $param->getValue();
-        } else {
-            return null;
-        }
-    }
-
-    public function addParameter($key, $value)
-    {
-        $value = strval($value);
-        $param = new KeyValue($key, $value);
-        $this->parameters[$key] = $param;
+        $this->parameters[] = $param;
     }
 
     public function getRESTHeaderValue()

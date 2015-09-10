@@ -35,8 +35,8 @@ class ApiConfigurator
         'DateTime' => 'dateTime',
         'date' => 'dateTime',
         'datetime' => 'dateTime',
-        'key_value' => 'BeSimple\SoapCommon\Type\KeyValue\String',
-        'array' => 'BeSimple\SoapCommon\Type\KeyValue\String[]',
+//        'key_value' => 'BeSimple\SoapCommon\Type\KeyValue\String',
+//        'array' => 'BeSimple\SoapCommon\Type\KeyValue\String[]',
     );
 
     protected static $jmsTypes = array(

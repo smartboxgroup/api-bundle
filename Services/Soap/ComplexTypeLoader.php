@@ -83,7 +83,14 @@ class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
                 // Fetch JMS type
                 $jmsType = $jmsPropertyMeta->type;
 
-                $soapType = ApiConfigurator::getSoapTypeFor($jmsType['name']);
+                // TODO: Make this more robust/general
+                if($jmsType['name'] == 'array'){
+                    $confTypeName = $jmsType['params'][0]['name'].ApiConfigurator::$arraySymbol;
+                }else{
+                    $confTypeName = $jmsType['name'];
+                }
+
+                $soapType = ApiConfigurator::getSoapTypeFor($confTypeName);
 
                 // Fetch JMS groups
                 $groups = $jmsPropertyMeta->groups;

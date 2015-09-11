@@ -25,16 +25,16 @@ smartbox_api:
     default_controller: "SmartboxApiBundle:API:handleCall"
 
     errorCodes:
-       400: Invalid message
-       401: Not authorized
-       403: Forbidden
-       404: Bad request
+       400: Bad Request, the request could not be understood by the server due to malformed syntax
+       401: Unauthorized, the request requires user authentication
+       403: Forbidden, the server understood the request, but is refusing to fulfill it
+       404: Not Found, the server has not found anything matching the Request-URI
 
     successCodes:
-       200: Sucess
-       201: Created
-       202: Accepted
-       204: Sucess
+       200: Success, the information returned with the response is dependent on the method used in the request
+       201: Created, the request has been fulfilled and resulted in a new resource being created
+       202: Accepted, the request has been accepted for processing, but the processing has not been completed
+       204: No content, the server has fulfilled the request but does not need to return an entity-body
 
     services:
         demo_v1:

@@ -10,6 +10,7 @@ use Metadata\MetadataFactoryInterface;
 use Nelmio\ApiDocBundle\DataTypes;
 use Nelmio\ApiDocBundle\Parser\ParserInterface;
 use Nelmio\ApiDocBundle\Parser\PostParserInterface;
+use Smartbox\ApiBundle\Services\Serializer\Exclusion\PreserveArrayTypeStrategy;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\PropertyMetadata;
 
@@ -63,6 +64,8 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
         $exclusionStrategies = array();
         $c = SerializationContext::create();
         $exclusionStrategies[] = new VersionExclusionStrategy($version);
+        $exclusionStrategies[] = new PreserveArrayTypeStrategy();
+
 
         if (!empty($groups)) {
             $exclusionStrategies[] = new GroupsExclusionStrategy($groups);
@@ -79,6 +82,8 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
                 $metaProp = @$jmsMeta->propertyMetadata[$property];
                 if ($metaProp && $strategy->shouldSkipProperty($metaProp, $c)) {
                     unset($properties[$index]);
+                    // TODO: we should probably add a "break" statement here
+                    // (we don't need to keep iterating once we decided to skip the field)
                 }
             }
         }

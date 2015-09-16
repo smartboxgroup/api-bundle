@@ -82,8 +82,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
                 $metaProp = @$jmsMeta->propertyMetadata[$property];
                 if ($metaProp && $strategy->shouldSkipProperty($metaProp, $c)) {
                     unset($properties[$index]);
-                    // TODO: we should probably add a "break" statement here
-                    // (we don't need to keep iterating once we decided to skip the field)
+                    break;
                 }
             }
         }

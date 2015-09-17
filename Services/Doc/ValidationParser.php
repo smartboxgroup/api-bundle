@@ -132,4 +132,28 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
 
         return $params;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function postParse(array $input, array $parameters)
+    {
+        foreach ($parameters as $param => $data) {
+            if (isset($data['class']) && isset($data['children'])) {
+                $paramInput = [
+                    'class' => $data['class'],
+                    'groups' => $input['groups'],
+                    'version' => $input['version'],
+                ];
+                $parameters[$param]['children'] = array_merge(
+                    $parameters[$param]['children'], $this->postParse($paramInput, $parameters[$param]['children'])
+                );
+                $parameters[$param]['children'] = array_merge(
+                    $parameters[$param]['children'], $this->parse($paramInput, $parameters[$param]['children'])
+                );
+            }
+        }
+
+        return $parameters;
+    }
 }

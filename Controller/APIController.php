@@ -38,6 +38,14 @@ class APIController extends FOSRestController
         return $this->get('validator');
     }
 
+    /**
+     * @return \Smartbox\CoreBundle\Hydrator\GroupVersionHydrator
+     */
+    protected function getGroupVersionHydrator()
+    {
+        return $this->get('smartcore.hydrator.group_version');
+    }
+
     protected function throwInputValidationErrors(ConstraintViolationListInterface $list)
     {
         if (count($list) > 0) {
@@ -75,6 +83,19 @@ class APIController extends FOSRestController
 
         if (false === $this->get('security.authorization_checker')->isGranted($roles)) {
             throw new  AccessDeniedHttpException("Access denied");
+        }
+    }
+
+    protected function prepareInput($version, $inputsConfig, $inputValues){
+        foreach ($inputsConfig as $inputName => $inputConfig) {
+            if ($inputConfig['mode'] == Configuration::MODE_BODY) {
+                if (!array_key_exists($inputName, $inputValues)) {
+                    throw new BadRequestHttpException("Missing required input: $inputName");
+                }
+                $body = $inputValues[$inputName];
+                $group = $inputConfig['group'];
+                $this->getGroupVersionHydrator()->hydrate($body, $version, $group);
+            }
         }
     }
 
@@ -181,16 +202,11 @@ class APIController extends FOSRestController
                 if (!($elementValue instanceof $elementType) || !($elementValue instanceof EntityInterface)) {
                     throw new \Exception("The output is not an instance of the expected class");
                 }
-
-                $elementValue->setGroup($group);
-                $elementValue->setVersion($version);
             }
         } else {
             if (!($body instanceof $elementType) || !($body instanceof EntityInterface)) {
                 throw new \Exception("The output is not an instance of the expected class");
             }
-            $body->setGroup($group);
-            $body->setVersion($version);
         }
 
         $errors = $validator->validate($body);
@@ -314,6 +330,7 @@ class APIController extends FOSRestController
         $this->checkAuthorization();
 
         $inputsConfig = $methodConfig['input'];
+        $this->prepareInput($version, $inputsConfig, $input);
         $this->checkInput($version, $inputsConfig, $input);
 
         return $this->respond("Please place here your response");

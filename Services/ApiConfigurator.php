@@ -2,16 +2,22 @@
 
 namespace Smartbox\ApiBundle\Services;
 
+use Metadata\MetadataFactory;
 use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Entity\ApiEntity;
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\ApiBundle\Entity\HeaderInterface;
 use Smartbox\CoreBundle\Entity\EntityInterface;
-use Smartbox\Integration\FrameworkBundle\Processors\Itinerary;
 
-
+/**
+ * Class ApiConfigurator
+ * @package Smartbox\ApiBundle\Services
+ */
 class ApiConfigurator
 {
+    /** @var MetadataFactory */
+    protected $metadataFactory;
+
     /** @var  array */
     protected $config;
 
@@ -49,8 +55,9 @@ class ApiConfigurator
 
     protected $registeredAliases = array();
 
-    function __construct($config, $successCodes, $errorCodes)
+    function __construct(MetadataFactory $metadataFactory, $config, $successCodes, $errorCodes)
     {
+        $this->metadataFactory = $metadataFactory;
         $this->config = $config;
         $this->successCodes = $successCodes;
         $this->errorCodes = $errorCodes;
@@ -117,18 +124,18 @@ class ApiConfigurator
             foreach ($serviceConfig['methods'] as $method => $methodConfig) {
                 foreach ($methodConfig['input'] as $input => $inputConfig) {
                     $mode = $inputConfig['mode'];
-                    $type = $inputConfig['type'];
+                    $class = $inputConfig['type'];
                     $group = $inputConfig['group'];
-                    if ($mode == Configuration::MODE_BODY && $type && $group) {
-                        $this->registerEntityGroupAlias($type, $group);
+                    if ($mode == Configuration::MODE_BODY && $class && $group) {
+                        $this->registerEntityGroupAlias($class, $group);
                     }
                 }
                 if (array_key_exists('output', $methodConfig)) {
                     $outputConfig = $methodConfig['output'];
-                    $type = $outputConfig['type'];
+                    $class = $outputConfig['type'];
                     $group = $outputConfig['group'];
-                    if ($type && $group) {
-                        $this->registerEntityGroupAlias($type, $group);
+                    if ($class && $group) {
+                        $this->registerEntityGroupAlias($class, $group);
                     }
                 }
             }
@@ -140,13 +147,13 @@ class ApiConfigurator
      *
      * The alias name will follow the convention typeGroup
      *
-     * @param $type
+     * @param $class
      * @param $group
      * @throws \Exception
      */
-    public function registerEntityGroupAlias($type, $group)
+    public function registerEntityGroupAlias($class, $group)
     {
-        if (empty($type) || !is_string($type)) {
+        if (empty($class) || !is_string($class)) {
             throw new \InvalidArgumentException("Invalid value for argument type");
         }
 
@@ -154,23 +161,54 @@ class ApiConfigurator
             throw new \InvalidArgumentException("Invalid value for argument group");
         }
 
-        $type = str_replace(self::$arraySymbol, "", $type);
-        $alias = $type.ucfirst($group);
+        $class = str_replace(self::$arraySymbol, "", $class);
+        $alias = $class.ucfirst($group);
 
-        if (!class_exists($type)) {
-            throw new \InvalidArgumentException("Class $type doesn't exists");
+        if (!class_exists($class)) {
+            throw new \InvalidArgumentException("Class $class doesn't exists");
         }
 
-        if (class_exists($alias) && !is_a($alias, $type, true)) {
-            throw new \Exception("Class $alias already exists and is not an alias of $type");
+        if (class_exists($alias) && !is_a($alias, $class, true)) {
+            throw new \Exception("Class $alias already exists and is not an alias of $class");
         }
 
         if (!$this->isRegisteredAlias($alias)) {
             if (!class_exists($alias)) {
-                class_alias($type, $alias);
+                class_alias($class, $alias);
             }
 
-            $this->registeredAliases[$alias] = $type;
+            $this->registeredAliases[$alias] = $class;
+
+            // ITERATE OVER CLASS TO DETECT SUB-ENTITIES AND CREATE THE GROUP ALIAS FOR THEM
+
+            // Get the metadata for the current class
+            $metadata = $this->metadataFactory->getMetadataForClass($class);
+
+            // Check if there's metadata for the class
+            if (null === $metadata) {
+                throw new \InvalidArgumentException(sprintf("No metadata found for class %s", $class));
+            }
+
+            // For every property in the class, check if is an array
+            //    if it s an array get the subtype and call the method recursively with the subtype
+            foreach ($metadata->propertyMetadata as $item) {
+                $type = $item->type;
+
+                // if the sub-element is an entity register it using the parent group
+                if (self::isEntity($type['name'])) {
+                    $this->registerEntityGroupAlias($type['name'], $group);
+                } elseif ($type['name'] === 'array') {
+                    // otherwise if the sub-element is an array (of entities) check the first two indexes in the params
+                    // attribute to determine the type(s) of the array items and register them as well using the parent
+                    // group
+                    foreach(range(0,1) as $i) {
+                        if (isset($type['params'][$i]) && self::isEntity($type['params'][$i]['name'])) {
+                            $this->registerEntityGroupAlias($type['params'][$i]['name'], $group);
+                        }
+                    }
+                }
+            }
+
         }
     }
 

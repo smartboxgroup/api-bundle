@@ -176,7 +176,7 @@ class SoapServiceLoader extends Loader
             $suffix = TypeRepository::ARRAY_SUFFIX;
         }
 
-        if (class_exists($phpTypeBasic) && $group) {
+        if (ApiConfigurator::isEntity($phpTypeBasic) && $group) {
             $suffix = ucfirst($group).$suffix;
         }
 
@@ -196,7 +196,7 @@ class SoapServiceLoader extends Loader
 
             $complexTypeResolver = $this->resolve($data, 'annotation_complextype');
             if (!$complexTypeResolver) {
-                throw new \Exception();
+                throw new \Exception("Complex type loader not found");
             }
 
             $loaded = $complexTypeResolver->load($data);
@@ -210,7 +210,7 @@ class SoapServiceLoader extends Loader
             foreach ($loaded['properties'] as $name => $property) {
                 $complexType->add(
                     $name,
-                    $this->loadType($property->getValue(), null, $version),
+                    $this->loadType($property->getValue(), $group, $version),
                     $property->isNillable()
                 );
             }

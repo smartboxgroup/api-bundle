@@ -23,6 +23,7 @@ parameters:
 services:
     smartapi.configurator:
        class: %smartapi.configurator.class%
+       arguments: [@jms_serializer.metadata_factory]
 
     smartapi.rest.loader.routes:
       class: %smartapi.rest.loader.routes.class%

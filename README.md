@@ -28,12 +28,12 @@ To install the bundle, you just need to:
 ```
   php console.php config:dump-reference smartbox-api
 
-# Default configuration for "smartbox-api"
+# Default configuration for extension with alias: "smartbox_api"
 smartbox_api:
     default_controller:   'SmartboxApiBundle:API:handleCall'
 
-    # List of error codes:
-    #
+    # List of error codes, e.g.::
+    # 
     #                400: Bad Request, the request could not be understood by the server due to malformed syntax
     #                401: Unauthorized, the request requires user authentication
     #                403: Forbidden, the server understood the request, but is refusing to fulfill it
@@ -44,8 +44,8 @@ smartbox_api:
         # Prototype
         id:                   ~
 
-    # List of success codes:
-    #
+    # List of success codes, e.g.::
+    # 
     #                   200: Success, the information returned with the response is dependent on the method used in the request
     #                   201: Created, the request has been fulfilled and resulted in a new resource being created
     #                   202: Accepted, the request has been accepted for processing, but the processing has not been completed
@@ -64,23 +64,14 @@ smartbox_api:
             version:              ~ # Required
             removed:              []
 
-            # Endpoint definitions. The endpoints contain:
-            #
-            #                A role so the authorization can take place.
-            #
-            #                Input parameters
-            #
-            #                Output parameters
-            #
-            #                Rest route and http method
-            #
-            #                An example of the above could be:
+            # Endpoint definitions.
+            #                 Example:
             #                 services:
             #                     demo_v1:
             #                         name: demo
             #                         version: v1
             #                         methods:
-            #
+            # 
             #                         ## BOXES
             #                             createBox:
             #                                 description: Creates a box with the given information and returns its id
@@ -91,13 +82,19 @@ smartbox_api:
             #                                 rest:
             #                                     route: /box
             #                                     httpMethod: POST
-            #
+            #                
             methods:              # Required
 
                 # Prototype
                 name:
+
+                    # Success code to be returned
                     successCode:          200
+
+                    # Description of the method, it will be used in the documentation
                     description:          ~ # Required
+
+                    # Controller to handle the requests to this method
                     controller:           default
                     roles:
 
@@ -107,31 +104,47 @@ smartbox_api:
 
                         # Prototype
                         key:                  ~
+
+                    # Section where the input parameters are specified.
                     input:
 
                         # Prototype
                         name:
+
+                            # The description of the parameter, it will be used in the documentation.
                             description:          ''
+
+                            # The type of the input, it accepts scalar types (integer, double, string), entities (e.g.: MyNamespace\MyEntity) and arrays of them (integer[], MyNamespace\MyEntity[])
                             type:                 ~ # Required
+
+                            # The group of the entity to be used, acts as a view of the entity model, determines the set of attributes to be used.
                             group:                public
+
+                            # Defines if the parameter is a requirement, filter or the body.\nBody: There can be only one input as the body,\n and it must be an Entity or array of entities.\nRequirement: Requirements are scalar parameters which are required.\nFilter: Filters are scalar parameters which are optional.
                             mode:                 requirement
+
+                            # Regex with the format for the parameter, e.g.: d+
                             format:               '[a-zA-Z0-9]+'
 
-                    # Section where the output parameters are specified. The output parameters must have:
-                    #
-                    #         type: the type represents one of the possible Entities supported. That's an Integer, String, Double or EntityArray.
-                    #         Entities must be defined before using them
-                    #
-                    #         group: it defines the permissions level. The API will output this parameter if the user it belongs to the particular group.
-                    #
-                    #         mode: defines if the parameter goes into the header or the body of the response
+                    # Section where the output parameters are specified.
                     output:
+
+                        # The type of the output, it accepts only entities (e.g.: MyNamespace\MyEntity) and arrays of them (MyNamespace\MyEntity[])
                         type:                 ~ # Required
+
+                        # The group of the entity to be used, acts as a view of the entity model, determines the set of attributes to be used.
                         group:                public
+
+                        # Determines if the parameter goes into the header (header mode, usually for location header) or the body (body mode) of the response
                         mode:                 body
                     rest:                 # Required
+
+                        # Route for the this API method
                         route:                ~ # Required
+
+                        # HTTP verb for this API method
                         httpMethod:           ~ # Required
+
 ```
 
 5. Add to your routing.yml file:

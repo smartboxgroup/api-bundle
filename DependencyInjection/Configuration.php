@@ -74,7 +74,7 @@ class Configuration implements ConfigurationInterface
         $node->isRequired()
             ->requiresAtLeastOneElement()
             ->useAttributeAsKey('id')
-            ->info("List of error codes:\n
+            ->info("List of error codes, e.g.::\n
                400: Bad Request, the request could not be understood by the server due to malformed syntax
                401: Unauthorized, the request requires user authentication
                403: Forbidden, the server understood the request, but is refusing to fulfill it
@@ -93,7 +93,7 @@ class Configuration implements ConfigurationInterface
         $node->isRequired()
             ->requiresAtLeastOneElement()
             ->useAttributeAsKey('id')
-            ->info("List of success codes:\n
+            ->info("List of success codes, e.g.::\n
                   200: Success, the information returned with the response is dependent on the method used in the request
                   201: Created, the request has been fulfilled and resulted in a new resource being created
                   202: Accepted, the request has been accepted for processing, but the processing has not been completed
@@ -138,12 +138,8 @@ class Configuration implements ConfigurationInterface
             ->requiresAtLeastOneElement()
             ->cannotBeEmpty()
             ->useAttributeAsKey('name')
-            ->info("Endpoint definitions. The endpoints contain:\n
-               A role so the authorization can take place.\n
-               Input parameters\n
-               Output parameters\n
-               Rest route and http method\n
-               An example of the above could be:
+            ->info("Endpoint definitions.
+                Example:
                 services:
                     demo_v1:
                         name: demo
@@ -163,19 +159,21 @@ class Configuration implements ConfigurationInterface
                ")
             ->prototype('array')
             ->children()
-            ->scalarNode('successCode')->defaultValue(200)->end()
-            ->scalarNode('description')->isRequired()->end()
-            ->scalarNode('controller')->defaultValue('default')->end()
+            ->scalarNode('successCode')->info('Success code to be returned')->defaultValue(200)->end()
+            ->scalarNode('description')->info('Description of the method, it will be used in the documentation')->isRequired()->end()
+            ->scalarNode('controller')->info('Controller to handle the requests to this method')->defaultValue('default')->end()
             ->arrayNode('roles')
             ->useAttributeAsKey('role')
             ->defaultValue(array('ROLE_USER'))
             ->prototype('scalar')
+            ->info('Roles allowed to use this method')
             ->end()
             ->end()
             ->arrayNode('defaults')
             ->useAttributeAsKey('key')
             ->defaultValue(array())
             ->prototype('scalar')
+            ->info('Default values')
             ->end()
             ->end()
             ->append($this->addInputNode())
@@ -192,25 +190,26 @@ class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder();
         $node = $builder->root('input');
+        $node->info("Section where the input parameters are specified.");
         $node->useAttributeAsKey('name')
             ->prototype('array')
-            ->info("Section where the input parameters are specified. The output parameters must have:\n
-        type: the type represents one of the possible Entities supported. That's an Integer, String, Double or EntityArray.
-        Entities must be defined before using them\n
-        group: it defines the permissions level. The API will output this parameter if the user it belongs to the particular group.\n
-        mode: defines if the parameter goes into the header or the body of the response")
             ->children()
-            ->scalarNode('description')->defaultValue("")->end()
-            ->scalarNode('type')->isRequired()->end()
-            ->scalarNode('group')->defaultValue(Entity::GROUP_PUBLIC)->end()
+            ->scalarNode('description')->info('The description of the parameter, it will be used in the documentation.')
+            ->defaultValue("")->end()
+            ->scalarNode('type')
+                ->info('The type of the input, it accepts scalar types (integer, double, string), entities (e.g.: MyNamespace\\MyEntity) and arrays of them (integer[], MyNamespace\\MyEntity[])')
+            ->isRequired()->end()
+            ->scalarNode('group')
+                ->info('The group of the entity to be used, acts as a view of the entity model, determines the set of attributes to be used.')
+            ->defaultValue(Entity::GROUP_PUBLIC)->end()
             ->scalarNode('mode')
-            ->defaultValue(Configuration::MODE_REQUIREMENT)
+                ->info('Defines if the parameter is a requirement, filter or the body.\nBody: There can be only one input as the body,\n and it must be an Entity or array of entities.\nRequirement: Requirements are scalar parameters which are required.\nFilter: Filters are scalar parameters which are optional.')            ->defaultValue(Configuration::MODE_REQUIREMENT)
             ->validate()
             ->ifNotInArray(self::$INPUT_MODES)
             ->thenInvalid('Invalid database driver "%s"')
             ->end()
             ->end()
-            ->scalarNode('format')->defaultValue("[a-zA-Z0-9]+")->end()
+            ->scalarNode('format')->info('Regex with the format for the parameter, e.g.: d+')->defaultValue("[a-zA-Z0-9]+")->end()
             ->end()
             ->validate()
             ->ifTrue(
@@ -271,15 +270,16 @@ class Configuration implements ConfigurationInterface
         $builder = new TreeBuilder();
         $node = $builder->root('output');
 
-        $node->info("Section where the output parameters are specified. The output parameters must have:\n
-        type: the type represents one of the possible Entities supported. That's an Integer, String, Double or EntityArray.
-        Entities must be defined before using them\n
-        group: it defines the permissions level. The API will output this parameter if the user it belongs to the particular group.\n
-        mode: defines if the parameter goes into the header or the body of the response")
-            ->children()
-            ->scalarNode('type')->isRequired()->end()
-            ->scalarNode('group')->defaultValue(Entity::GROUP_PUBLIC)->end()
-            ->scalarNode('mode')->defaultValue(Configuration::MODE_BODY)->end()
+        $node->info("Section where the output parameters are specified.");
+        $node->children()
+            ->scalarNode('type')->info('The type of the output, it accepts only entities (e.g.: MyNamespace\\MyEntity) and arrays of them (MyNamespace\\MyEntity[])')->isRequired()->end()
+            ->scalarNode('group')
+                ->info('The group of the entity to be used, acts as a view of the entity model, determines the set of attributes to be used.')
+                ->defaultValue(Entity::GROUP_PUBLIC)
+            ->end()
+            ->scalarNode('mode')
+                ->info('Determines if the parameter goes into the header (header mode, usually for location header) or the body (body mode) of the response')
+                ->defaultValue(Configuration::MODE_BODY)->end()
             ->end()
             ->validate()
             ->ifTrue(
@@ -313,8 +313,8 @@ class Configuration implements ConfigurationInterface
 
         $node->isRequired()
             ->children()
-            ->scalarNode('route')->isRequired()->end()
-            ->scalarNode('httpMethod')->isRequired()->end()
+            ->scalarNode('route')->info('Route for the this API method')->isRequired()->end()
+            ->scalarNode('httpMethod')->info('HTTP verb for this API method')->isRequired()->end()
             ->end()
             ->end();
 

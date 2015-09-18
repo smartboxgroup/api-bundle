@@ -34,6 +34,16 @@ class BasicResponseTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_should_be_constructed_with_parameters()
+    {
+        $basicResponse = new BasicResponse(17, 'message');
+        $this->assertEquals(17, $basicResponse->getCode(), 'The code was not set properly');
+        $this->assertEquals('message', $basicResponse->getMessage(), 'The message was not set properly');
+    }
+
+    /**
+     * @test
+     */
     public function it_should_set_and_get_code()
     {
         $this->basicResponse->setCode(17);

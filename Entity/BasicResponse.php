@@ -29,8 +29,8 @@ class BasicResponse extends ApiEntity
 
     function __construct($code = null, $message = null)
     {
-        $this->code = $code;
-        $this->message = $message;
+        $this->setCode($code);
+        $this->setMessage($message);
     }
 
     /**

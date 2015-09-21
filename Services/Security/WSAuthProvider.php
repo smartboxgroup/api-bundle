@@ -19,9 +19,23 @@ class WSAuthProvider implements AuthenticationProviderInterface
     /** @var  UserInterface */
     private $user;
 
-    public function __construct(UserProviderInterface $userProvider)
+    /** @var  WsSecurityFilter */
+    private $securityFilter;
+
+    /**
+     * Constructor
+     *
+     * @param UserProviderInterface $userProvider
+     * @param WsSecurityFilter|null $securityFilter
+     */
+    public function __construct(UserProviderInterface $userProvider, WsSecurityFilter $securityFilter = null)
     {
         $this->userProvider = $userProvider;
+
+        if (null === $securityFilter) {
+            $securityFilter = new WsSecurityFilter();
+        }
+        $this->securityFilter = $securityFilter;
     }
 
     public function loadUserByUsername($username)
@@ -50,9 +64,8 @@ class WSAuthProvider implements AuthenticationProviderInterface
         }
 
         if ($token instanceof WSToken) {
-            $filter = new WsSecurityFilter();
-            $filter->setUsernamePasswordCallback(array($this, "loadUserByUsername"));
-            $filter->filterRequest($token->getSoapRequest());
+            $this->securityFilter->setUsernamePasswordCallback(array($this, "loadUserByUsername"));
+            $this->securityFilter->filterRequest($token->getSoapRequest());
         }
 
         if (!$this->user) {

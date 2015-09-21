@@ -2,20 +2,22 @@
 
 namespace Smartbox\ApiBundle\Tests\Services;
 
-
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\CoreBundle\Entity\Entity;
 
 class ApiConfiguratorTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ApiConfigurator */
     protected $configurator;
 
     public function setUp()
     {
-        $this->configurator = new ApiConfigurator(array(), array(), array());
+        /** @var \Metadata\MetadataFactoryInterface $metadataFactory */
+        $metadataFactory = $this->getMockBuilder('\Metadata\MetadataFactoryInterface')
+            ->setConstructorArgs([get_class($this)])
+            ->getMock();
+        $this->configurator = new ApiConfigurator($metadataFactory, array(), array(), array());
     }
 
     public function validTypesAndGroupsProvider()

@@ -2,7 +2,7 @@
 
 namespace Smartbox\ApiBundle\Services;
 
-use Metadata\MetadataFactory;
+use Metadata\MetadataFactoryInterface;
 use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Entity\ApiEntity;
 use Smartbox\ApiBundle\Entity\BasicResponse;
@@ -15,7 +15,7 @@ use Smartbox\CoreBundle\Entity\EntityInterface;
  */
 class ApiConfigurator
 {
-    /** @var MetadataFactory */
+    /** @var MetadataFactoryInterface */
     protected $metadataFactory;
 
     /** @var  array */
@@ -55,7 +55,7 @@ class ApiConfigurator
 
     protected $registeredAliases = array();
 
-    function __construct(MetadataFactory $metadataFactory, $config, $successCodes, $errorCodes)
+    function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes)
     {
         $this->metadataFactory = $metadataFactory;
         $this->config = $config;
@@ -184,31 +184,27 @@ class ApiConfigurator
             // Get the metadata for the current class
             $metadata = $this->metadataFactory->getMetadataForClass($class);
 
-            // Check if there's metadata for the class
-            if (null === $metadata) {
-                throw new \InvalidArgumentException(sprintf("No metadata found for class %s", $class));
-            }
-
             // For every property in the class, check if is an array
             //    if it s an array get the subtype and call the method recursively with the subtype
-            foreach ($metadata->propertyMetadata as $item) {
-                $type = $item->type;
+            if (null !== $metadata) {
+                foreach ($metadata->propertyMetadata as $item) {
+                    $type = $item->type;
 
-                // if the sub-element is an entity register it using the parent group
-                if (self::isEntity($type['name'])) {
-                    $this->registerEntityGroupAlias($type['name'], $group);
-                } elseif ($type['name'] === 'array') {
-                    // otherwise if the sub-element is an array (of entities) check the first two indexes in the params
-                    // attribute to determine the type(s) of the array items and register them as well using the parent
-                    // group
-                    foreach(range(0,1) as $i) {
-                        if (isset($type['params'][$i]) && self::isEntity($type['params'][$i]['name'])) {
-                            $this->registerEntityGroupAlias($type['params'][$i]['name'], $group);
+                    // if the sub-element is an entity register it using the parent group
+                    if (self::isEntity($type['name'])) {
+                        $this->registerEntityGroupAlias($type['name'], $group);
+                    } elseif ($type['name'] === 'array') {
+                        // otherwise if the sub-element is an array (of entities) check the first two indexes in the params
+                        // attribute to determine the type(s) of the array items and register them as well using the parent
+                        // group
+                        foreach (range(0, 1) as $i) {
+                            if (isset($type['params'][$i]) && self::isEntity($type['params'][$i]['name'])) {
+                                $this->registerEntityGroupAlias($type['params'][$i]['name'], $group);
+                            }
                         }
                     }
                 }
             }
-
         }
     }
 

@@ -49,10 +49,10 @@ class APIController extends FOSRestController
     protected function throwInputValidationErrors(ConstraintViolationListInterface $list)
     {
         if (count($list) > 0) {
-            $message = "Bad Request;\n ";
+            $message = "Bad Request; ";
             /** @var ConstraintViolationInterface $error */
             foreach ($list as $error) {
-                $message .= $error->getPropertyPath()." : ".$error->getMessage().";\n";
+                $message .= $error->getPropertyPath().":".$error->getMessage().",";
             }
 
             throw new BadRequestHttpException($message);
@@ -62,10 +62,10 @@ class APIController extends FOSRestController
     protected function throwOutputValidationErrors(ConstraintViolationListInterface $list)
     {
         if (count($list) > 0) {
-            $message = "Internal server error;\n ";
+            $message = "Internal server error; ";
             /** @var ConstraintViolationInterface $error */
             foreach ($list as $error) {
-                $message .= $error->getPropertyPath()." : ".$error->getMessage().";\n";
+                $message .= $error->getPropertyPath().":".$error->getMessage().",";
             }
 
             throw new \Exception($message);
@@ -94,7 +94,7 @@ class APIController extends FOSRestController
                 }
                 $body = $inputValues[$inputName];
                 $group = $inputConfig['group'];
-                $this->getGroupVersionHydrator()->hydrate($body, $version, $group);
+                $this->getGroupVersionHydrator()->hydrate($body, $group, $version);
             }
         }
     }

@@ -4,7 +4,7 @@ namespace Smartbox\ApiBundle\DependencyInjection;
 
 use Composer\Config;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
-use Smartbox\CoreBundle\Entity\Entity;
+use Smartbox\CoreBundle\Entity\EntityInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -201,7 +201,7 @@ class Configuration implements ConfigurationInterface
             ->isRequired()->end()
             ->scalarNode('group')
                 ->info('The group of the entity to be used, acts as a view of the entity model, determines the set of attributes to be used.')
-            ->defaultValue(Entity::GROUP_PUBLIC)->end()
+            ->defaultValue(EntityInterface::GROUP_PUBLIC)->end()
             ->scalarNode('mode')
                 ->info('Defines if the parameter is a requirement, filter or the body.\nBody: There can be only one input as the body,\n and it must be an Entity or array of entities.\nRequirement: Requirements are scalar parameters which are required.\nFilter: Filters are scalar parameters which are optional.')            ->defaultValue(Configuration::MODE_REQUIREMENT)
             ->validate()
@@ -275,7 +275,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('type')->info('The type of the output, it accepts only entities (e.g.: MyNamespace\\MyEntity) and arrays of them (MyNamespace\\MyEntity[])')->isRequired()->end()
             ->scalarNode('group')
                 ->info('The group of the entity to be used, acts as a view of the entity model, determines the set of attributes to be used.')
-                ->defaultValue(Entity::GROUP_PUBLIC)
+                ->defaultValue(EntityInterface::GROUP_PUBLIC)
             ->end()
             ->scalarNode('mode')
                 ->info('Determines if the parameter goes into the header (header mode, usually for location header) or the body (body mode) of the response')

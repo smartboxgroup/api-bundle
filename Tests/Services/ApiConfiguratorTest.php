@@ -5,6 +5,7 @@ namespace Smartbox\ApiBundle\Tests\Services;
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\CoreBundle\Entity\Entity;
+use Smartbox\CoreBundle\Entity\EntityInterface;
 
 class ApiConfiguratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -46,12 +47,12 @@ class ApiConfiguratorTest extends \PHPUnit_Framework_TestCase
     public function invalidTypesAndGroupsProvider()
     {
         return array(
-            array(Entity::class, ''),
+            array(EntityInterface::class, ''),
             array('', 'TestGroupB'),
             array('InexistentClass', 'TestGroupA'),
             array(null, 'TestGroupB'),
             array(BasicResponse::class, null),
-            array(Entity::class, 38),
+            array(EntityInterface::class, 38),
             array(13, 'C'),
             array(array('A', 'B'), 'C'),
         );

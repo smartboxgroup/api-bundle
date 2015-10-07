@@ -368,7 +368,7 @@ class ApiConfigurator
 
         $isEntityClass =
             class_exists($elementType)
-            && is_a($elementType, EntityInterface::class)
+            && is_a($elementType, EntityInterface::class, true)
         ;
 
         return $isEntityClass;

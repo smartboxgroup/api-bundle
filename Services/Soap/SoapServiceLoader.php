@@ -8,7 +8,7 @@ use BeSimple\SoapCommon\Definition\Type\TypeRepository;
 use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
-use Smartbox\CoreBundle\Entity\EntityInterface;
+use Smartbox\CoreBundle\Type\EntityInterface;
 use Symfony\Component\Config\Loader\Loader;
 
 

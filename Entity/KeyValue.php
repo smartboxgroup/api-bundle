@@ -4,7 +4,7 @@ namespace Smartbox\ApiBundle\Entity;
 
 
 use JMS\Serializer\Annotation as JMS;
-use Smartbox\CoreBundle\Entity\EntityInterface;
+use Smartbox\CoreBundle\Type\EntityInterface;
 
 class KeyValue extends ApiEntity implements EntityInterface
 {

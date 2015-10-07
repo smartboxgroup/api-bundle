@@ -3,7 +3,7 @@
 namespace Smartbox\ApiBundle\Entity;
 
 
-use Smartbox\CoreBundle\Entity\EntityInterface;
+use Smartbox\CoreBundle\Type\EntityInterface;
 
 interface LocatableEntity extends EntityInterface
 {

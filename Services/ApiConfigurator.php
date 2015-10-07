@@ -7,7 +7,7 @@ use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Entity\ApiEntity;
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\ApiBundle\Entity\HeaderInterface;
-use Smartbox\CoreBundle\Entity\EntityInterface;
+use Smartbox\CoreBundle\Type\EntityInterface;
 
 /**
  * Class ApiConfigurator

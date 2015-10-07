@@ -4,8 +4,8 @@ namespace Smartbox\ApiBundle\Tests\Services;
 
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
-use Smartbox\CoreBundle\Entity\Entity;
-use Smartbox\CoreBundle\Entity\EntityInterface;
+use Smartbox\CoreBundle\Type\Entity;
+use Smartbox\CoreBundle\Type\EntityInterface;
 
 class ApiConfiguratorTest extends \PHPUnit_Framework_TestCase
 {

@@ -10,7 +10,7 @@ use Smartbox\ApiBundle\Entity\HeaderInterface;
 use Smartbox\ApiBundle\Entity\Location;
 use Smartbox\ApiBundle\Entity\OK;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
-use Smartbox\CoreBundle\Entity\EntityInterface;
+use Smartbox\CoreBundle\Type\EntityInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Constraints\DateTime;

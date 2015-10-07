@@ -8,7 +8,7 @@ use BeSimple\SoapCommon\Definition\Type\TypeRepository;
 use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
-use Smartbox\CoreBundle\Entity\Entity;
+use Smartbox\CoreBundle\Type\EntityInterface;
 use Symfony\Component\Config\Loader\Loader;
 
 
@@ -89,7 +89,7 @@ class SoapServiceLoader extends Loader
             // Output
             if (!array_key_exists('output', $methodConfig)) {
                 $methodReturnType = BasicResponse::class;
-                $methodReturnGroup = Entity::GROUP_PUBLIC;
+                $methodReturnGroup = EntityInterface::GROUP_PUBLIC;
             } else {
                 $methodReturnType = $methodConfig['output']['type'];
                 $methodReturnGroup = @$methodConfig['output']['group'];

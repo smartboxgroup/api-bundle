@@ -14,30 +14,21 @@ class WSTokenTest extends \PHPUnit_Framework_TestCase
         $this->token = new WSToken();
     }
 
-    /**
-     * @test
-     */
-    public function it_should_set_and_get_a_soap_request()
+    public function testItShouldSetAndGetASoapRequest()
     {
         $soapRequest = $this->getMockBuilder('\BeSimple\SoapCommon\SoapRequest')->getMock();
         $this->token->setSoapRequest($soapRequest);
         $this->assertSame($soapRequest, $this->token->getSoapRequest());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_get_credentials()
+    public function testItShouldGetCredentials()
     {
         $soapRequest = $this->getMockBuilder('\BeSimple\SoapCommon\SoapRequest')->getMock();
         $this->token->setSoapRequest($soapRequest);
         $this->assertSame($soapRequest, $this->token->getCredentials());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_be_authenticated_if_roles_are_given()
+    public function testItShouldBeAuthenticatedIfRolesAreGiven()
     {
         $token = new WSToken(['some_role']);
         $this->assertTrue($token->isAuthenticated());

@@ -52,11 +52,10 @@ class LocationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
      * @expectedException \Exception
      * @expectedExceptionMessage Parameter id returned by getIdParameters by class Something is not readable
      */
-    public function it_should_not_accept_entity_with_invalid_id_parameters()
+    public function testItShouldNotAcceptEntityWithInvalidIdParameters()
     {
         /** @var \Smartbox\ApiBundle\Entity\LocatableEntity|\PHPUnit_Framework_MockObject_MockObject $entity */
         $entity = $this->getMockBuilder('\Smartbox\ApiBundle\Entity\LocatableEntity')
@@ -84,65 +83,44 @@ class LocationTest extends \PHPUnit_Framework_TestCase
         $this->location = new Location($entity, $propertyAccessor);
     }
 
-    /**
-     * @test
-     */
-    public function it_should_read_data_from_an_entity()
+    public function testItShouldReadDataFromAnEntity()
     {
         $parameters = $this->location->getParametersAsArray();
         $this->assertTrue($parameters['id'] === 17);
     }
 
-    /**
-     * @test
-     */
-    public function it_should_get_api_method()
+    public function testItShouldGetApiMethod()
     {
         $this->assertEquals('getSomething', $this->location->getApiMethod());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_set_and_get_url()
+    public function testItShouldSetAndGetUrl()
     {
         $url = 'http://example.com/something';
         $this->location->setUrl($url);
         $this->assertEquals($url, $this->location->getUrl());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_set_and_get_api_service()
+    public function testItShouldSetAndGetApiService()
     {
         $apiService = 'someService';
         $this->location->setApiService($apiService);
         $this->assertEquals($apiService, $this->location->getApiService());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_not_be_resolved_without_all_the_parameters_set()
+    public function testItShouldNotBeResolvedWithoutAllTheParametersSet()
     {
         $this->assertFalse($this->location->isResolved());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_be_resolved_with_all_the_parameters_set()
+    public function testItShouldBeResolvedWithAllTheParametersSet()
     {
         $this->location->setUrl('someUrl');
         $this->location->setApiService('someService');
         $this->assertTrue($this->location->isResolved());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_set_and_get_parameters()
+    public function testItShouldSetAndGetParameters()
     {
         $parameters = [
             new KeyValue('foo', 'bar'),
@@ -154,10 +132,9 @@ class LocationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
      * @expectedException \InvalidArgumentException
      */
-    public function it_should_not_accept_invalid_parameters()
+    public function testItShouldNotAcceptInvalidParameters()
     {
         $parameters = [
             'foo' => 'bar',
@@ -167,10 +144,7 @@ class LocationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($parameters, $this->location->getParameters());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_get_parameters_as_array()
+    public function testItShouldGetParametersAsArray()
     {
         $parameters = [
             new KeyValue('foo', 'bar'),
@@ -186,10 +160,7 @@ class LocationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->location->getParametersAsArray());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_get_a_rest_header_value_based_on_the_url()
+    public function testItShouldGetARestHeaderValueBasedOnTheUrl()
     {
         $this->location->setUrl('foo');
         $this->assertEquals('foo', $this->location->getRESTHeaderValue());

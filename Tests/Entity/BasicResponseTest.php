@@ -31,52 +31,41 @@ class BasicResponseTest extends \PHPUnit_Framework_TestCase
         $this->basicResponse = new BasicResponse();
     }
 
-    /**
-     * @test
-     */
-    public function it_should_be_constructed_with_parameters()
+    public function testItShouldBeConstructedWithParameters()
     {
         $basicResponse = new BasicResponse(17, 'message');
         $this->assertEquals(17, $basicResponse->getCode(), 'The code was not set properly');
         $this->assertEquals('message', $basicResponse->getMessage(), 'The message was not set properly');
     }
 
-    /**
-     * @test
-     */
-    public function it_should_set_and_get_code()
+    public function testItShouldSetAndGetCode()
     {
         $this->basicResponse->setCode(17);
         $this->assertEquals(17, $this->basicResponse->getCode());
     }
 
     /**
-     * @test
      * @dataProvider getInvalidCodes
      * @expectedException \InvalidArgumentException
      * @param mixed $code
      */
-    public function it_should_not_accept_invalid_codes($code)
+    public function testItShouldNotAcceptInvalidCodes($code)
     {
         $this->basicResponse->setCode($code);
     }
 
-    /**
-     * @test
-     */
-    public function it_should_set_ang_get_message()
+    public function testItShouldSetAndGetMessage()
     {
         $this->basicResponse->setMessage('bar');
         $this->assertEquals('bar', $this->basicResponse->getMessage());
     }
 
     /**
-     * @test
      * @dataProvider getInvalidMessages
      * @expectedException \InvalidArgumentException
      * @param mixed $message
      */
-    public function it_should_not_accept_invalid_messages($message)
+    public function testItShouldNotAcceptInvalidMessages($message)
     {
         $this->basicResponse->setMessage($message);
     }

@@ -29,10 +29,7 @@ class WSAuthProviderTest extends \PHPUnit_Framework_TestCase
         $this->authProvider = new WSAuthProvider($this->userProvider, $this->securityFilter);
     }
 
-    /**
-     * @test
-     */
-    public function it_should_load_user_by_username()
+    public function testItShouldLoadUserByUsername()
     {
         $username = 'John Doe';
         $password = 'love';
@@ -56,10 +53,9 @@ class WSAuthProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
      * @expectedException  \Symfony\Component\Security\Core\Exception\AuthenticationException
      */
-    public function it_should_fail_loading_user_when_user_cannot_be_found()
+    public function testItShouldFailLoadingUserWhenUserCannotBeFound()
     {
         $username = 'John Doe';
         $this->userProvider
@@ -71,10 +67,7 @@ class WSAuthProviderTest extends \PHPUnit_Framework_TestCase
         $this->authProvider->loadUserByUsername($username);
     }
 
-    /**
-     * @test
-     */
-    public function it_should_authenticate_a_valid_token()
+    public function testItShouldAuthenticateAValidToken()
     {
         $username = 'John Doe';
         $password = 'love';
@@ -116,11 +109,10 @@ class WSAuthProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
      * @expectedException \Symfony\Component\Security\Core\Exception\AuthenticationException
      * @expectedExceptionMessage The given user doesn't exist
      */
-    public function it_should_not_authenticate_an_invalid_token()
+    public function testItShouldNotAuthenticateAnInvalidToken()
     {
         $username = 'John Doe';
 
@@ -147,11 +139,10 @@ class WSAuthProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
      * @expectedException \Symfony\Component\Security\Core\Exception\AuthenticationException
      * @expectedExceptionMessage Token not supported
      */
-    public function it_should_throw_exception_with_unsupported_tokens()
+    public function testItShouldThrowExceptionWithUnsupportedTokens()
     {
         /** @var \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token */
         $token = $this->getMockBuilder('\Symfony\Component\Security\Core\Authentication\Token\TokenInterface')
@@ -160,10 +151,7 @@ class WSAuthProviderTest extends \PHPUnit_Framework_TestCase
         $this->authProvider->authenticate($token);
     }
 
-    /**
-     * @test
-     */
-    public function it_should_support_ws_tokens()
+    public function testItShouldSupportWsTokens()
     {
         /** @var \Smartbox\ApiBundle\Services\Security\WSToken $token */
         $token = $this->getMockBuilder('\Smartbox\ApiBundle\Services\Security\WSToken')
@@ -172,10 +160,7 @@ class WSAuthProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->authProvider->supports($token));
     }
 
-    /**
-     * @test
-     */
-    public function it_should_not_support_other_tokens()
+    public function testItShouldNotSupportOtherTokens()
     {
         /** @var \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token */
         $token = $this->getMockBuilder('\Symfony\Component\Security\Core\Authentication\Token\TokenInterface')

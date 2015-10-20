@@ -5,6 +5,7 @@ parameters:
   smartapi.soap.loader.soap_services.class: Smartbox\ApiBundle\Services\Soap\SoapServiceLoader
   smartapi.soap.security.authentication.provider.class: Smartbox\ApiBundle\Services\Security\WSAuthProvider
   smartapi.soap.security.authentication_filter.class: Smartbox\ApiBundle\Services\Soap\WsAuthenticationFilter
+  smartapi.soap.exceptions_converter.class: Smartbox\ApiBundle\Services\Soap\SoapExceptionConverter
   smartapi.doc.parser.jms_parser.class: Smartbox\ApiBundle\Services\Doc\JmsMetadataParser
   smartapi.resolvers.location.class: Smartbox\ApiBundle\Services\HeaderResolvers\LocationResolver
 
@@ -38,6 +39,11 @@ services:
         - @besimple.soap.type.repository
       tags:
         - { name: besimple.soap.definition.loader }
+
+    smartapi.soap.exceptions_converter:
+        class: %smartapi.soap.exceptions_converter.class%
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 255 }
 
     smartapi.rest.listener.input:
       class: %smartapi.rest.listener.input.class%
@@ -83,3 +89,4 @@ services:
     smartapi.resolvers.location:
         class: %smartapi.resolvers.location.class%
         arguments: [ @router, @request_stack, @smartapi.configurator ]
+

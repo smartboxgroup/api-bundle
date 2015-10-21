@@ -17,29 +17,20 @@ class KeyValueTest extends \PHPUnit_Framework_TestCase
         $this->keyValue = new KeyValue();
     }
 
-    /**
-     * @test
-     */
-    public function itShouldBeConstructedWithArguments()
+    public function testShouldBeConstructedWithArguments()
     {
         $keyValue = new KeyValue('foo', 'bar');
         $this->assertEquals('foo', $keyValue->getKey(), 'Key was not set correctly');
         $this->assertEquals('bar', $keyValue->getValue(), 'Value was not set correctly');
     }
 
-    /**
-     * @test
-     */
-    public function itShouldSetAndGetKey()
+    public function testShouldSetAndGetKey()
     {
         $this->keyValue->setKey('foo');
         $this->assertEquals('foo', $this->keyValue->getKey());
     }
 
-    /**
-     * @test
-     */
-    public function itShouldSetAndGetValue()
+    public function testShouldSetAndGetValue()
     {
         $this->keyValue->setValue('bar');
         $this->assertEquals('bar', $this->keyValue->getValue());

@@ -25,6 +25,7 @@ class Box extends ApiEntity implements LocatableEntity
      * @Assert\Type(type="integer")
      * @Assert\NotBlank(groups={"list", "public"})
      * @JMS\Type("integer")
+     * @JMS\Expose
      * @JMS\Groups({"list", "public"})
      * @var int
      */
@@ -38,6 +39,7 @@ class Box extends ApiEntity implements LocatableEntity
      * @Assert\Length(min=10, max=200)
      * @JMS\Since("v2")
      * @JMS\Type("string")
+     * @JMS\Expose
      * @JMS\Groups({"update","list", "public"})
      * @var string
      */
@@ -50,6 +52,7 @@ class Box extends ApiEntity implements LocatableEntity
      * @Assert\NotBlank(groups={"list", "public"})
      * @Assert\Choice(choices = {"transit", "stored"})
      * @JMS\Type("string")
+     * @JMS\Expose
      * @JMS\Groups({"update","list", "public"})
      * @var string
      */
@@ -62,6 +65,7 @@ class Box extends ApiEntity implements LocatableEntity
      * @Assert\NotBlank
      * @Assert\Range( min = 0, max = 100)
      * @JMS\Type("integer")
+     * @JMS\Expose
      * @JMS\Groups({"update", "public"})
      * @var int
      */
@@ -74,6 +78,7 @@ class Box extends ApiEntity implements LocatableEntity
      * @Assert\NotBlank
      * @Assert\Range( min = 0, max = 100)
      * @JMS\Type("integer")
+     * @JMS\Expose
      * @JMS\Groups({"update", "public"})
      * @var int
      */
@@ -87,6 +92,7 @@ class Box extends ApiEntity implements LocatableEntity
      * @Assert\Range( min = 0, max = 100)
      * @JMS\Since("v2")
      * @JMS\Type("integer")
+     * @JMS\Expose
      * @JMS\Groups({"update", "public"})
      * @var int
      */
@@ -97,6 +103,7 @@ class Box extends ApiEntity implements LocatableEntity
      *
      * @Assert\NotBlank(groups={"list", "public"})
      * @JMS\Type("DateTime")
+     * @JMS\Expose
      * @JMS\Groups({"list", "public"})
      * @var \DateTime
      */

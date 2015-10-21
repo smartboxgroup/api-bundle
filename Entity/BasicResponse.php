@@ -15,6 +15,7 @@ class BasicResponse extends ApiEntity
      * @Assert\NotBlank
      * @JMS\Groups({"public"})
      * @JMS\Type("integer")
+     * @JMS\Expose
      */
     protected $code;
 
@@ -24,6 +25,7 @@ class BasicResponse extends ApiEntity
      * @Assert\NotBlank
      * @JMS\Groups({"public"})
      * @JMS\Type("string")
+     * @JMS\Expose
      */
     protected $message;
 

@@ -10,6 +10,7 @@ class KeyValue extends ApiEntity implements EntityInterface
 {
     /**
      * @JMS\Type("string")
+     * @JMS\Expose
      * @JMS\Groups({"public"})
      * @var string
      */
@@ -17,6 +18,7 @@ class KeyValue extends ApiEntity implements EntityInterface
 
     /**
      * @JMS\Type("string")
+     * @JMS\Expose
      * @JMS\Groups({"public"})
      * @var string
      */

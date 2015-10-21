@@ -1841,7 +1841,7 @@
             "source": {
                 "type": "git",
                 "url": "git@10.30.10.54:smartesb/core-bundle.git",
-                "reference": "727edd1cf3036cab8e117521914fff7ceec6b38a"
+                "reference": "39e8ce7c66a1dae7b4556a5693e49f3059c7366b"
             },
             "require": {
                 "jms/serializer-bundle": "^0.13.0",
@@ -1865,7 +1865,7 @@
             "license": [
                 "MIT"
             ],
-            "time": "2015-10-13 10:41:44"
+            "time": "2015-10-21 13:22:16"
         },
         {
             "name": "symfony/assetic-bundle",

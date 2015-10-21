@@ -6,7 +6,6 @@
 /vendor/
 
 # Composer PHAR
-composer.lock
 /composer.phar
 
 # PhpStorm/Webstorm IDE files

@@ -14,7 +14,6 @@ class Location extends ApiEntity implements HeaderInterface
 {
     /**
      * @JMS\Type("string")
-     * @JMS\Exclude
      * @var LocatableEntity
      */
     protected $entity;
@@ -23,6 +22,7 @@ class Location extends ApiEntity implements HeaderInterface
      * @Assert\Type(type="string")
      * @Assert\NotBlank
      * @JMS\Type("string")
+     * @JMS\Expose
      * @JMS\Groups({"public"})
      * @var string
      */
@@ -32,6 +32,7 @@ class Location extends ApiEntity implements HeaderInterface
      * @Assert\Type(type="string")
      * @Assert\NotBlank
      * @JMS\Type("string")
+     * @JMS\Expose
      * @JMS\Groups({"public"})
      * @var string
      */
@@ -41,6 +42,7 @@ class Location extends ApiEntity implements HeaderInterface
      * Usual parameters to identify the entity (Usually id)
      * @Assert\NotBlank
      * @JMS\Type("array<Smartbox\ApiBundle\Entity\KeyValue>")
+     * @JMS\Expose
      * @JMS\Groups({"public"})
      * @var array
      */
@@ -48,14 +50,12 @@ class Location extends ApiEntity implements HeaderInterface
 
     /**
      * @JMS\Type("string")
-     * @JMS\Exclude
      * @var string
      */
     protected $url;
 
     /**
      * @JMS\Type("string")
-     * @JMS\Exclude
      * @var bool
      */
     protected $resolved = false;

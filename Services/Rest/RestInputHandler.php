@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  *
  * Based on FOS\RestBundle\Request\AbstractRequestBodyParamConverter
  *
- * @package Smartbox\Integration\PlattformBundle\Services\API
+ * @package Smartbox\ApiBundle\Services\Rest
  */
 class RestInputHandler
 {

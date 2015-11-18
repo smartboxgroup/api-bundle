@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
  * Class to extend the default FOSRestBundle format listener in order to prevent
  * the application from failing when receiving SOAP requests.
  *
- * @package Smartbox\Integration\PlattformBundle\Services
+ * @package Smartbox\ApiBundle\Services\Rest
  */
 class FormatListener extends FOSRESTFormatListener
 {

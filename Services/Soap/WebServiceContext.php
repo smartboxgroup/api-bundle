@@ -53,4 +53,28 @@ class WebServiceContext extends \BeSimple\SoapBundle\WebServiceContext
         return $this->serviceBinder;
     }
 
+    /**
+     * Gets the WSDL file from the extended Dumper class
+     * @param  mixed $endpoint
+     * @return string
+     */
+    public function getWsdlFile($endpoint = null)
+    {
+        $file      = sprintf ('%s/%s.%s.wsdl', $this->options['cache_dir'], $this->options['name'], md5($endpoint));
+        $cache = new ConfigCache($file, $this->options['debug']);
+
+        if(!$cache->isFresh()) {
+            $definition = $this->getServiceDefinition();
+
+            if ($endpoint) {
+                $definition->setOption('location', $endpoint);
+            }
+
+            $dumper = new Dumper($definition, array('stylesheet' => $this->options['wsdl_stylesheet']));
+            $cache->write($dumper->dump());
+        }
+
+        return (string) $cache;
+    }
+
 }

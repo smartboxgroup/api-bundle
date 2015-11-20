@@ -16,7 +16,6 @@ parameters:
   # OVERRIDING SOAP
   besimple.soap.definition.loader.annot_complextype.class: Smartbox\ApiBundle\Services\Soap\ComplexTypeLoader
   besimple.soap.context.class: Smartbox\ApiBundle\Services\Soap\WebServiceContext
-  besimple.soap.dumper.class: Smartbox\ApiBundle\Services\Soap\Dumper
 
   # OVERRIDING DOC
   nelmio_api_doc.extractor.api_doc_extractor.class: Smartbox\ApiBundle\Services\Doc\ApiDocExtractor
@@ -90,4 +89,3 @@ services:
     smartapi.resolvers.location:
         class: %smartapi.resolvers.location.class%
         arguments: [ @router, @request_stack, @smartapi.configurator ]
-

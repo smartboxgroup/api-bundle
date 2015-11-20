@@ -89,4 +89,3 @@ services:
     smartapi.resolvers.location:
         class: %smartapi.resolvers.location.class%
         arguments: [ @router, @request_stack, @smartapi.configurator ]
-

@@ -3,6 +3,7 @@ namespace Smartbox\ApiBundle\Services\Soap;
 
 use BeSimple\SoapCommon\Converter\TypeConverterCollection;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
+use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 class WebServiceContext extends \BeSimple\SoapBundle\WebServiceContext

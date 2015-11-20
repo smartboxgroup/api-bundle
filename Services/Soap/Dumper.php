@@ -2,7 +2,7 @@
 namespace Smartbox\ApiBundle\Services\Soap;
 
 
-class Dumper extends \BeSimple\SoapBundle\Dumper
+class Dumper extends \BeSimple\SoapWsdl\Dumper\Dumper
 {
     /**
      * Overrides the add methods class in order to be WSI compliant

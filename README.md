@@ -13,7 +13,7 @@ To install the bundle, you just need to:
    "repositories": [
       {
         "type": "vcs",
-        "url":  "git@10.30.10.54:smartesb/api-bundle.git"
+        "url":  "git@gitlab.production.smartbox.com/:smartesb/api-bundle.git"
       }
     ],
 ```
@@ -197,6 +197,7 @@ v0.1.2: improvement for the documentation template for SOAP calls
 v0.1.3: added missing entity Ok
 v0.1.4: Improved support for arrays of entities as attribute of another entity
 v0.1.5: Readme.md file creation
+v0.1.6: Added WSI compliance
 
 ## Contributors
 Jose Rufino, Marcin Skurski, Luciano Mammino, Alberto Rodrigo

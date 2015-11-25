@@ -27,6 +27,9 @@
         "sensio/generator-bundle": "~2.3",
         "digitalnature/php-ref": "dev-master"
     },
+    "config": {
+         "bin-dir": "bin"
+    },
     "repositories": [
         {
           "type": "vcs",

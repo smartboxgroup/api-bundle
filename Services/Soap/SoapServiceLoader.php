@@ -59,7 +59,7 @@ class SoapServiceLoader extends Loader
             $filtersPresent = false;
 
             // Input
-            foreach ($methodConfig['input'] as $paramName => $paramConfig) {
+            foreach ($methodConfig[ApiConfigurator::INPUT] as $paramName => $paramConfig) {
                 $mode = $paramConfig['mode'];
                 $type = $paramConfig['type'];
                 $group = $paramConfig['group'];

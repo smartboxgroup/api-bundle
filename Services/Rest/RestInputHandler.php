@@ -65,9 +65,9 @@ class RestInputHandler
     public function onKernelRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-        $serviceId = $request->get('serviceId');
-        $version = $request->get('version');
-        $methodName = $request->get('methodName');
+        $serviceId = $request->get(ApiConfigurator::SERVICE_ID);
+        $version = $request->get(ApiConfigurator::VERSION);
+        $methodName = $request->get(ApiConfigurator::METHOD_NAME);
         $api = $request->get('api');
 
         if (!$serviceId || !$methodName || $api != 'rest') {
@@ -75,7 +75,7 @@ class RestInputHandler
         }
 
         $config = $this->getApiConfigurator()->getConfig($serviceId, $methodName);
-        $inputParamsConfig = $config['input'];
+        $inputParamsConfig = $config[ApiConfigurator::INPUT];
 
         // Gather all input parameters
         $bag = array();
@@ -101,7 +101,7 @@ class RestInputHandler
             }
         }
 
-        $request->attributes->set('input', $bag);
+        $request->attributes->set(ApiConfigurator::INPUT, $bag);
     }
 
     public function convertBody(Request $request, $name, $config, $version)

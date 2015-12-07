@@ -61,7 +61,7 @@ class RoutesLoader extends Loader
             $route_path = $methodConfig['rest']['route'];
             $requirements = array();
 
-            foreach ($methodConfig['input'] as $input => $inputConfig) {
+            foreach ($methodConfig[ApiConfigurator::INPUT] as $input => $inputConfig) {
                 if ($inputConfig['mode'] == Configuration::MODE_REQUIREMENT && array_key_exists(
                         'format',
                         $inputConfig
@@ -76,11 +76,11 @@ class RoutesLoader extends Loader
                 '_controller' => $controller,
                 '_generated' => 'smartapi',
                 'api' => 'rest',
-                'serviceId' => $resource,
-                'version' => $version,
-                'serviceName' => $name,
-                'methodName' => $method,
-                'methodConfig' => $methodConfig
+                ApiConfigurator::SERVICE_ID => $resource,
+                ApiConfigurator::VERSION => $version,
+                ApiConfigurator::SERVICE_NAME => $name,
+                ApiConfigurator::METHOD_NAME => $method,
+                ApiConfigurator::METHOD_CONFIG => $methodConfig
             );
 
             $defaults = array_merge($defaults, $methodConfig['defaults']);

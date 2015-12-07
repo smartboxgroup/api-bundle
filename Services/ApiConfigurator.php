@@ -15,6 +15,13 @@ use Smartbox\CoreBundle\Type\EntityInterface;
  */
 class ApiConfigurator
 {
+    const SERVICE_ID = 'serviceId';
+    const SERVICE_NAME = 'serviceName';
+    const METHOD_NAME = 'methodName';
+    const VERSION = 'version';
+    const METHOD_CONFIG = 'methodConfig';
+    const INPUT = 'input';
+
     /** @var MetadataFactoryInterface */
     protected $metadataFactory;
 
@@ -40,9 +47,7 @@ class ApiConfigurator
         'double' => 'float',
         'DateTime' => 'dateTime',
         'date' => 'dateTime',
-        'datetime' => 'dateTime',
-//        'key_value' => 'BeSimple\SoapCommon\Type\KeyValue\String',
-//        'array' => 'BeSimple\SoapCommon\Type\KeyValue\String[]',
+        'datetime' => 'dateTime'
     );
 
     protected static $jmsTypes = array(
@@ -122,7 +127,7 @@ class ApiConfigurator
 
         foreach ($this->config as $service => $serviceConfig) {
             foreach ($serviceConfig['methods'] as $method => $methodConfig) {
-                foreach ($methodConfig['input'] as $input => $inputConfig) {
+                foreach ($methodConfig[ApiConfigurator::INPUT] as $input => $inputConfig) {
                     $mode = $inputConfig['mode'];
                     $class = $inputConfig['type'];
                     $group = $inputConfig['group'];

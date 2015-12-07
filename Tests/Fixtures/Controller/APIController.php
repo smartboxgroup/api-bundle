@@ -3,6 +3,7 @@
 namespace Smartbox\ApiBundle\Tests\Fixtures\Controller;
 
 use Smartbox\ApiBundle\Entity\Location;
+use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\ApiBundle\Tests\Fixtures\Entity\Box;
 
 class APIController extends \Smartbox\ApiBundle\Controller\APIController
@@ -30,7 +31,7 @@ class APIController extends \Smartbox\ApiBundle\Controller\APIController
         $this->checkAuthorization();
 
         // Check input
-        $inputsConfig = $methodConfig['input'];
+        $inputsConfig = $methodConfig[ApiConfigurator::INPUT];
         $this->checkInput($version, $inputsConfig, $input);
 
         $response = null;

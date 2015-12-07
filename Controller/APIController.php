@@ -76,8 +76,8 @@ class APIController extends FOSRestController
     {
         $configurator = $this->get('smartapi.configurator');
         $request = $this->getRequest();
-        $serviceId = $request->get('serviceId');
-        $methodName = $request->get('methodName');
+        $serviceId = $request->get(ApiConfigurator::SERVICE_ID);
+        $methodName = $request->get(ApiConfigurator::METHOD_NAME);
         $config = $configurator->getConfig($serviceId, $methodName);
         $roles = $config['roles'];
 
@@ -218,9 +218,9 @@ class APIController extends FOSRestController
     {
         $configurator = $this->get('smartapi.configurator');
         $request = $this->getRequest();
-        $serviceId = $request->get('serviceId');
-        $methodName = $request->get('methodName');
-        $version = $request->get('version');
+        $serviceId = $request->get(ApiConfigurator::SERVICE_ID);
+        $methodName = $request->get(ApiConfigurator::METHOD_NAME);
+        $version = $request->get(ApiConfigurator::VERSION);
 
         $methodConfig = $configurator->getConfig($serviceId, $methodName);
 
@@ -275,7 +275,7 @@ class APIController extends FOSRestController
 
         $response = null;
         $request = $this->getRequest();
-        $config = $request->get('methodConfig');
+        $config = $request->get(ApiConfigurator::METHOD_CONFIG);
         $outputMode = @$config['output']['mode'];
         $successCode = $config['successCode'];
         $outputGroup = @$config['output']['group'];
@@ -329,7 +329,7 @@ class APIController extends FOSRestController
     {
         $this->checkAuthorization();
 
-        $inputsConfig = $methodConfig['input'];
+        $inputsConfig = $methodConfig[ApiConfigurator::INPUT];
         $this->prepareInput($version, $inputsConfig, $input);
         $this->checkInput($version, $inputsConfig, $input);
 

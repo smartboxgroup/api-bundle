@@ -20,6 +20,7 @@
         "jms/serializer-bundle": "^0.13.0",
         "besimple/soap": "^0.2.6",
         "nelmio/api-doc-bundle": "^2.9",
+        "noxlogic/ratelimit-bundle": "^1.5",
         "smartbox/core-bundle": "dev-master"
     },
     "require-dev": {

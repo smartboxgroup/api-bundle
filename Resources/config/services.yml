@@ -8,6 +8,7 @@ parameters:
   smartapi.soap.exceptions_converter.class: Smartbox\ApiBundle\Services\Soap\SoapExceptionConverter
   smartapi.doc.parser.jms_parser.class: Smartbox\ApiBundle\Services\Doc\JmsMetadataParser
   smartapi.resolvers.location.class: Smartbox\ApiBundle\Services\HeaderResolvers\LocationResolver
+  smartapi.event_listener.auth_key_generator.class: Smartbox\ApiBundle\EventListener\AuthKeyGenerateListener
 
   # OVERRIDING REST
   fos_rest.format_listener.class: Smartbox\ApiBundle\Services\Rest\FormatListener
@@ -20,6 +21,9 @@ parameters:
   # OVERRIDING DOC
   nelmio_api_doc.extractor.api_doc_extractor.class: Smartbox\ApiBundle\Services\Doc\ApiDocExtractor
   smartapi.doc.parser.validation_parser.class: Smartbox\ApiBundle\Services\Doc\ValidationParser
+
+  # OVERRIDING RATELIMIT
+  noxlogic_rate_limit.rate_limit_annotation_listener.class: Smartbox\ApiBundle\EventListener\ThrottlingListener
 
 services:
     smartapi.configurator:
@@ -89,3 +93,22 @@ services:
     smartapi.resolvers.location:
         class: %smartapi.resolvers.location.class%
         arguments: [ @router, @request_stack, @smartapi.configurator ]
+
+    noxlogic_rate_limit.rate_limit_annotation_listener:
+        class: %noxlogic_rate_limit.rate_limit_annotation_listener.class%
+        arguments:
+            - @event_dispatcher
+            - @noxlogic_rate_limit.rate_limit_service
+            - @noxlogic_rate_limit.path_limit_processor
+        calls:
+            - [ setParameter, ["rate_response_code", "%noxlogic_rate_limit.rate_response_code%"] ]
+            - [ setParameter, ["rate_response_message", "%noxlogic_rate_limit.rate_response_message%"] ]
+            - [ setParameter, ["rate_response_exception", "%noxlogic_rate_limit.rate_response_exception%"] ]
+        tags:
+            - { name: "kernel.event_listener", event: "kernel.controller", method: "onKernelController", priority: "-10" }
+
+    smartapi.event_listener.auth_key_generator:
+        class: %smartapi.event_listener.auth_key_generator.class%
+        arguments: [@?security.token_storage]
+        tags:
+            - { name: kernel.event_listener, event: ratelimit.generate.key, method: onGenerateKey }

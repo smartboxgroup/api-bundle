@@ -4,5 +4,10 @@ smartbox_api:
 
 demo_v1_rest:
     resource:  demo_v1
-    prefix:   /
+    prefix:   /api
+    type: 'smartapi_rest'
+
+throttling_v1_rest:
+    resource:  throttling_v1
+    prefix:   /api
     type: 'smartapi_rest'

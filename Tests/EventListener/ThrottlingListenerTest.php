@@ -2,14 +2,18 @@
 
 namespace Smartbox\ApiBundle\Test\Entity;
 
-use Smartbox\ApiBundle\Entity\Location;
-use Smartbox\ApiBundle\EventListener\ThrottlingListener;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use FOS\RestBundle\Util\Codes;
+use phpDocumentor\Reflection\DocBlock;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Bundle\FrameworkBundle\Client;
 
-class ThrottlingListenerTest extends KernelTestCase
+class ThrottlingListenerTest extends WebTestCase
 {
+    /** @var  Client */
+    protected $client;
+
     /**
      * @var Application
      */
@@ -20,11 +24,6 @@ class ThrottlingListenerTest extends KernelTestCase
      */
     protected $container;
 
-    /**
-     * @var ThrottlingListener
-     */
-    private $throttlingListener;
-
     public function setUp()
     {
         $kernel = $this->createKernel();
@@ -32,132 +31,54 @@ class ThrottlingListenerTest extends KernelTestCase
 
         $this->application = new Application($kernel);
         $this->container = $kernel->getContainer();
-
-        $eventDispatcher = $this->container->get('event_dispatcher');
-        $rateLimitService = $this->container->get('noxlogic_rate_limit.rate_limit_service');
-        $pathLimitProcessor = $this->container->get('noxlogic_rate_limit.path_limit_processor');
-
-        $this->throttlingListener = new ThrottlingListener($eventDispatcher, $rateLimitService, $pathLimitProcessor);
     }
 
-    public static function getKernelClass()
+    public function getConfig()
     {
-        return \AppKernel::class;
+        return array(
+            'PHP_AUTH_USER' => 'test',
+            'PHP_AUTH_PW' => 'test',
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json',
+        );
     }
 
+    /**
+     * @return Client
+     */
+    protected function getRestClient()
+    {
+        if (!$this->client) {
+            $this->client = self::createClient([], $this->getConfig());
+        }
 
-//    /**
-//     * @expectedException \Exception
-//     * @expectedExceptionMessage Parameter id returned by getIdParameters by class Something is not readable
-//     */
-//    public function testItShouldNotAcceptEntityWithInvalidIdParameters()
-//    {
-//        /** @var \Smartbox\ApiBundle\Entity\LocatableEntity|\PHPUnit_Framework_MockObject_MockObject $entity */
-//        $entity = $this->getMockBuilder('\Smartbox\ApiBundle\Entity\LocatableEntity')
-//            ->getMock()
-//        ;
-//
-//        $entity->method('getIdParameters')
-//            ->will($this->returnValue(['id']))
-//        ;
-//
-//        $entity->method('getType')
-//            ->will($this->returnValue('Something'))
-//        ;
-//
-//        /** @var \Symfony\Component\PropertyAccess\PropertyAccessor|\PHPUnit_Framework_MockObject_MockObject $propertyAccessor */
-//        $propertyAccessor = $this->getMockBuilder('\Symfony\Component\PropertyAccess\PropertyAccessor')
-//            ->getMock()
-//        ;
-//
-//        $propertyAccessor->method('isReadable')
-//            ->with($entity, 'id')
-//            ->will($this->returnValue(false))
-//        ;
-//
-//        $this->location = new Location($entity, $propertyAccessor);
-//    }
-//
-//    public function testItShouldReadDataFromAnEntity()
-//    {
-//        $parameters = $this->location->getParametersAsArray();
-//        $this->assertTrue($parameters['id'] === 17);
-//    }
-//
-//    public function testItShouldGetApiMethod()
-//    {
-//        $this->assertEquals('getSomething', $this->location->getApiMethod());
-//    }
-//
-//    public function testItShouldSetAndGetUrl()
-//    {
-//        $url = 'http://example.com/something';
-//        $this->location->setUrl($url);
-//        $this->assertEquals($url, $this->location->getUrl());
-//    }
-//
-//    public function testItShouldSetAndGetApiService()
-//    {
-//        $apiService = 'someService';
-//        $this->location->setApiService($apiService);
-//        $this->assertEquals($apiService, $this->location->getApiService());
-//    }
-//
-//    public function testItShouldNotBeResolvedWithoutAllTheParametersSet()
-//    {
-//        $this->assertFalse($this->location->isResolved());
-//    }
-//
-//    public function testItShouldBeResolvedWithAllTheParametersSet()
-//    {
-//        $this->location->setUrl('someUrl');
-//        $this->location->setApiService('someService');
-//        $this->assertTrue($this->location->isResolved());
-//    }
-//
-//    public function testItShouldSetAndGetParameters()
-//    {
-//        $parameters = [
-//            new KeyValue('foo', 'bar'),
-//            new KeyValue('baz', null)
-//        ];
-//
-//        $this->location->setParameters($parameters);
-//        $this->assertEquals($parameters, $this->location->getParameters());
-//    }
-//
-//    /**
-//     * @expectedException \InvalidArgumentException
-//     */
-//    public function testItShouldNotAcceptInvalidParameters()
-//    {
-//        $parameters = [
-//            'foo' => 'bar',
-//        ];
-//
-//        $this->location->setParameters($parameters);
-//        $this->assertEquals($parameters, $this->location->getParameters());
-//    }
-//
-//    public function testItShouldGetParametersAsArray()
-//    {
-//        $parameters = [
-//            new KeyValue('foo', 'bar'),
-//            new KeyValue('baz', null)
-//        ];
-//
-//        $expected = [
-//            'foo' => 'bar',
-//            'baz' => null
-//        ];
-//
-//        $this->location->setParameters($parameters);
-//        $this->assertEquals($expected, $this->location->getParametersAsArray());
-//    }
-//
-//    public function testItShouldGetARestHeaderValueBasedOnTheUrl()
-//    {
-//        $this->location->setUrl('foo');
-//        $this->assertEquals('foo', $this->location->getRESTHeaderValue());
-//    }
+        return $this->client;
+    }
+
+    public function testItShouldLimitRequestsAndRespondWithProperHeadersForRest()
+    {
+        $responseContentItem = '{"id":1,"name":"Item name 1","description":"Item description 1"}';
+        $responseContentErrorMessage = $this->container->getParameter('smartbox.api_bundle.rate_response_message');
+
+        $client = $this->getRestClient();
+
+        $rateLimit = 2;
+        for ($i = $rateLimit; $i >= 0; $i--) {
+            $client->request('GET', '/api/rest/throttling/v1/item/1');
+            $response = $client->getResponse();
+
+            if ($i > 0) {
+                $this->assertEquals(Codes::HTTP_OK, $response->getStatusCode(), 'Response code is not correct.');
+                $this->assertTrue($response->headers->contains('X-RateLimit-Limit', $rateLimit), sprintf('Response should contain header "%s" with proper value "%s".', 'X-RateLimit-Limit', $rateLimit));
+                $this->assertNotEquals($response->headers->contains('X-RateLimit-Remaining', 0), sprintf('Response should contain header "%s" with value vary of "%s".', 'X-RateLimit-Limit', 0));
+                $this->assertEquals($responseContentItem, $response->getContent(), 'Response should contain proper content.');
+            } else {
+                $this->assertEquals(Codes::HTTP_TOO_MANY_REQUESTS, $response->getStatusCode(), 'Response code is not correct.');
+                $this->assertTrue($response->headers->contains('X-RateLimit-Limit', $rateLimit), sprintf('Response should contain header "%s" with proper value "%s".', 'X-RateLimit-Limit', $rateLimit));
+                $this->assertNotEquals($response->headers->contains('X-RateLimit-Remaining', 0), sprintf('Response should contain header "%s" with value vary of "%s".', 'X-RateLimit-Limit', 0));
+                $this->assertEquals($responseContentErrorMessage, $response->getContent(), 'Response should contain proper content.');
+            }
+        }
+        sleep(3);
+    }
 }

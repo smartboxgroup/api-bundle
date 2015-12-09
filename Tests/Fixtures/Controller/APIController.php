@@ -4,10 +4,10 @@ namespace Smartbox\ApiBundle\Tests\Fixtures\Controller;
 
 use Smartbox\ApiBundle\Entity\Location;
 use Smartbox\ApiBundle\Tests\Fixtures\Entity\Box;
+use Smartbox\ApiBundle\Tests\Fixtures\Entity\Item;
 
 class APIController extends \Smartbox\ApiBundle\Controller\APIController
 {
-
     /**
      * @return Box
      */
@@ -48,6 +48,24 @@ class APIController extends \Smartbox\ApiBundle\Controller\APIController
             case 'createBoxes':
             case 'setBoxPicked':
             case 'deleteBox':
+                $response = null;
+                break;
+
+            # Item actions
+            case 'createItem':
+                $response = new Location($this->getRandomBox());
+                break;
+
+            case 'getItem':
+                $item = new Item();
+                $item->setId($input['id']);
+                $item->setName('Item name ' . $input['id']);
+                $item->setDescription('Item description ' . $input['id']);
+                $response = $item;
+                break;
+
+            case 'updateItem':
+            case 'deleteItem':
                 $response = null;
                 break;
         }

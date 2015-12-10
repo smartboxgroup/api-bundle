@@ -257,7 +257,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
         return $this->container->get('templating')->render(
             'SmartboxApiBundle:doc:documentation.html.twig',
             array(
-                'methodName' => $methodName,
+                ApiConfigurator::METHOD_NAME => $methodName,
                 ApiConfigurator::METHOD_CONFIG => $methodConfig,
                 'wsdlUrl' => $wsdlUrl,
             )

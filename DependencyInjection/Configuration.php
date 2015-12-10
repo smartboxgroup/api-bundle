@@ -57,6 +57,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
             ->scalarNode('default_controller')->defaultValue(self::API_CONTROLLER)->end()
+            ->booleanNode('throttling')->defaultValue(false)->info('Enable/Disable throttling.')->end()
             ->append($this->addErrorCodesNode())
             ->append($this->addSuccessCodesNode())
             ->append($this->addServicesNode())

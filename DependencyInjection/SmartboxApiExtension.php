@@ -88,6 +88,10 @@ class SmartboxApiExtension extends Extension
 
         $this->processConfig($config);
 
+        if ($config['throttling']) {
+            $loader->load('services_throttling.yml');
+        }
+
         $configurator->addArgument($this->resolvedApiServices);
         $configurator->addArgument($config['successCodes']);
         $configurator->addArgument($config['errorCodes']);

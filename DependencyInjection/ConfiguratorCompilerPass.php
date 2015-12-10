@@ -29,5 +29,13 @@ class ConfiguratorCompilerPass implements CompilerPassInterface
 
         $complexTypeLoader = $container->getDefinition('besimple.soap.definition.loader.annot_complextype');
         $complexTypeLoader->addMethodCall('setSerializer', array(new Reference('serializer')));
+
+        /** @var SmartboxApiExtension $extension */
+        $extension = $container->getExtension('smartbox_api');
+        $config = $extension->getConfig();
+        if ($config['throttling'] && $container->hasDefinition('noxlogic_rate_limit.rate_limit_annotation_listener')) {
+            $throttlingListener = $container->getDefinition('noxlogic_rate_limit.rate_limit_annotation_listener');
+            $throttlingListener->setClass($container->getParameter('smartapi.throttling_listener.class'));
+        }
     }
 }

@@ -20,6 +20,15 @@ class SmartboxApiExtension extends Extension
     protected $unResolvedApiServices = array();
     protected $resolvedApiServices = array();
 
+    /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+
     public function resolveServiceConfig($service, $parent)
     {
         $parentConfig = $this->resolvedApiServices[$parent];

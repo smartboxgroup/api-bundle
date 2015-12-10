@@ -38,12 +38,12 @@ class Configuration implements ConfigurationInterface
         '_controller',
         '_generated',
         'api',
-        'serviceId',
-        'version',
-        'serviceName',
-        'methodName',
-        'methodConfig',
-        'input'
+        ApiConfigurator::SERVICE_ID,
+        ApiConfigurator::VERSION,
+        ApiConfigurator::SERVICE_NAME,
+        ApiConfigurator::METHOD_NAME,
+        ApiConfigurator::METHOD_CONFIG,
+        ApiConfigurator::INPUT
     );
 
     /**

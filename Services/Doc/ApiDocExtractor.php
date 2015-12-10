@@ -38,11 +38,11 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
 
             if ($method = $this->getReflectionMethod($route->getDefault('_controller'))) {
                 if ($route->getDefault('_generated') == 'smartapi') {
-                    $methodName = $route->getDefault('methodName');
-                    $serviceId = $route->getDefault('serviceId');
+                    $methodName = $route->getDefault(ApiConfigurator::METHOD_NAME);
+                    $serviceId = $route->getDefault(ApiConfigurator::SERVICE_ID);
                     $methodConfig = $configurator->getConfig($serviceId, $methodName);
-                    $serviceName = $route->getDefault('serviceName');
-                    $version = $route->getDefault('version');
+                    $serviceName = $route->getDefault(ApiConfigurator::SERVICE_NAME);
+                    $version = $route->getDefault(ApiConfigurator::VERSION);
 
                     $successCode = $methodConfig['successCode'];
                     $statusCodes = $configurator->getErrorCodes();
@@ -61,7 +61,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                     $annotationData['filters'] = array();
 
                     // If there is input
-                    foreach ($methodConfig['input'] as $paramName => $paramConfig) {
+                    foreach ($methodConfig[ApiConfigurator::INPUT] as $paramName => $paramConfig) {
                         $jmsType = ApiConfigurator::getJMSType($paramConfig['type']);
 
                         if (strpos($paramConfig['type'], ApiConfigurator::$arraySymbol) !== false) {
@@ -153,19 +153,19 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                     $annotationExtracted = $this->extractData($annotation, $route, $method);
 
                     if ($route->getDefault('_generated') == 'smartapi') {
-                        $methodName = $route->getDefault('methodName');
-                        $serviceId = $route->getDefault('serviceId');
+                        $methodName = $route->getDefault(ApiConfigurator::METHOD_NAME);
+                        $serviceId = $route->getDefault(ApiConfigurator::SERVICE_ID);
                         $methodConfig = $configurator->getConfig($serviceId, $methodName);
 
                         // Add info about requirements
                         $requirements = array();
                         foreach ($annotationExtracted->getRequirements() as $reqName => $reqParams) {
-                            if (array_key_exists($reqName, $methodConfig['input'])) {
+                            if (array_key_exists($reqName, $methodConfig[ApiConfigurator::INPUT])) {
                                 $reqParams['dataType'] = ApiConfigurator::getJMSType(
-                                    $methodConfig['input'][$reqName]['type']
+                                    $methodConfig[ApiConfigurator::INPUT][$reqName]['type']
                                 );
-                                $reqParams['description'] = $methodConfig['input'][$reqName]['description'];
-                                $reqParams['requirement'] = $methodConfig['input'][$reqName]['format'];
+                                $reqParams['description'] = $methodConfig[ApiConfigurator::INPUT][$reqName]['description'];
+                                $reqParams['requirement'] = $methodConfig[ApiConfigurator::INPUT][$reqName]['format'];
 
                                 $requirements[$reqName] = $reqParams;
                             }
@@ -257,8 +257,8 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
         return $this->container->get('templating')->render(
             'SmartboxApiBundle:doc:documentation.html.twig',
             array(
-                'methodName' => $methodName,
-                'methodConfig' => $methodConfig,
+                ApiConfigurator::METHOD_NAME => $methodName,
+                ApiConfigurator::METHOD_CONFIG => $methodConfig,
                 'wsdlUrl' => $wsdlUrl,
             )
         );

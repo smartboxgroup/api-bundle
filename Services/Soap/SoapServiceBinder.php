@@ -160,7 +160,7 @@ class SoapServiceBinder
         // Extract filters
         if (array_key_exists('filters', $input)) {
 
-            foreach ($methodConfig['input'] as $inputName => $inputConfig) {
+            foreach ($methodConfig[ApiConfigurator::INPUT] as $inputName => $inputConfig) {
                 if ($inputConfig['mode'] == Configuration::MODE_FILTER) {
                     $value = null;
 
@@ -185,12 +185,12 @@ class SoapServiceBinder
             $defaults,
             array(
                 '_controller' => $methodDefinition->getController(),
-                'methodName' => $methodName,
-                'methodConfig' => $methodConfig,
-                'serviceId' => $serviceId,
-                'serviceName' => $serviceConfig['name'],
-                'version' => $serviceConfig['version'],
-                'input' => $input
+                ApiConfigurator::METHOD_NAME => $methodName,
+                ApiConfigurator::METHOD_CONFIG => $methodConfig,
+                ApiConfigurator::SERVICE_ID => $serviceId,
+                ApiConfigurator::SERVICE_NAME => $serviceConfig['name'],
+                ApiConfigurator::VERSION => $serviceConfig['version'],
+                ApiConfigurator::INPUT => $input
             )
         );
 

@@ -37,7 +37,7 @@ class LocationResolver
         }
 
         if (!$location->getApiService()) {
-            $location->setApiService($this->requestStack->getCurrentRequest()->get('serviceId'));
+            $location->setApiService($this->requestStack->getCurrentRequest()->get(ApiConfigurator::SERVICE_ID));
         }
 
         $routeName = $this->configurator->getRestRouteNameFor($location->getApiService(), $location->getApiMethod());

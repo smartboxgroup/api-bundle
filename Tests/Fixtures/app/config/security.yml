@@ -7,7 +7,7 @@ security:
             memory:
                 users:
                     test:
-                        password: ghbnjm54we$Ydfg346
+                        password: test
                         roles:
                           - 'ROLE_USER'
                           - 'ROLE_ADMIN'

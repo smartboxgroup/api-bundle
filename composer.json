@@ -15,11 +15,13 @@
         "symfony/monolog-bundle": "~2.4",
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0",
-        "incenteev/composer-parameter-handler": "~2.0",
         "friendsofsymfony/rest-bundle": "^1.7",
         "jms/serializer-bundle": "^0.13.0",
         "besimple/soap": "^0.2.6",
         "nelmio/api-doc-bundle": "^2.9",
+        "noxlogic/ratelimit-bundle": "^1.5",
+        "snc/redis-bundle": "^1.1",
+        "predis/predis": "^1.0",
         "smartbox/core-bundle": "dev-master"
     },
     "require-dev": {

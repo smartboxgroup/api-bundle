@@ -7,6 +7,10 @@
          colors="true"
          bootstrap="./Tests/Fixtures/app/autoload.php"
 >
+    <php>
+        <server name="KERNEL_DIR" value="Tests/Fixtures/app/" />
+    </php>
+
     <testsuite name="SmartApi Suite">
         <directory>./Tests/</directory>
     </testsuite>

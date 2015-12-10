@@ -1,28 +1,61 @@
 imports:
     - { resource: security.yml }
+    - { resource: services.yml }
     - { resource: "@SmartboxApiBundle/Resources/config/config.yml" }
 
+parameters:
+    smartbox.api_bundle.rate_response_message: 'You exceeded the rate limit'
+
 framework:
+    test: ~
     secret: "5yg6u543wrftg34"
     validation:      { enable_annotations: true }
 
     router:
-        resource: routing.yml
+        resource: %kernel.root_dir%/config/routing.yml
         strict_requirements: ~
 
     templating:
         engines: ['twig']
 
+monolog:
+    handlers:
+        console:
+            type:                console
+            verbosity_levels:
+                VERBOSITY_NORMAL:       WARNING
+                VERBOSITY_VERBOSE:      NOTICE
+                VERBOSITY_VERY_VERBOSE: INFO
+                VERBOSITY_DEBUG:        DEBUG
+
+noxlogic_rate_limit:
+    storage_engine:             redis
+    redis_client:               default_client
+    rate_response_message:      %smartbox.api_bundle.rate_response_message%
+    display_headers:            true
+
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: redis://localhost
+
 be_simple_soap:
     services:
         demo_v1:
-            namespace:     http://smartesb/api/soap/demo_v1/
+            namespace:     http://localhost/api/soap/demo_v1/
             binding:       rpc-literal
             resource:      demo_v1
             resource_type: smartapi_soap
+        throttling_v1:
+            namespace:     http://localhost/api/soap/throttling_v1/
+            binding:       rpc-literal
+            resource:      throttling_v1
+            resource_type: smartapi_soap
 
 smartbox_api:
-    default_controller: "SmartboxApiBundle:API:handleCall"
+    default_controller: "test.dummy.controller:handleCallAction"
 
     errorCodes:
        400: Bad Request, the request could not be understood by the server due to malformed syntax
@@ -97,3 +130,54 @@ smartbox_api:
                         httpMethod: DELETE
                     roles:
                       - ROLE_ADMIN
+
+        throttling_v1:
+            name: throttling
+            version: v1
+            methods:
+                createItem:
+                    description: Creates an item with the given information and returns its id
+                    successCode: 201
+                    input:
+                        box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Item, group: create, mode: body }
+                    output: { mode: header, type: Smartbox\ApiBundle\Entity\Location }
+                    rest:
+                        route: "/item"
+                        httpMethod: POST
+                    throttling:
+                        limit: 2
+                        period: 3
+                getItem:
+                    description: Returns an item for given id
+                    input:
+                        id: { type: integer, description: Id of the item to be fetched, format: "\d+" }
+                    output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Item, group: public }
+                    rest:
+                      route: "/item/{id}"
+                      httpMethod: GET
+                    throttling:
+                        limit: 2
+                        period: 3
+                updateItem:
+                    description: Updates an item
+                    successCode: 204
+                    input:
+                        box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Item, group: update, mode: body }
+                        id: { type: integer, description: Id of an item to be updated, format: "\d+" }
+                    rest:
+                        route: "/item/{id}"
+                        httpMethod: PUT
+                    throttling:
+                        limit: 2
+                        period: 3
+                deleteItem:
+                    description: "Deletes an item"
+                    successCode: 204
+                    input:
+                        id: { type: integer, description: Id of an item to be deleted, format: "\d+" }
+                    rest:
+                        route: "/item/{id}"
+                        httpMethod: DELETE
+                    throttling:
+                        limit: 2
+                        period: 3

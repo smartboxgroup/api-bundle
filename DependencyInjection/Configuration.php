@@ -57,6 +57,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
             ->scalarNode('default_controller')->defaultValue(self::API_CONTROLLER)->end()
+            ->booleanNode('throttling')->defaultValue(false)->info('Enable/Disable throttling.')->end()
             ->append($this->addErrorCodesNode())
             ->append($this->addSuccessCodesNode())
             ->append($this->addServicesNode())
@@ -179,6 +180,7 @@ class Configuration implements ConfigurationInterface
             ->append($this->addInputNode())
             ->append($this->addOutputNode())
             ->append($this->addRestNode())
+            ->append($this->addThrottlingNode())
             ->end()
             ->end()
             ->end();
@@ -316,6 +318,26 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('route')->info('Route for the this API method')->isRequired()->end()
             ->scalarNode('httpMethod')->info('HTTP verb for this API method')->isRequired()->end()
             ->end()
+            ->end();
+
+        return $node;
+    }
+
+    public function addThrottlingNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('throttling');
+
+        $node
+            ->children()
+                ->integerNode('limit')
+                    ->info('Limit')
+                    ->isRequired()
+                ->end()
+                ->integerNode('period')
+                    ->info('Period')
+                    ->isRequired()
+                ->end()
             ->end();
 
         return $node;

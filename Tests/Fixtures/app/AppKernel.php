@@ -17,6 +17,9 @@ class AppKernel extends Kernel
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new FOS\RestBundle\FOSRestBundle(),
             new BeSimple\SoapBundle\BeSimpleSoapBundle(),
+            new Noxlogic\RateLimitBundle\NoxlogicRateLimitBundle(),
+            new Snc\RedisBundle\SncRedisBundle(),
+
             new Smartbox\CoreBundle\SmartboxCoreBundle(),
             new Smartbox\ApiBundle\SmartboxApiBundle(),
         );

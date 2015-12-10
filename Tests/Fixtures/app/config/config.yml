@@ -3,6 +3,9 @@ imports:
     - { resource: services.yml }
     - { resource: "@SmartboxApiBundle/Resources/config/config.yml" }
 
+parameters:
+    smartbox.api_bundle.rate_response_message: 'You exceeded the rate limit'
+
 framework:
     test: ~
     secret: "5yg6u543wrftg34"
@@ -24,6 +27,19 @@ monolog:
                 VERBOSITY_VERBOSE:      NOTICE
                 VERBOSITY_VERY_VERBOSE: INFO
                 VERBOSITY_DEBUG:        DEBUG
+
+noxlogic_rate_limit:
+    storage_engine:             redis
+    redis_client:               default_client
+    rate_response_message:      %smartbox.api_bundle.rate_response_message%
+    display_headers:            true
+
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: redis://localhost
 
 be_simple_soap:
     services:

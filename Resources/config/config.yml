@@ -1,6 +1,3 @@
-parameters:
-    smartbox.api_bundle.rate_response_message: 'You exceeded the rate limit'
-
 sensio_framework_extra:
     request:
         converters: true
@@ -47,16 +44,3 @@ be_simple_soap:
         type:     disk_memory
         lifetime: 86400
         limit:    5
-
-noxlogic_rate_limit:
-    storage_engine:             redis
-    redis_client:               default_client
-    rate_response_message:      %smartbox.api_bundle.rate_response_message%
-    display_headers:            true
-
-snc_redis:
-    clients:
-        default:
-            type: predis
-            alias: default
-            dsn: redis://localhost

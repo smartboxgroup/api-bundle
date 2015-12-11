@@ -1,6 +1,6 @@
 <?php
 
-namespace Smartbox\ApiBundle\Test\Entity;
+namespace Smartbox\ApiBundle\Tests\EventListener;
 
 use FOS\RestBundle\Util\Codes;
 use phpDocumentor\Reflection\DocBlock;

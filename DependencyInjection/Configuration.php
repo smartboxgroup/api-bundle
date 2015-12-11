@@ -57,7 +57,28 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
             ->scalarNode('default_controller')->defaultValue(self::API_CONTROLLER)->end()
-            ->booleanNode('throttling')->defaultValue(false)->info('Enable/Disable throttling.')->end()
+            ->booleanNode('throttling')
+                ->defaultValue(false)
+                ->info("Enable/Disable throttling (dafault: false).\n
+    If throttling is enabled:
+        - register bundles in AppKernel.php:
+            new Noxlogic\\RateLimitBundle\\NoxlogicRateLimitBundle(),
+            new Snc\\RedisBundle\\SncRedisBundle(),
+        - configure bundles:
+            noxlogic_rate_limit:
+                storage_engine:             redis
+                redis_client:               default_client
+                rate_response_message:      'You exceeded the rate limit'
+                display_headers:            true
+
+            snc_redis:
+                clients:
+                    default:
+                        type: predis
+                        alias: default
+                        dsn: redis://localhost
+               ")
+            ->end()
             ->append($this->addErrorCodesNode())
             ->append($this->addSuccessCodesNode())
             ->append($this->addServicesNode())
@@ -76,11 +97,11 @@ class Configuration implements ConfigurationInterface
             ->requiresAtLeastOneElement()
             ->useAttributeAsKey('id')
             ->info("List of error codes, e.g.::\n
-               400: Bad Request, the request could not be understood by the server due to malformed syntax
-               401: Unauthorized, the request requires user authentication
-               403: Forbidden, the server understood the request, but is refusing to fulfill it
-               404: Not Found, the server has not found anything matching the Request-URI
-               **The success codes can be extended and changed")
+    400: Bad Request, the request could not be understood by the server due to malformed syntax
+    401: Unauthorized, the request requires user authentication
+    403: Forbidden, the server understood the request, but is refusing to fulfill it
+    404: Not Found, the server has not found anything matching the Request-URI
+    **The success codes can be extended and changed")
             ->prototype('scalar')->end()
             ->end();
 
@@ -95,11 +116,11 @@ class Configuration implements ConfigurationInterface
             ->requiresAtLeastOneElement()
             ->useAttributeAsKey('id')
             ->info("List of success codes, e.g.::\n
-                  200: Success, the information returned with the response is dependent on the method used in the request
-                  201: Created, the request has been fulfilled and resulted in a new resource being created
-                  202: Accepted, the request has been accepted for processing, but the processing has not been completed
-                  204: No content, the server has fulfilled the request but does not need to return an entity-body
-                  **The success codes can be extended and changed")
+    200: Success, the information returned with the response is dependent on the method used in the request
+    201: Created, the request has been fulfilled and resulted in a new resource being created
+    202: Accepted, the request has been accepted for processing, but the processing has not been completed
+    204: No content, the server has fulfilled the request but does not need to return an entity-body
+    **The success codes can be extended and changed")
             ->prototype('scalar')->end()
             ->end();
 
@@ -140,23 +161,26 @@ class Configuration implements ConfigurationInterface
             ->cannotBeEmpty()
             ->useAttributeAsKey('name')
             ->info("Endpoint definitions.
-                Example:
-                services:
-                    demo_v1:
-                        name: demo
-                        version: v1
-                        methods:
+    Example:
+    services:
+        demo_v1:
+            name: demo
+            version: v1
+            methods:
 
-                        ## BOXES
-                            createBox:
-                                description: Creates a box with the given information and returns its id
-                                successCode: 201
-                                input:
-                                    box: { type: Smartbox\\ApiBundle\\Tests\\Fixtures\\Entity\\Box, group: update, mode: body }
-                                output: { mode: header, type: Smartbox\\ApiBundle\\Entity\\Location }
-                                rest:
-                                    route: /box
-                                    httpMethod: POST
+            ## BOXES
+                createBox:
+                    description: Creates a box with the given information and returns its id
+                    successCode: 201
+                    input:
+                        box: { type: Smartbox\\ApiBundle\\Tests\\Fixtures\\Entity\\Box, group: update, mode: body }
+                    output: { mode: header, type: Smartbox\\ApiBundle\\Entity\\Location }
+                    rest:
+                        route: /box
+                        httpMethod: POST
+                    throttling:
+                        limit: 10
+                        period: 60
                ")
             ->prototype('array')
             ->children()
@@ -329,13 +353,20 @@ class Configuration implements ConfigurationInterface
         $node = $builder->root('throttling');
 
         $node
+            ->info("Throttling works only when smartbox_api.throttling is set to true.\n
+    Response headers:
+        X-RateLimit-Limit:          Limit of requests in a time window
+        X-RateLimit-Remaining:      Remaining requests in a time window
+        X-RateLimit-Reset:          The remaining window before the rate limit resets in UTC epoch seconds
+    Response status code when limit is exceeded: 429 Too Many Requests
+            ")
             ->children()
                 ->integerNode('limit')
-                    ->info('Limit')
+                    ->info('Set limit of requests in specified period.')
                     ->isRequired()
                 ->end()
                 ->integerNode('period')
-                    ->info('Period')
+                    ->info('Set period to limit requests.')
                     ->isRequired()
                 ->end()
             ->end();

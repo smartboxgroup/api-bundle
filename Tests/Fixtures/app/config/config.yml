@@ -69,6 +69,8 @@ smartbox_api:
        202: Accepted, the request has been accepted for processing, but the processing has not been completed
        204: No content, the server has fulfilled the request but does not need to return an entity-body
 
+    throttling: true
+
     services:
         demo_v1:
             name: demo

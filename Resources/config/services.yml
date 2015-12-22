@@ -22,6 +22,8 @@ parameters:
   nelmio_api_doc.extractor.api_doc_extractor.class: Smartbox\ApiBundle\Services\Doc\ApiDocExtractor
   smartapi.doc.parser.validation_parser.class: Smartbox\ApiBundle\Services\Doc\ValidationParser
 
+  smartesb.smoke_test.check_redis_connection.class: Smartbox\ApiBundle\Utils\SmokeTest\RedisConnectionSmokeTest
+
 services:
     smartapi.configurator:
        class: %smartapi.configurator.class%
@@ -90,3 +92,9 @@ services:
     smartapi.resolvers.location:
         class: %smartapi.resolvers.location.class%
         arguments: [ @router, @request_stack, @smartapi.configurator ]
+
+    smartapi.smoke_test.check_redis_connection:
+        class: %smartesb.smoke_test.check_redis_connection.class%
+        arguments: [@snc_redis.default]
+        tags:
+            - { name: smartbox.smoke_test }

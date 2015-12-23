@@ -63,13 +63,12 @@ class ThrottlingListenerTest extends WebTestCase
         $client = $this->getRestClient();
 
         $rateLimit = 2;
-        $i = $rateLimit;
-        while ($i >= 0) {
+        for ($i = $rateLimit; $i >= 0; $i--) {
             $client->request('GET', '/api/rest/throttling/v1/item/1');
             $response = $client->getResponse();
 
-            if ($i > 0) {
-                $remaining = $i - 1;
+            $remaining = $i - 1;
+            if ($remaining >= 0) {
                 $this->assertEquals(Codes::HTTP_OK, $response->getStatusCode(), 'Response code is not correct.');
                 $this->assertTrue($response->headers->contains('X-RateLimit-Limit', $rateLimit), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
                 $this->assertTrue($response->headers->contains('X-RateLimit-Remaining', $remaining), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', $remaining));
@@ -80,7 +79,6 @@ class ThrottlingListenerTest extends WebTestCase
                 $this->assertTrue($response->headers->contains('X-RateLimit-Remaining', 0), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', 0));
                 $this->assertEquals($responseContentErrorMessage, $response->getContent(), 'Response should contain proper content.');
             }
-            $i--;
         }
         sleep(3);
     }

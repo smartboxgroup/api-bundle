@@ -63,21 +63,24 @@ class ThrottlingListenerTest extends WebTestCase
         $client = $this->getRestClient();
 
         $rateLimit = 2;
-        for ($i = $rateLimit; $i >= 0; $i--) {
+        $i = $rateLimit;
+        while ($i >= 0) {
             $client->request('GET', '/api/rest/throttling/v1/item/1');
             $response = $client->getResponse();
 
             if ($i > 0) {
+                $remaining = $i - 1;
                 $this->assertEquals(Codes::HTTP_OK, $response->getStatusCode(), 'Response code is not correct.');
-                $this->assertTrue($response->headers->contains('X-RateLimit-Limit', $rateLimit), sprintf('Response should contain header "%s" with proper value "%s".', 'X-RateLimit-Limit', $rateLimit));
-                $this->assertNotEquals($response->headers->contains('X-RateLimit-Remaining', 0), sprintf('Response should contain header "%s" with value vary of "%s".', 'X-RateLimit-Limit', 0));
+                $this->assertTrue($response->headers->contains('X-RateLimit-Limit', $rateLimit), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
+                $this->assertTrue($response->headers->contains('X-RateLimit-Remaining', $remaining), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', $remaining));
                 $this->assertEquals($responseContentItem, $response->getContent(), 'Response should contain proper content.');
             } else {
                 $this->assertEquals(Codes::HTTP_TOO_MANY_REQUESTS, $response->getStatusCode(), 'Response code is not correct.');
-                $this->assertTrue($response->headers->contains('X-RateLimit-Limit', $rateLimit), sprintf('Response should contain header "%s" with proper value "%s".', 'X-RateLimit-Limit', $rateLimit));
-                $this->assertNotEquals($response->headers->contains('X-RateLimit-Remaining', 0), sprintf('Response should contain header "%s" with value vary of "%s".', 'X-RateLimit-Limit', 0));
+                $this->assertTrue($response->headers->contains('X-RateLimit-Limit', $rateLimit), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
+                $this->assertTrue($response->headers->contains('X-RateLimit-Remaining', 0), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', 0));
                 $this->assertEquals($responseContentErrorMessage, $response->getContent(), 'Response should contain proper content.');
             }
+            $i--;
         }
         sleep(3);
     }

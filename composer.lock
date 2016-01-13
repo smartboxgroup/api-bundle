@@ -1541,14 +1541,16 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/core-bundle.git",
-                "reference": "93f71769b9b32e83b51fb35d1f25a3979eb8482f"
+                "reference": "55c69fe3be5e7c00ee040714529a0990993586f1"
             },
             "require": {
                 "doctrine/annotations": "1.2.*",
                 "jms/serializer-bundle": "^0.13.0",
                 "php": ">=5.4",
+                "predis/predis": "^1.0",
                 "sensio/distribution-bundle": "~4.0",
                 "sensio/framework-extra-bundle": "^3.0",
+                "snc/redis-bundle": "^1.1",
                 "symfony/monolog-bundle": "~2.4",
                 "symfony/symfony": "2.7.*"
             },
@@ -1566,7 +1568,7 @@
             "license": [
                 "MIT"
             ],
-            "time": "2015-12-30 15:53:12"
+            "time": "2016-01-13 16:00:38"
         },
         {
             "name": "snc/redis-bundle",

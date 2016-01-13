@@ -92,6 +92,28 @@ class ApiConfigurator
         }
     }
 
+    /**
+     * @param string $serviceName
+     * @param string $version
+     * @param string $methodName
+     * @return null|array
+     */
+    public function getConfigByServiceNameVersionAndMethod($serviceName, $version, $methodName)
+    {
+        foreach ($this->config as $serviceId => $serviceConf) {
+            if ($serviceConf['name'] === $serviceName && $serviceConf['version'] === $version) {
+                foreach ($serviceConf['methods'] as $currentMethodName => $methodConf) {
+                    if ($currentMethodName === $methodName) {
+                        return $methodConf;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+
     public function getRestRouteNameFor($serviceId, $methodName)
     {
         return "smartapi.rest.$serviceId.$methodName";

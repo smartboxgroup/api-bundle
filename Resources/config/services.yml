@@ -13,6 +13,7 @@ parameters:
   # OVERRIDING REST
   fos_rest.format_listener.class: Smartbox\ApiBundle\Services\Rest\FormatListener
   fos_rest.body_listener.class: Smartbox\ApiBundle\Services\Rest\BodyListener
+  fos_rest.exception_listener.class: Smartbox\ApiBundle\Services\Rest\RestExceptionListener
 
   # OVERRIDING SOAP
   besimple.soap.definition.loader.annot_complextype.class: Smartbox\ApiBundle\Services\Soap\ComplexTypeLoader

@@ -6,7 +6,7 @@
  * Time: 16:04
  */
 
-namespace Smartbox\ApiBundle\EventListener;
+namespace Smartbox\ApiBundle\Services\Rest;
 
 use Symfony\Component\HttpKernel\EventListener\ExceptionListener;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;

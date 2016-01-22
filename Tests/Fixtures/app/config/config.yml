@@ -40,14 +40,6 @@ snc_redis:
             type: predis
             alias: default
             dsn: redis://localhost
-        cache:
-            type: predis
-            alias: cache
-            dsn: redis://localhost
-            options:
-                profile: 2.2
-                connection_timeout: 10
-                read_write_timeout: 30
 
 be_simple_soap:
     services:
@@ -191,14 +183,3 @@ smartbox_api:
                     throttling:
                         limit: 2
                         period: 3
-
-snc_redis:
-    clients:
-        cache:
-            type: predis
-            alias: cache
-            dsn: %redis.host%
-            options:
-#               profile: 2.2
-                connection_timeout: 10
-                read_write_timeout: 30

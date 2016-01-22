@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0bb3afb4b4730fa1c6218a00bc299e7f",
-    "content-hash": "bd700244a3b34033e9e5e210f294e394",
+    "hash": "c29e814b5589ae0ee61b45fe258fb335",
+    "content-hash": "2ccd491d568d340b3918a2a3fdc7e4ba",
     "packages": [
         {
             "name": "ass/xmlsecurity",
@@ -1544,23 +1544,23 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/core-bundle.git",
-                "reference": "7e96d490f7aec35744d666560ceb9ec687a516fd"
+                "reference": "8956bca90695b7466e1120c447edd1a330ac01df"
             },
             "require": {
                 "doctrine/annotations": "1.2.*",
                 "jms/serializer-bundle": "^0.13.0",
                 "php": ">=5.4",
-                "predis/predis": "^1.0",
                 "sensio/distribution-bundle": "~4.0",
                 "sensio/framework-extra-bundle": "^3.0",
-                "snc/redis-bundle": "^1.1",
                 "symfony/monolog-bundle": "~2.4",
                 "symfony/symfony": "2.7.*"
             },
             "require-dev": {
                 "digitalnature/php-ref": "dev-master",
                 "phpunit/phpunit": "4.7.*",
-                "sensio/generator-bundle": "~2.3"
+                "predis/predis": "^1.0",
+                "sensio/generator-bundle": "~2.3",
+                "snc/redis-bundle": "^1.1"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -1571,7 +1571,7 @@
             "license": [
                 "MIT"
             ],
-            "time": "2016-01-12 09:22:50"
+            "time": "2016-01-18 15:07:27"
         },
         {
             "name": "snc/redis-bundle",

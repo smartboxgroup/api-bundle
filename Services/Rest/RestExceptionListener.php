@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alberto.rodrigo
- * Date: 13/01/2016
- * Time: 16:04
- */
 
 namespace Smartbox\ApiBundle\Services\Rest;
 
@@ -13,7 +7,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class RestExceptionListener extends ExceptionListener
 {
-
     /**
      * Prevent non rest calls from not being logged
      * @param GetResponseForExceptionEvent $event

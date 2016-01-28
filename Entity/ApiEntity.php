@@ -12,6 +12,6 @@ class ApiEntity extends Entity implements SerializerCacheableInterface
 {
     public function __construct()
     {
-        $this->group = EntityInterface::GROUP_PUBLIC;
+        $this->entityGroup = EntityInterface::GROUP_PUBLIC;
     }
 }

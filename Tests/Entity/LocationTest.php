@@ -66,7 +66,7 @@ class LocationTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(['id']))
         ;
 
-        $entity->method('getType')
+        $entity->method('getInternalType')
             ->will($this->returnValue('Something'))
         ;
 
@@ -80,7 +80,7 @@ class LocationTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(false))
         ;
 
-        $this->location = new Location($entity, $propertyAccessor);
+        new Location($entity, $propertyAccessor);
     }
 
     public function testItShouldReadDataFromAnEntity()

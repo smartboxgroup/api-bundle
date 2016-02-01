@@ -6,18 +6,24 @@ use BeSimple\SoapServer\Exception\SenderSoapFault;
 
 class DateTimeTypeConverter extends \BeSimple\SoapCommon\Converter\DateTimeTypeConverter
 {
+    /**
+     * {@inheritdoc}
+     */
     public function convertXmlToPhp($data)
     {
-        try{
-            parent::convertXmlToPhp($data);
-        }catch (\Exception $ex){
+        try {
+            return parent::convertXmlToPhp($data);
+        } catch (\Exception $ex) {
             $doc = new \DOMDocument();
             $doc->loadXML($data);
             $content = $doc->textContent;
 
-            $message = 'SOAP-ERROR: Encoding: Violation of encoding rules in date property, found "%s", hence a datetime with format "%s" was expected';
-
-            throw new SenderSoapFault(sprintf($message,$content,'Y-m-d\TH:i:sP'));
+            throw new SenderSoapFault(
+                sprintf(
+                    'SOAP-ERROR: Encoding: Violation of encoding rules in date property, found "%s", hence a valid datetime was expected',
+                    $content
+                )
+            );
         }
     }
 }

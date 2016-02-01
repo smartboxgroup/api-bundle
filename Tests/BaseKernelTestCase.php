@@ -1,16 +1,15 @@
 <?php
 
-
 namespace Smartbox\ApiBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\HttpKernel\Kernel;
 
-class BaseTestCase extends KernelTestCase
+/**
+ * Class BaseKernelTestCase
+ * @package Smartbox\ApiBundle\Tests
+ */
+class BaseKernelTestCase extends KernelTestCase
 {
-    /** @var  Kernel */
-    protected static $kernel;
-
     public function getContainer()
     {
         return self::$kernel->getContainer();
@@ -20,5 +19,4 @@ class BaseTestCase extends KernelTestCase
     {
         $this->bootKernel();
     }
-
 }

@@ -5,6 +5,7 @@ namespace Smartbox\ApiBundle\Entity;
 
 use JMS\Serializer\Annotation as JMS;
 use Smartbox\CoreBundle\Type\EntityInterface;
+use Smartbox\CoreBundle\Type\Traits\HasInternalType;
 
 class KeyValue extends ApiEntity implements EntityInterface
 {
@@ -60,14 +61,6 @@ class KeyValue extends ApiEntity implements EntityInterface
     {
         $this->key = $key;
         $this->value = $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return get_class($this);
     }
 
     /**

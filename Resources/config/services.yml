@@ -10,6 +10,7 @@ parameters:
   smartapi.resolvers.location.class: Smartbox\ApiBundle\Services\HeaderResolvers\LocationResolver
   smartapi.event_listener.auth_key_generator.class: Smartbox\ApiBundle\EventListener\AuthKeyGenerateListener
   smartapi.event_listener.propagate_http_headers.class: Smartbox\ApiBundle\Services\Soap\PropagateHttpHeadersListener
+  besimple.soap.converter.date_time.class: Smartbox\ApiBundle\Services\Soap\TypeConverters\DateTimeTypeConverter
 
   # OVERRIDING REST
   fos_rest.format_listener.class: Smartbox\ApiBundle\Services\Rest\FormatListener

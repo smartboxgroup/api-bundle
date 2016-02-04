@@ -105,7 +105,7 @@ class Location extends ApiEntity implements HeaderInterface
             } else {
                 throw new \Exception(
                     "Parameter $param returned by getIdParameters by class "
-                    .$entity->getType()
+                    .$entity->getInternalType()
                     ." is not readable"
                 );
             }

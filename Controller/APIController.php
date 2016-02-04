@@ -11,6 +11,7 @@ use Smartbox\ApiBundle\Entity\Location;
 use Smartbox\ApiBundle\Entity\OK;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\CoreBundle\Type\EntityInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -263,14 +264,15 @@ class APIController extends FOSRestController
     }
 
     /**
-     * @param $data
+     * @param $body
+     *
      * @return null|BasicResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    protected function respond($data)
+    protected function respond($body, $headers = [])
     {
-        if($data instanceof OK){
-            $data = null;
+        if ($body instanceof OK){
+            $body = null;
         }
 
         $response = null;
@@ -281,45 +283,49 @@ class APIController extends FOSRestController
         $outputGroup = @$config['output']['group'];
 
         if ($outputMode == Configuration::MODE_HEADER) {
-            $this->resolveHeaders($data);
+            $this->resolveHeaders($body);
         }
 
-        $this->validateOutput($data);
+        $this->validateOutput($body);
 
         // REST
         if ($request->get('api') == 'rest') {
-            $headers = array();
-
             // REST HEADERS
+            $restHeaders = array();
             if ($outputMode == Configuration::MODE_HEADER) {
-                if ($data instanceof HeaderInterface) {
-                    $headers = array($data->getHeaderName() => $data->getRESTHeaderValue());
-                } elseif (is_array($data) || $data instanceof \Traversable) {
-                    $headers = array();
+                if ($body instanceof HeaderInterface) {
+                    $restHeaders = array($body->getHeaderName() => $body->getRESTHeaderValue());
+                } elseif (is_array($body) || $body instanceof \Traversable) {
+                    $restHeaders = array();
                     /** @var HeaderInterface $header */
-                    foreach ($data as $header) {
-                        $headers[$header->getHeaderName()] = $header->getRESTHeaderValue();
+                    foreach ($body as $header) {
+                        $restHeaders[$header->getHeaderName()] = $header->getRESTHeaderValue();
                     }
                 }
 
-                $data = null;
+                $body = null;
             }
 
-            $view = $this->view($data, $successCode, $headers);
+            $view = $this->view($body, $successCode, $restHeaders);
 
             $context = SerializationContext::create()->setVersion($request->get('version'));
             $context->setGroups(array($outputGroup));
 
             $view->setSerializationContext($context);
 
+            /** @var Response $response */
             $response = $this->handleView($view);
+            $response->headers->add($headers);
+
         } else {    // SOAP
-            if (!$data) {
-                $desc = $this->get('smartapi.configurator')->getSuccessCodeDescription($successCode);
-                $data = new BasicResponse($successCode, $desc);
+            $apiConfigurator = $this->get('smartapi.configurator');
+            if (!$body) {
+                $desc = $apiConfigurator->getSuccessCodeDescription($successCode);
+                $body = new BasicResponse($successCode, $desc);
             }
 
-            $response = $data;
+            $response = $body;
+            $this->get('besimple.soap.response')->headers->add($headers);
         }
 
         return $response;

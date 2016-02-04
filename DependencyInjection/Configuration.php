@@ -141,6 +141,13 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('parent')->end()
             ->scalarNode('name')->isRequired()->end()
             ->scalarNode('version')->isRequired()->end()
+            ->scalarNode('soapHeadersNamespace')->isRequired()->end()
+            ->arrayNode('propagateHttpHeadersToSoap')
+                ->useAttributeAsKey('id')
+                ->info("List of http headers to propagate as SOAP envelope headers in SOAP calls, e.g.::\n
+    X-Transaction-Id: transactionId")
+                ->prototype('scalar')->end()
+            ->end()
             ->arrayNode('removed')
             ->prototype('scalar')->end()
             ->end()

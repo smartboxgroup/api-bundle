@@ -137,7 +137,7 @@ smartbox_api:
         throttling_v1:
             name: throttling
             version: v1
-            soapHeadersNamespace: none
+            soapHeadersNamespace: http://smartbox/soap
             methods:
                 createItem:
                     description: Creates an item with the given information and returns its id

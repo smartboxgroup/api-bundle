@@ -9,6 +9,7 @@ parameters:
   smartapi.doc.parser.jms_parser.class: Smartbox\ApiBundle\Services\Doc\JmsMetadataParser
   smartapi.resolvers.location.class: Smartbox\ApiBundle\Services\HeaderResolvers\LocationResolver
   smartapi.event_listener.auth_key_generator.class: Smartbox\ApiBundle\EventListener\AuthKeyGenerateListener
+  smartapi.event_listener.propagate_http_headers.class: Smartbox\ApiBundle\Services\Soap\PropagateHttpHeadersListener
   besimple.soap.converter.date_time.class: Smartbox\ApiBundle\Services\Soap\TypeConverters\DateTimeTypeConverter
 
   # OVERRIDING REST
@@ -100,3 +101,9 @@ services:
         arguments: [@snc_redis.default]
         tags:
             - { name: smartbox.smoke_test }
+
+    smartapi.event_listener.propagate_http_headers:
+        class: %smartapi.event_listener.propagate_http_headers.class%
+        arguments: [@smartapi.configurator]
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -999 }

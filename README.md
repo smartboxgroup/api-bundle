@@ -90,7 +90,9 @@ smartbox_api:
 
             # List of http headers to propagate as SOAP envelope headers in SOAP calls, e.g.::
             #
-            #     X-Transaction-Id: transactionId
+            #     X-RateLimit-Limit: rateLimitLimit
+            #
+            #     The headers must be present in order to be propagated. In this example the header is present when activating throttling
             propagateHttpHeadersToSoap:
 
                 # Prototype

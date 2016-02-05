@@ -148,7 +148,8 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('propagateHttpHeadersToSoap')
                 ->useAttributeAsKey('id')
                 ->info("List of http headers to propagate as SOAP envelope headers in SOAP calls, e.g.::\n
-    X-Transaction-Id: transactionId")
+    X-RateLimit-Limit: rateLimitLimit\n
+    The headers must be present in order to be propagated. In this example the header is present when activating throttling")
                 ->prototype('scalar')->end()
             ->end()
             ->arrayNode('removed')

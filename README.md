@@ -84,6 +84,17 @@ smartbox_api:
             parent:               ~
             name:                 ~ # Required
             version:              ~ # Required
+
+            # The SOAP headers namespace need to be defined.
+            soapHeadersNamespace:  ~ # Required
+
+            # List of http headers to propagate as SOAP envelope headers in SOAP calls, e.g.::
+            #
+            #     X-Transaction-Id: transactionId
+            propagateHttpHeadersToSoap:
+
+                # Prototype
+                id:                   ~
             removed:              []
 
             # Endpoint definitions.
@@ -240,6 +251,8 @@ v0.1.4: Improved support for arrays of entities as attribute of another entity
 v0.1.5: Readme.md file creation
 v0.1.6: Added WSI compliance
 v0.1.7: Removed exception handling for non rest calls
+v0.1.8: Added throttling
+v0.1.9: Added header propagation to SOAP
 
 ## Contributors
 Jose Rufino, Marcin Skurski, Luciano Mammino, Alberto Rodrigo

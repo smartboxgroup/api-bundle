@@ -136,12 +136,15 @@ class Configuration implements ConfigurationInterface
             ->cannotBeEmpty()
             ->useAttributeAsKey('id')
             ->prototype('array')
-            ->info("This is the place where the name and version of the API must be defined.")
+            ->info("This is the place where the name and version of the API must be defined, e.g.::\n
+    http://soapheaders")
             ->children()
             ->scalarNode('parent')->end()
             ->scalarNode('name')->isRequired()->end()
             ->scalarNode('version')->isRequired()->end()
-            ->scalarNode('soapHeadersNamespace')->isRequired()->end()
+            ->scalarNode('soapHeadersNamespace')
+            ->info("The SOAP headers namespace need to be defined.")
+            ->isRequired()->end()
             ->arrayNode('propagateHttpHeadersToSoap')
                 ->useAttributeAsKey('id')
                 ->info("List of http headers to propagate as SOAP envelope headers in SOAP calls, e.g.::\n

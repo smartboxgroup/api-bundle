@@ -107,25 +107,23 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
 
                     }
 
-                    // If there is an output
-                    if (array_key_exists(
-                            'output',
-                            $methodConfig
-                        ) && $methodConfig['output']['mode'] == Configuration::MODE_BODY
-                    ) {
-                        $outputType = ApiConfigurator::getJMSType($methodConfig['output']['type']);
-                        $annotationData['output'] = array(
-                            'class' => $outputType,
-                            'version' => $version,
-                            'parsers' => array(
-                                'Smartbox\ApiBundle\Services\Doc\JmsMetadataParser',
-                                'Nelmio\ApiDocBundle\Parser\CollectionParser',
-                                'Smartbox\ApiBundle\Services\Doc\ValidationParser'
-                            )
-                        );
+                    // If there is an output for rest
+                    if (array_key_exists('output',$methodConfig)) {
+                        if(!in_array($methodConfig['successCode'],$configurator->getRestEmptyBodyResponseCodes())){
+                            $outputType = ApiConfigurator::getJMSType($methodConfig['output']['type']);
+                            $annotationData['output'] = array(
+                                'class' => $outputType,
+                                'version' => $version,
+                                'parsers' => array(
+                                    'Smartbox\ApiBundle\Services\Doc\JmsMetadataParser',
+                                    'Nelmio\ApiDocBundle\Parser\CollectionParser',
+                                    'Smartbox\ApiBundle\Services\Doc\ValidationParser'
+                                )
+                            );
 
-                        if (array_key_exists('group', $methodConfig['output'])) {
-                            $annotationData['output']['groups'] = array($methodConfig['output']['group']);
+                            if (array_key_exists('group', $methodConfig['output'])) {
+                                $annotationData['output']['groups'] = array($methodConfig['output']['group']);
+                            }
                         }
                     }
 

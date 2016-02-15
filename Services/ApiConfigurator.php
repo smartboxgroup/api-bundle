@@ -34,9 +34,28 @@ class ApiConfigurator
     /** @var  array */
     protected $errorCodes;
 
+    /** @var  array */
+    protected $restEmptyBodyResponseCodes;
+
     public static $arraySymbol = '[]';
 
     public static $arraySymbolSoap = '[]';
+
+    /**
+     * @return array
+     */
+    public function getRestEmptyBodyResponseCodes()
+    {
+        return $this->restEmptyBodyResponseCodes;
+    }
+
+    /**
+     * @param array $restEmptyBodyResponseCodes
+     */
+    public function setRestEmptyBodyResponseCodes($restEmptyBodyResponseCodes)
+    {
+        $this->restEmptyBodyResponseCodes = $restEmptyBodyResponseCodes;
+    }
 
     public static $typeToSoap = array(
         'int' => 'int',
@@ -60,12 +79,13 @@ class ApiConfigurator
 
     protected $registeredAliases = array();
 
-    function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes)
+    function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes, $restEmptyBodyResponseCodes)
     {
         $this->metadataFactory = $metadataFactory;
         $this->config = $config;
         $this->successCodes = $successCodes;
         $this->errorCodes = $errorCodes;
+        $this->restEmptyBodyResponseCodes = $restEmptyBodyResponseCodes;
         $this->registerEntityAliases();
     }
 

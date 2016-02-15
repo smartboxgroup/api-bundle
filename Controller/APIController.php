@@ -246,23 +246,6 @@ class APIController extends FOSRestController
         }
     }
 
-    protected function resolveHeaders($data)
-    {
-        // TODO: GENERALIZE
-        $locationResolver = $this->get('smartapi.resolvers.location');
-
-        $toResolve = $data;
-        if (!is_array($data) || $data instanceof \Traversable) {
-            $toResolve = array($data);
-        }
-
-        foreach ($toResolve as $header) {
-            if ($header instanceof Location) {
-                $locationResolver->resolve($header);
-            }
-        }
-    }
-
     /**
      * @param $body
      *
@@ -278,31 +261,17 @@ class APIController extends FOSRestController
         $response = null;
         $request = $this->getRequest();
         $config = $request->get(ApiConfigurator::METHOD_CONFIG);
-        $outputMode = @$config['output']['mode'];
         $successCode = $config['successCode'];
         $outputGroup = @$config['output']['group'];
 
-        if ($outputMode == Configuration::MODE_HEADER) {
-            $this->resolveHeaders($body);
-        }
-
         $this->validateOutput($body);
+        $apiConfigurator = $this->get('smartapi.configurator');
 
         // REST
         if ($request->get('api') == 'rest') {
             // REST HEADERS
             $restHeaders = array();
-            if ($outputMode == Configuration::MODE_HEADER) {
-                if ($body instanceof HeaderInterface) {
-                    $restHeaders = array($body->getHeaderName() => $body->getRESTHeaderValue());
-                } elseif (is_array($body) || $body instanceof \Traversable) {
-                    $restHeaders = array();
-                    /** @var HeaderInterface $header */
-                    foreach ($body as $header) {
-                        $restHeaders[$header->getHeaderName()] = $header->getRESTHeaderValue();
-                    }
-                }
-
+            if (in_array($successCode,$apiConfigurator->getRestEmptyBodyResponseCodes())) {
                 $body = null;
             }
 
@@ -318,7 +287,6 @@ class APIController extends FOSRestController
             $response->headers->add($headers);
 
         } else {    // SOAP
-            $apiConfigurator = $this->get('smartapi.configurator');
             if (!$body) {
                 $desc = $apiConfigurator->getSuccessCodeDescription($successCode);
                 $body = new BasicResponse($successCode, $desc);

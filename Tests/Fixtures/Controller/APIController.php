@@ -2,7 +2,6 @@
 
 namespace Smartbox\ApiBundle\Tests\Fixtures\Controller;
 
-use Smartbox\ApiBundle\Entity\Location;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\ApiBundle\Tests\Fixtures\Entity\Box;
 use Smartbox\ApiBundle\Tests\Fixtures\Entity\Item;
@@ -37,24 +36,16 @@ class APIController extends \Smartbox\ApiBundle\Controller\APIController
         $response = null;
 
         switch($methodName){
-            case 'createBox':
-                $response = new Location($this->getRandomBox());
-                break;
-
             case 'getBox':
                 $response = $this->getRandomBox();
                 break;
 
+            case 'createBox':
             case 'updateBox':
             case 'createBoxes':
             case 'setBoxPicked':
             case 'deleteBox':
                 $response = null;
-                break;
-
-            # Item actions
-            case 'createItem':
-                $response = new Location($this->getRandomBox());
                 break;
 
             case 'getItem':
@@ -65,6 +56,7 @@ class APIController extends \Smartbox\ApiBundle\Controller\APIController
                 $response = $item;
                 break;
 
+            case 'createItem':
             case 'updateItem':
             case 'deleteItem':
                 $response = null;

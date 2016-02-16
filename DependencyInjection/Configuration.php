@@ -81,6 +81,7 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->append($this->addErrorCodesNode())
             ->append($this->addSuccessCodesNode())
+            ->append($this->addEmptyBodyResponseCodes())
             ->append($this->addServicesNode())
             ->end()
             ->end();
@@ -121,6 +122,19 @@ class Configuration implements ConfigurationInterface
     202: Accepted, the request has been accepted for processing, but the processing has not been completed
     204: No content, the server has fulfilled the request but does not need to return an entity-body
     **The success codes can be extended and changed")
+            ->prototype('scalar')->end()
+            ->end();
+
+        return $node;
+    }
+
+    public function addEmptyBodyResponseCodes()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('restEmptyBodyResponseCodes');
+        $node->isRequired()
+            ->info("List of response codes were the APIBundle should enforce an empty body, e.g.: [301,202]")
+            ->defaultValue([])
             ->prototype('scalar')->end()
             ->end();
 
@@ -185,7 +199,6 @@ class Configuration implements ConfigurationInterface
                     successCode: 201
                     input:
                         box: { type: Smartbox\\ApiBundle\\Tests\\Fixtures\\Entity\\Box, group: update, mode: body }
-                    output: { mode: header, type: Smartbox\\ApiBundle\\Entity\\Location }
                     rest:
                         route: /box
                         httpMethod: POST
@@ -312,31 +325,15 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('type')->info('The type of the output, it accepts only entities (e.g.: MyNamespace\\MyEntity) and arrays of them (MyNamespace\\MyEntity[])')->isRequired()->end()
             ->scalarNode('group')
                 ->info('The group of the entity to be used, acts as a view of the entity model, determines the set of attributes to be used.')
-                ->defaultValue(EntityInterface::GROUP_PUBLIC)
-            ->end()
-            ->scalarNode('mode')
-                ->info('Determines if the parameter goes into the header (header mode, usually for location header) or the body (body mode) of the response')
-                ->defaultValue(Configuration::MODE_BODY)->end()
+                ->defaultValue(EntityInterface::GROUP_PUBLIC)->end()
             ->end()
             ->validate()
             ->ifTrue(
                 function ($output) {
-                    return ($output['mode'] == Configuration::MODE_BODY && !ApiConfigurator::isEntityOrArrayOfEntities(
-                            $output['type']
-                        ));
+                    return (!ApiConfigurator::isEntityOrArrayOfEntities($output['type']));
                 }
             )
             ->thenInvalid('The body type must be a class implementing EntityInterface or an array of those')
-            ->end()
-            ->validate()
-            ->ifTrue(
-                function ($output) {
-                    return ($output['mode'] == Configuration::MODE_HEADER && !ApiConfigurator::isHeaderOrArrayOfHeaders(
-                            $output['type']
-                        ));
-                }
-            )
-            ->thenInvalid('The type for a header must be a class implementing HeaderInterface')
             ->end()
             ->end();
 

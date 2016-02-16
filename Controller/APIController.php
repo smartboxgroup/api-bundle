@@ -6,8 +6,6 @@ use FOS\RestBundle\Controller\FOSRestController;
 use JMS\Serializer\SerializationContext;
 use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Entity\BasicResponse;
-use Smartbox\ApiBundle\Entity\HeaderInterface;
-use Smartbox\ApiBundle\Entity\Location;
 use Smartbox\ApiBundle\Entity\OK;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\CoreBundle\Type\EntityInterface;
@@ -181,7 +179,6 @@ class APIController extends FOSRestController
             $errors->addAll($validator->validate($param, $constraint));
         }
 
-
         return $errors;
     }
 
@@ -246,23 +243,6 @@ class APIController extends FOSRestController
         }
     }
 
-    protected function resolveHeaders($data)
-    {
-        // TODO: GENERALIZE
-        $locationResolver = $this->get('smartapi.resolvers.location');
-
-        $toResolve = $data;
-        if (!is_array($data) || $data instanceof \Traversable) {
-            $toResolve = array($data);
-        }
-
-        foreach ($toResolve as $header) {
-            if ($header instanceof Location) {
-                $locationResolver->resolve($header);
-            }
-        }
-    }
-
     /**
      * @param $body
      *
@@ -278,35 +258,20 @@ class APIController extends FOSRestController
         $response = null;
         $request = $this->getRequest();
         $config = $request->get(ApiConfigurator::METHOD_CONFIG);
-        $outputMode = @$config['output']['mode'];
         $successCode = $config['successCode'];
         $outputGroup = @$config['output']['group'];
 
-        if ($outputMode == Configuration::MODE_HEADER) {
-            $this->resolveHeaders($body);
-        }
-
         $this->validateOutput($body);
+        $apiConfigurator = $this->get('smartapi.configurator');
 
         // REST
         if ($request->get('api') == 'rest') {
             // REST HEADERS
-            $restHeaders = array();
-            if ($outputMode == Configuration::MODE_HEADER) {
-                if ($body instanceof HeaderInterface) {
-                    $restHeaders = array($body->getHeaderName() => $body->getRESTHeaderValue());
-                } elseif (is_array($body) || $body instanceof \Traversable) {
-                    $restHeaders = array();
-                    /** @var HeaderInterface $header */
-                    foreach ($body as $header) {
-                        $restHeaders[$header->getHeaderName()] = $header->getRESTHeaderValue();
-                    }
-                }
-
+            if (in_array($successCode,$apiConfigurator->getRestEmptyBodyResponseCodes())) {
                 $body = null;
             }
 
-            $view = $this->view($body, $successCode, $restHeaders);
+            $view = $this->view($body, $successCode, $headers);
 
             $context = SerializationContext::create()->setVersion($request->get('version'));
             $context->setGroups(array($outputGroup));
@@ -315,10 +280,7 @@ class APIController extends FOSRestController
 
             /** @var Response $response */
             $response = $this->handleView($view);
-            $response->headers->add($headers);
-
         } else {    // SOAP
-            $apiConfigurator = $this->get('smartapi.configurator');
             if (!$body) {
                 $desc = $apiConfigurator->getSuccessCodeDescription($successCode);
                 $body = new BasicResponse($successCode, $desc);

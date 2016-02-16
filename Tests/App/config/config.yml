@@ -84,7 +84,6 @@ smartbox_api:
                     successCode: 201
                     input:
                         box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: update, mode: body }
-                    output: { mode: header, type: Smartbox\ApiBundle\Entity\Location }
                     rest:
                         route: "/box"
                         httpMethod: POST
@@ -144,7 +143,6 @@ smartbox_api:
                     successCode: 201
                     input:
                         box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Item, group: create, mode: body }
-                    output: { mode: header, type: Smartbox\ApiBundle\Entity\Location }
                     rest:
                         route: "/item"
                         httpMethod: POST

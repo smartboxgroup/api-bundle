@@ -14,7 +14,6 @@ interface LocatableEntity extends EntityInterface
      */
     public function getApiGetterMethod();
 
-
     /**
      * Returns an array with the parameters that identify this entity
      * @return array

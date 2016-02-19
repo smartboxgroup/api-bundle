@@ -333,7 +333,7 @@ class Configuration implements ConfigurationInterface
                     return (!ApiConfigurator::isEntityOrArrayOfEntities($output['type']));
                 }
             )
-            ->thenInvalid('The body type must be a class implementing EntityInterface or an array of those')
+            ->thenInvalid('The output type must be a class implementing EntityInterface or an array of those')
             ->end()
             ->end();
 

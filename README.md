@@ -113,7 +113,6 @@ smartbox_api:
             #                     successCode: 201
             #                     input:
             #                         box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: update, mode: body }
-            #                     output: { mode: header, type: Smartbox\ApiBundle\Entity\Location }
             #                     rest:
             #                         route: /box
             #                         httpMethod: POST
@@ -173,8 +172,6 @@ smartbox_api:
                         # The group of the entity to be used, acts as a view of the entity model, determines the set of attributes to be used.
                         group:                public
 
-                        # Determines if the parameter goes into the header (header mode, usually for location header) or the body (body mode) of the response
-                        mode:                 body
                     rest:                 # Required
 
                         # Route for the this API method

@@ -6,7 +6,6 @@ use Metadata\MetadataFactoryInterface;
 use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Entity\ApiEntity;
 use Smartbox\ApiBundle\Entity\BasicResponse;
-use Smartbox\ApiBundle\Entity\HeaderInterface;
 use Smartbox\CoreBundle\Type\EntityInterface;
 
 /**
@@ -34,9 +33,28 @@ class ApiConfigurator
     /** @var  array */
     protected $errorCodes;
 
+    /** @var  array */
+    protected $restEmptyBodyResponseCodes;
+
     public static $arraySymbol = '[]';
 
     public static $arraySymbolSoap = '[]';
+
+    /**
+     * @return array
+     */
+    public function getRestEmptyBodyResponseCodes()
+    {
+        return $this->restEmptyBodyResponseCodes;
+    }
+
+    /**
+     * @param array $restEmptyBodyResponseCodes
+     */
+    public function setRestEmptyBodyResponseCodes($restEmptyBodyResponseCodes)
+    {
+        $this->restEmptyBodyResponseCodes = $restEmptyBodyResponseCodes;
+    }
 
     public static $typeToSoap = array(
         'int' => 'int',
@@ -60,12 +78,13 @@ class ApiConfigurator
 
     protected $registeredAliases = array();
 
-    function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes)
+    function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes, $restEmptyBodyResponseCodes)
     {
         $this->metadataFactory = $metadataFactory;
         $this->config = $config;
         $this->successCodes = $successCodes;
         $this->errorCodes = $errorCodes;
+        $this->restEmptyBodyResponseCodes = $restEmptyBodyResponseCodes;
         $this->registerEntityAliases();
     }
 
@@ -343,42 +362,6 @@ class ApiConfigurator
 
             return self::getSoapTypeFor($typeSingle).self::$arraySymbolSoap;
         }
-    }
-
-    /**
-     * Returns true if the given $type is a class implementing HeaderInterface
-     *
-     * @param string $elementType
-     * @return bool
-     */
-    public static function isHeaderType($elementType)
-    {
-        if(!is_string($elementType)){
-            throw new \InvalidArgumentException("Expected string as an argument");
-        }
-
-        $isHeaderClass =
-            class_exists($elementType)
-            && array_key_exists(HeaderInterface::class, class_implements($elementType));
-
-        return $isHeaderClass;
-    }
-
-    /**
-     * Returns true if the given $type is a class implementing HeaderInterface or an array of it
-     *
-     * @param string $type
-     * @return bool
-     */
-    public static function isHeaderOrArrayOfHeaders($type)
-    {
-        if(!is_string($type)){
-            throw new \InvalidArgumentException("Expected string as an argument");
-        }
-
-        $elementType = str_replace(self::$arraySymbol, "", $type);
-
-        return self::isHeaderType($elementType);
     }
 
     /**

@@ -7,7 +7,6 @@ parameters:
   smartapi.soap.security.authentication_filter.class: Smartbox\ApiBundle\Services\Soap\WsAuthenticationFilter
   smartapi.soap.exceptions_converter.class: Smartbox\ApiBundle\Services\Soap\SoapExceptionConverter
   smartapi.doc.parser.jms_parser.class: Smartbox\ApiBundle\Services\Doc\JmsMetadataParser
-  smartapi.resolvers.location.class: Smartbox\ApiBundle\Services\HeaderResolvers\LocationResolver
   smartapi.event_listener.auth_key_generator.class: Smartbox\ApiBundle\EventListener\AuthKeyGenerateListener
   smartapi.event_listener.propagate_http_headers.class: Smartbox\ApiBundle\Services\Soap\PropagateHttpHeadersListener
   smartapi.event_listener.redis_connection.class: Smartbox\ApiBundle\EventListener\RedisConnectionListener
@@ -92,10 +91,6 @@ services:
         arguments:
           - @smartapi.soap.security.authentication.provider
           - @security.token_storage
-
-    smartapi.resolvers.location:
-        class: %smartapi.resolvers.location.class%
-        arguments: [ @router, @request_stack, @smartapi.configurator ]
 
     smartapi.smoke_test.check_redis_connection:
         class: %smartesb.smoke_test.check_redis_connection.class%

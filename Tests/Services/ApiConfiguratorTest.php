@@ -18,7 +18,7 @@ class ApiConfiguratorTest extends \PHPUnit_Framework_TestCase
         $metadataFactory = $this->getMockBuilder('\Metadata\MetadataFactoryInterface')
             ->setConstructorArgs([get_class($this)])
             ->getMock();
-        $this->configurator = new ApiConfigurator($metadataFactory, array(), array(), array());
+        $this->configurator = new ApiConfigurator($metadataFactory, array(), array(), array(),[]);
     }
 
     public function validTypesAndGroupsProvider()

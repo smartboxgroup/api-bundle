@@ -1544,7 +1544,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/core-bundle.git",
-                "reference": "567f9f2693cb5fca4f6546b31b2d65f0684955af"
+                "reference": "3330014c8443a9bc639d3f117f78a56038008ef3"
             },
             "require": {
                 "doctrine/annotations": "1.2.*",
@@ -1571,7 +1571,7 @@
             "license": [
                 "MIT"
             ],
-            "time": "2016-02-18 15:18:20"
+            "time": "2016-02-23 09:29:38"
         },
         {
             "name": "snc/redis-bundle",

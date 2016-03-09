@@ -3,10 +3,14 @@
 namespace Smartbox\ApiBundle\EventListener;
 
 use Noxlogic\RateLimitBundle\Events\GenerateKeyEvent;
+use Predis\Connection\ConnectionException;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class AuthKeyGenerateListener
 {
+    use LoggerAwareTrait;
+
     /**
      * @var TokenStorageInterface
      */
@@ -25,8 +29,12 @@ class AuthKeyGenerateListener
      */
     public function onGenerateKey(GenerateKeyEvent $event)
     {
-        if($this->tokenStorage && ($token = $this->tokenStorage->getToken()) && $token->getUsername()){
-            $event->addToKey($token->getUsername());
+        try {
+            if ($this->tokenStorage && ($token = $this->tokenStorage->getToken()) && $token->getUsername()) {
+                $event->addToKey($token->getUsername());
+            }
+        } catch (ConnectionException $e) {
+            $this->logger->error('Redis service is down.', ['exception' => $e]);
         }
     }
 }

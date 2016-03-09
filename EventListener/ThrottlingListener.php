@@ -9,6 +9,8 @@ use Noxlogic\RateLimitBundle\Events\GenerateKeyEvent;
 use Noxlogic\RateLimitBundle\Events\RateLimitEvents;
 use Noxlogic\RateLimitBundle\Service\RateLimitService;
 use Noxlogic\RateLimitBundle\Util\PathLimitProcessor;
+use Predis\Connection\ConnectionException;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -16,6 +18,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ThrottlingListener extends BaseListener
 {
+    use LoggerAwareTrait;
+
     /**
      * @var EventDispatcherInterface
      */
@@ -74,45 +78,56 @@ class ThrottlingListener extends BaseListener
 
         $key = $this->getKey($event);
 
-        // Ratelimit the call
-        $rateLimitInfo = $this->rateLimitService->limitRate($key);
-        if (! $rateLimitInfo) {
-            // Create new rate limit entry for this call
-            $rateLimitInfo = $this->rateLimitService->createRate($key, $rateLimit->getLimit(), $rateLimit->getPeriod());
-            if (! $rateLimitInfo) {
-                // @codeCoverageIgnoreStart
-                return;
-                // @codeCoverageIgnoreEnd
-            }
-        }
-
-
-        // Store the current rating info in the request attributes
-        $request = $event->getRequest();
-        $request->attributes->set('rate_limit_info', $rateLimitInfo);
-
-        // When we exceeded our limit, return a custom error response
-        if ($rateLimitInfo->getCalls() > $rateLimitInfo->getLimit()) {
-            $message = $this->getParameter('rate_response_message');
-            $code = $this->getParameter('rate_response_code');
-
-            if ($api === 'rest') {
-                // Throw an exception if configured.
-                if ($this->getParameter('rate_response_exception')) {
-                    $class = $this->getParameter('rate_response_exception');
-                    throw new $class($this->getParameter('rate_response_message'), $this->getParameter('rate_response_code'));
-                }
-
-                $event->setController(
-                    function () use ($message, $code) {
-                        // @codeCoverageIgnoreStart
-                        return new Response($message, $code);
-                        // @codeCoverageIgnoreEnd
-                    }
+        try {
+            // Ratelimit the call
+            $rateLimitInfo = $this->rateLimitService->limitRate($key);
+            if (!$rateLimitInfo) {
+                // Create new rate limit entry for this call
+                $rateLimitInfo = $this->rateLimitService->createRate(
+                    $key,
+                    $rateLimit->getLimit(),
+                    $rateLimit->getPeriod()
                 );
-            } else {
-                throw new SenderSoapFault($message);
+                if (!$rateLimitInfo) {
+                    // @codeCoverageIgnoreStart
+                    return;
+                    // @codeCoverageIgnoreEnd
+                }
             }
+
+
+            // Store the current rating info in the request attributes
+            $request = $event->getRequest();
+            $request->attributes->set('rate_limit_info', $rateLimitInfo);
+
+            // When we exceeded our limit, return a custom error response
+            if ($rateLimitInfo->getCalls() > $rateLimitInfo->getLimit()) {
+                $message = $this->getParameter('rate_response_message');
+                $code = $this->getParameter('rate_response_code');
+
+                if ($api === 'rest') {
+                    // Throw an exception if configured.
+                    if ($this->getParameter('rate_response_exception')) {
+                        $class = $this->getParameter('rate_response_exception');
+                        throw new $class(
+                            $this->getParameter('rate_response_message'),
+                            $this->getParameter('rate_response_code')
+                        );
+                    }
+
+                    $event->setController(
+                        function () use ($message, $code) {
+                            // @codeCoverageIgnoreStart
+                            return new Response($message, $code);
+                            // @codeCoverageIgnoreEnd
+                        }
+                    );
+                } else {
+                    throw new SenderSoapFault($message);
+                }
+            }
+        } catch (ConnectionException $e) {
+            $this->logger->error('Redis service is down.', ['exception' => $e]);
         }
     }
 

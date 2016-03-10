@@ -4,7 +4,7 @@ namespace Smartbox\ApiBundle\Services\Soap;
 
 use BeSimple\SoapServer\Exception\ReceiverSoapFault;
 use BeSimple\SoapServer\Exception\SenderSoapFault;
-use Smartbox\Integration\FrameworkBundle\Events\Error\SimpleErrorEvent;
+use Psr\Log\LoggerInterface;
 use Smartbox\Integration\FrameworkBundle\Exceptions\InvalidMessageException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -13,8 +13,26 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
+/**
+ * Class SoapExceptionConverter
+ *
+ * @package Smartbox\ApiBundle\Services\Soap
+ */
 class SoapExceptionConverter
 {
+    /** @var \Psr\Log\LoggerInterface */
+    protected $logger;
+
+    /**
+     * SoapExceptionConverter constructor.
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $api = $event->getRequest()->get('api');
@@ -64,6 +82,13 @@ class SoapExceptionConverter
             }
 
             if(!$exception instanceof \SoapFault) {
+                $this->logger->error(
+                    sprintf('Raised "%s" in SOAP mode with message: "%s"',
+                        get_class($exception),
+                        $exception->getMessage()
+                    ),
+                    ['exception' => $exception]
+                );
                 $event->setException(new ReceiverSoapFault("Internal error"));
                 return;
             }

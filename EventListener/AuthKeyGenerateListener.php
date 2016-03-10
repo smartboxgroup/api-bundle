@@ -34,7 +34,7 @@ class AuthKeyGenerateListener
                 $event->addToKey($token->getUsername());
             }
         } catch (ConnectionException $e) {
-            $this->logger->error('Redis service is down.', ['exception' => $e]);
+            $this->logger->error('Redis service is down.', ['message' => $e->getMessage()]);
         }
     }
 }

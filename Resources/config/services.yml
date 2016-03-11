@@ -50,6 +50,7 @@ services:
         class: %smartapi.soap.exceptions_converter.class%
         arguments:
           - @monolog.logger
+          - @request_stack
         tags:
           - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 255 }
 

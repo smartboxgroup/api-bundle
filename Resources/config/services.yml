@@ -10,6 +10,8 @@ parameters:
   smartapi.event_listener.auth_key_generator.class: Smartbox\ApiBundle\EventListener\AuthKeyGenerateListener
   smartapi.event_listener.propagate_http_headers.class: Smartbox\ApiBundle\Services\Soap\PropagateHttpHeadersListener
   smartapi.event_listener.redis_connection.class: Smartbox\ApiBundle\EventListener\RedisConnectionListener
+  smartapi.soap.server.builder.class: Smartbox\ApiBundle\Services\Soap\ServerBuilder
+  smartapi.soap.server.builder.server_class: Smartbox\ApiBundle\Services\Soap\Server
   besimple.soap.converter.date_time.class: Smartbox\ApiBundle\Services\Soap\TypeConverters\DateTimeTypeConverter
 
   # OVERRIDING REST
@@ -89,7 +91,13 @@ services:
         arguments:
           - @smartapi.security.user_provider
 
+    smartapi.soap.server.builder:
+        class: %smartapi.soap.server.builder.class%
+        calls:
+          - ['setServerClass', [%smartapi.soap.server.builder.server_class%]]
+
     smartapi.soap.security.authentication_filter:
+        public: true
         class: %smartapi.soap.security.authentication_filter.class%
         arguments:
           - @smartapi.soap.security.authentication.provider

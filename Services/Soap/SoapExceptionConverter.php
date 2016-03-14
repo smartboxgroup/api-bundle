@@ -41,31 +41,8 @@ class SoapExceptionConverter
     }
 
     /**
-     * @param string $class
-     * @param string $message
-     * @param int    $code
-     * @param string $actor
-     *
-     * @return \SoapFault
+     * @param \Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent $event
      */
-    protected function createSoapFault($class, $message, $code = 0, $actor = null)
-    {
-        $transactionId = $this->requestStack->getMasterRequest()->server->get(TransactionId::SERVER_PARAM_NAME, null);
-        $detail = [TransactionId::SOAP_HEADER_NAME => $transactionId];
-        switch ($class) {
-            case SenderSoapFault::class:
-            case ReceiverSoapFault::class:
-                return new $class($message, $actor, $detail);
-                break;
-            case \SoapFault::class:
-                return new $class($code, $message, $actor, $detail);
-                break;
-        }
-
-        // if another class is given defaults to a simple generic SoapFault
-        return new \SoapFault($code, 'SOAP-ERROR: '. $message, $actor, $detail);
-    }
-
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $api = $event->getRequest()->get('api');
@@ -126,5 +103,31 @@ class SoapExceptionConverter
                 return;
             }
         }
+    }
+
+    /**
+     * @param string $class
+     * @param string $message
+     * @param int    $code
+     * @param string $actor
+     *
+     * @return \SoapFault
+     */
+    protected function createSoapFault($class, $message, $code = 0, $actor = null)
+    {
+        $transactionId = $this->requestStack->getMasterRequest()->server->get(TransactionId::SERVER_PARAM_NAME, null);
+        $detail = [TransactionId::SOAP_HEADER_NAME => $transactionId];
+        switch ($class) {
+            case SenderSoapFault::class:
+            case ReceiverSoapFault::class:
+                return new $class($message, $actor, $detail);
+                break;
+            case \SoapFault::class:
+                return new $class($code, $message, $actor, $detail);
+                break;
+        }
+
+        // if another class is given defaults to a simple generic SoapFault
+        return new \SoapFault($code, 'SOAP-ERROR: '. $message, $actor, $detail);
     }
 }

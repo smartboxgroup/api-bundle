@@ -6,7 +6,6 @@ use BeSimple\SoapServer\Exception\ReceiverSoapFault;
 use BeSimple\SoapServer\Exception\SenderSoapFault;
 use Psr\Log\LoggerInterface;
 use Smartbox\Integration\FrameworkBundle\Exceptions\InvalidMessageException;
-use Smartbox\Integration\PlatformBundle\TransactionId\TransactionId;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -108,15 +107,14 @@ class SoapExceptionConverter
     /**
      * @param string $class
      * @param string $message
-     * @param int    $code
+     * @param string $code
      * @param string $actor
+     * @param array  $detail
      *
      * @return \SoapFault
      */
-    protected function createSoapFault($class, $message, $code = 0, $actor = null)
+    protected function createSoapFault($class, $message, $code = '', $actor = null, $detail = [])
     {
-        $transactionId = $this->requestStack->getMasterRequest()->server->get(TransactionId::SERVER_PARAM_NAME, null);
-        $detail = [TransactionId::SOAP_HEADER_NAME => $transactionId];
         switch ($class) {
             case SenderSoapFault::class:
             case ReceiverSoapFault::class:

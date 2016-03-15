@@ -3,14 +3,21 @@
 namespace Smartbox\ApiBundle\Services\Soap;
 
 use BeSimple\SoapServer\SoapServerBuilder;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class ServerBuilder
  *
  * @package \Smartbox\ApiBundle\Services\Soap
  */
-class ServerBuilder extends SoapServerBuilder
+class ServerBuilder extends SoapServerBuilder implements ContainerAwareInterface
 {
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
     /** @var string */
     protected $serverClass = Server::class;
 
@@ -26,6 +33,17 @@ class ServerBuilder extends SoapServerBuilder
     }
 
     /**
+     * @param ContainerInterface $container
+     *
+     * @return $this
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+        return $this;
+    }
+
+    /**
      * @return \SoapServer
      */
     public function build()
@@ -34,8 +52,11 @@ class ServerBuilder extends SoapServerBuilder
 
         use_soap_error_handler($this->errorReporting);
 
-        /** @var \SoapServer $server */
+        /** @var \SoapServer|ContainerAwareInterface $server */
         $server = new $this->serverClass($this->wsdl, $this->getSoapOptions());
+        if ($server instanceof ContainerAwareInterface && $this->container) {
+            $server->setContainer($this->container);
+        }
 
         if (null !== $this->persistence) {
             $server->setPersistence($this->persistence);

@@ -13,7 +13,7 @@ use BeSimple\SoapServer\SoapServer;
 class Server extends SoapServer
 {
     /**
-     * HACK: Overrides the default handle method to offer a better soap fault creation that also contains
+     * Overrides the default handle method to offer a better soap fault creation that also contains
      * actor and details
      *
      * @param null $request
@@ -30,7 +30,16 @@ class Server extends SoapServer
             $soapResponse->send();
         } catch (\SoapFault $fault) {
             // issue an error to the client
-            $this->fault($fault->faultcode, $fault->faultstring, null, $fault->detail);
+            $this->raiseFaultForException($fault);
         }
+    }
+
+    /**
+     * Holds the knowledge about how to generate a fault
+     * @param \SoapFault $fault
+     */
+    protected function raiseFaultForException(\SoapFault $fault)
+    {
+        $this->fault($fault->faultcode, $fault->faultstring, null, $fault->detail);
     }
 }

@@ -95,9 +95,9 @@ services:
         class: %smartapi.soap.server.builder.class%
         calls:
           - ['setServerClass', [%smartapi.soap.server.builder.server_class%]]
+          - ['setContainer', [@service_container]]
 
     smartapi.soap.security.authentication_filter:
-        public: true
         class: %smartapi.soap.security.authentication_filter.class%
         arguments:
           - @smartapi.soap.security.authentication.provider

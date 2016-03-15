@@ -28,6 +28,9 @@ class ServerBuilder extends SoapServerBuilder implements ContainerAwareInterface
      */
     public function setServerClass($serverClass)
     {
+        if(!class_exists($serverClass)){
+            throw new \InvalidArgumentException("Class not found: ".$serverClass);
+        }
         $this->serverClass = $serverClass;
         return $this;
     }

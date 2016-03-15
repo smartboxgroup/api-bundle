@@ -1,5 +1,4 @@
 <?php
-
 namespace Smartbox\ApiBundle\Services\Soap;
 
 use BeSimple\SoapServer\Exception\ReceiverSoapFault;
@@ -47,7 +46,6 @@ class SoapExceptionConverter
         $api = $event->getRequest()->get('api');
         $exception = $event->getException();
 
-        // todo: move to api bundle and register this listener with lower priority than LoggingErrorListener, FatalErrorListener and higher than Monolog Exception listener
         if ($api == 'soap') {
             /*
              * The following if statement is a workaround for SOAP fatal issues and the Symfony fatal error handler.

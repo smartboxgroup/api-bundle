@@ -22,11 +22,11 @@ fos_rest:
         formats:
             json: true
             xml: true
-            html: false
+            html: true
         failed_validation: HTTP_BAD_REQUEST
         default_engine: php
         templating_formats:
-          html: false
+          html: true
 
     routing_loader:
         default_format: json
@@ -36,8 +36,11 @@ fos_rest:
         validate: false
 
     exception:
+      codes:
+        'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
       messages:
         'Symfony\Component\HttpKernel\Exception\BadRequestHttpException': true
+        'Symfony\Component\Routing\Exception\ResourceNotFoundException': true
 
 be_simple_soap:
     cache:

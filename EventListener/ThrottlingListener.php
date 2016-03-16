@@ -9,6 +9,9 @@ use Noxlogic\RateLimitBundle\Events\GenerateKeyEvent;
 use Noxlogic\RateLimitBundle\Events\RateLimitEvents;
 use Noxlogic\RateLimitBundle\Service\RateLimitService;
 use Noxlogic\RateLimitBundle\Util\PathLimitProcessor;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Smartbox\CoreBundle\Utils\Monolog\Formatter\JMSSerializerFormatter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -16,6 +19,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ThrottlingListener extends BaseListener
 {
+    use LoggerAwareTrait;
+
     /**
      * @var EventDispatcherInterface
      */
@@ -52,14 +57,25 @@ class ThrottlingListener extends BaseListener
      */
     public function onKernelController(FilterControllerEvent $event)
     {
+        /**
+         * We must ensure that even if the throttling fails for any reason, we still handle the requests
+         */
+        try{
+            $this->handleOnKernelController($event);
+        }catch (\Exception $ex){
+            $this->logger->error('Redis service is down: '. $ex->getMessage());
+        }
+    }
+
+    protected function handleOnKernelController(FilterControllerEvent $event){
         $request = $event->getRequest();
         $api = $request->get('api');
 
         if (
-            ! (
-                ($api === 'rest' && $event->getRequestType() == HttpKernelInterface::MASTER_REQUEST)
-                || ($api === 'soap' && $event->getRequestType() != HttpKernelInterface::MASTER_REQUEST)
-            )
+        ! (
+            ($api === 'rest' && $event->getRequestType() == HttpKernelInterface::MASTER_REQUEST)
+            || ($api === 'soap' && $event->getRequestType() != HttpKernelInterface::MASTER_REQUEST)
+        )
         ) {
             return;
         }

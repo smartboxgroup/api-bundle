@@ -1,26 +1,51 @@
 <?php
-
 namespace Smartbox\ApiBundle\Services\Soap;
 
 use BeSimple\SoapServer\Exception\ReceiverSoapFault;
 use BeSimple\SoapServer\Exception\SenderSoapFault;
-use Smartbox\Integration\FrameworkBundle\Events\Error\SimpleErrorEvent;
+use Psr\Log\LoggerInterface;
 use Smartbox\Integration\FrameworkBundle\Exceptions\InvalidMessageException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
+/**
+ * Class SoapExceptionConverter
+ *
+ * @package Smartbox\ApiBundle\Services\Soap
+ */
 class SoapExceptionConverter
 {
+    /** @var \Psr\Log\LoggerInterface */
+    protected $logger;
+
+    /** @var RequestStack */
+    protected $requestStack;
+
+    /**
+     * SoapExceptionConverter constructor.
+     *
+     * @param \Psr\Log\LoggerInterface  $logger
+     * @param RequestStack              $requestStack
+     */
+    public function __construct(LoggerInterface $logger, RequestStack $requestStack)
+    {
+        $this->logger = $logger;
+        $this->requestStack = $requestStack;
+    }
+
+    /**
+     * @param \Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent $event
+     */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $api = $event->getRequest()->get('api');
         $exception = $event->getException();
 
-        // todo: move to api bundle and register this listener with lower priority than LoggingErrorListener, FatalErrorListener and higher than Monolog Exception listener
         if ($api == 'soap') {
             /*
              * The following if statement is a workaround for SOAP fatal issues and the Symfony fatal error handler.
@@ -39,34 +64,66 @@ class SoapExceptionConverter
             }
 
             if ($exception instanceof UnauthorizedHttpException) {
-                $event->setException( new SenderSoapFault('Not authorized'));
+                $event->setException($this->createSoapFault(SenderSoapFault::class, 'Not authorized'));
                 return;
             }
 
             if ($exception instanceof AuthenticationException) {
-                $event->setException( new SenderSoapFault('Authentication failed'));
+                $event->setException($this->createSoapFault(SenderSoapFault::class, 'Authentication failed'));
                 return;
             }
 
             if ($exception instanceof BadRequestHttpException) {
-                $event->setException(new SenderSoapFault($exception->getMessage()));
+                $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
                 return;
             }
 
             if ($exception instanceof InvalidMessageException) {
-                $event->setException(new SenderSoapFault($exception->getMessage()));
+                $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
                 return;
             }
 
             if ($exception instanceof AccessDeniedHttpException) {
-                $event->setException(new SenderSoapFault($exception->getMessage()));
+                $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
                 return;
             }
 
             if(!$exception instanceof \SoapFault) {
-                $event->setException(new ReceiverSoapFault("Internal error"));
+                $this->logger->error(
+                    sprintf('Raised "%s" in SOAP mode with message: "%s"',
+                        get_class($exception),
+                        $exception->getMessage()
+                    ),
+                    ['exception' => $exception]
+                );
+                $event->setException($this->createSoapFault(ReceiverSoapFault::class, "Internal error"));
                 return;
             }
         }
+    }
+
+    /**
+     * @param string $class
+     * @param string $message
+     * @param string $code
+     * @param string $actor
+     * @param array  $detail
+     *
+     * @return \SoapFault
+     */
+    protected function createSoapFault($class, $message, $code = '', $actor = null, $detail = [])
+    {
+        switch ($class) {
+            case SenderSoapFault::class:
+            case ReceiverSoapFault::class:
+                return new $class($message, $actor, $detail);
+                break;
+            case \SoapFault::class:
+                return new $class($code, $message, $actor, $detail);
+                break;
+        }
+
+        // if another class is given defaults to a simple generic SoapFault
+        return new \SoapFault($code, 'SOAP-ERROR: '. $message, $actor, $detail);
     }
 }

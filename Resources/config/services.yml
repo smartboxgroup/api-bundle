@@ -10,6 +10,8 @@ parameters:
   smartapi.event_listener.auth_key_generator.class: Smartbox\ApiBundle\EventListener\AuthKeyGenerateListener
   smartapi.event_listener.propagate_http_headers.class: Smartbox\ApiBundle\Services\Soap\PropagateHttpHeadersListener
   smartapi.event_listener.redis_connection.class: Smartbox\ApiBundle\EventListener\RedisConnectionListener
+  smartapi.soap.server.builder.class: Smartbox\ApiBundle\Services\Soap\ServerBuilder
+  smartapi.soap.server.builder.server_class: Smartbox\ApiBundle\Services\Soap\Server
   besimple.soap.converter.date_time.class: Smartbox\ApiBundle\Services\Soap\TypeConverters\DateTimeTypeConverter
 
   # OVERRIDING REST
@@ -48,8 +50,12 @@ services:
 
     smartapi.soap.exceptions_converter:
         class: %smartapi.soap.exceptions_converter.class%
+        arguments:
+          - @monolog.logger
+          - @request_stack
         tags:
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 255 }
+          - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 255 }
+
 
     smartapi.rest.listener.input:
       class: %smartapi.rest.listener.input.class%
@@ -85,6 +91,12 @@ services:
         class: %smartapi.soap.security.authentication.provider.class%
         arguments:
           - @smartapi.security.user_provider
+
+    smartapi.soap.server.builder:
+        class: %smartapi.soap.server.builder.class%
+        calls:
+          - ['setServerClass', [%smartapi.soap.server.builder.server_class%]]
+          - ['setContainer', [@service_container]]
 
     smartapi.soap.security.authentication_filter:
         class: %smartapi.soap.security.authentication_filter.class%

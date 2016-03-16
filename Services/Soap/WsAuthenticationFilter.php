@@ -8,6 +8,11 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
+/**
+ * Class WsAuthenticationFilter
+ *
+ * @package Smartbox\ApiBundle\Services\Soap
+ */
 class WsAuthenticationFilter extends WsSecurityFilter
 {
 
@@ -17,12 +22,19 @@ class WsAuthenticationFilter extends WsSecurityFilter
     /** @var  TokenStorageInterface */
     protected $tokenStorage;
 
-    public function __construct(AuthenticationProviderInterface $authProvider, TokenStorageInterface $tokenStorage)
-    {
+    /**
+     * WsAuthenticationFilter constructor.
+     *
+     * @param AuthenticationProviderInterface $authProvider
+     * @param TokenStorageInterface           $tokenStorage
+     */
+    public function __construct(
+        AuthenticationProviderInterface $authProvider,
+        TokenStorageInterface $tokenStorage
+    ){
         $this->authProvider = $authProvider;
         $this->tokenStorage = $tokenStorage;
     }
-
 
     public function filterRequest(CommonSoapRequest $request)
     {

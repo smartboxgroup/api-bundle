@@ -5,6 +5,7 @@ namespace Smartbox\ApiBundle\EventListener;
 use Noxlogic\RateLimitBundle\Events\GenerateKeyEvent;
 use Predis\Connection\ConnectionException;
 use Psr\Log\LoggerAwareTrait;
+use Smartbox\CoreBundle\Utils\Monolog\Formatter\JMSSerializerFormatter;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class AuthKeyGenerateListener
@@ -34,7 +35,7 @@ class AuthKeyGenerateListener
                 $event->addToKey($token->getUsername());
             }
         } catch (ConnectionException $e) {
-            $this->logger->error('Redis service is down.', ['message' => $e->getMessage()]);
+            $this->logger->error('Redis service is down.', ['message' => $e->getMessage(), JMSSerializerFormatter::_USE_JSON_ENCODE => true]);
         }
     }
 }

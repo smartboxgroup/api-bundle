@@ -11,6 +11,7 @@ use Noxlogic\RateLimitBundle\Service\RateLimitService;
 use Noxlogic\RateLimitBundle\Util\PathLimitProcessor;
 use Predis\Connection\ConnectionException;
 use Psr\Log\LoggerAwareTrait;
+use Smartbox\CoreBundle\Utils\Monolog\Formatter\JMSSerializerFormatter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -127,7 +128,7 @@ class ThrottlingListener extends BaseListener
                 }
             }
         } catch (ConnectionException $e) {
-            $this->logger->error('Redis service is down.', ['message' => $e->getMessage()]);
+            $this->logger->error('Redis service is down.', ['message' => $e->getMessage(), JMSSerializerFormatter::_USE_JSON_ENCODE => true]);
         }
     }
 

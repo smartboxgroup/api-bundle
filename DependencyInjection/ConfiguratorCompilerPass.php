@@ -1,14 +1,18 @@
 <?php
-namespace Smartbox\ApiBundle\DependencyInjection;
 
+namespace Smartbox\ApiBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Class ConfiguratorCompilerPass
+ *
+ * @package Smartbox\ApiBundle\DependencyInjection
+ */
 class ConfiguratorCompilerPass implements CompilerPassInterface
 {
-
     /** @var  ContainerBuilder */
     protected $container;
 
@@ -25,7 +29,9 @@ class ConfiguratorCompilerPass implements CompilerPassInterface
         $contextDocument = $container->getDefinition('besimple.soap.context.documentwrapped');
 
         $contextRpc->addMethodCall('setApiConfigurator', array(new Reference('smartapi.configurator')));
+        $contextRpc->addMethodCall('setServerBuilder', array(new Reference('smartapi.soap.server.builder')));
         $contextDocument->addMethodCall('setApiConfigurator', array(new Reference('smartapi.configurator')));
+        $contextDocument->addMethodCall('setServerBuilder', array(new Reference('smartapi.soap.server.builder')));
 
         $complexTypeLoader = $container->getDefinition('besimple.soap.definition.loader.annot_complextype');
         $complexTypeLoader->addMethodCall('setSerializer', array(new Reference('serializer')));

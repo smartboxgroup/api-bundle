@@ -16,9 +16,9 @@ class RestExceptionListener extends ExceptionListener
     {
         $request = $event->getRequest();
         $apiMode = $request->get('api');
-        if ($apiMode !== 'rest') {
-            return;
+
+        if ($apiMode == 'rest' || empty($apiMode)) {
+            parent::onKernelException($event);
         }
-        parent::onKernelException($event);
     }
 }

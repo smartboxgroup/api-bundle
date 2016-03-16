@@ -1,24 +1,44 @@
 <?php
+
 namespace Smartbox\ApiBundle\Services\Soap;
 
 use BeSimple\SoapCommon\Converter\TypeConverterCollection;
+use BeSimple\SoapServer\SoapServerBuilder;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
+/**
+ * Class WebServiceContext
+ *
+ * @package Smartbox\ApiBundle\Services\Soap
+ */
 class WebServiceContext extends \BeSimple\SoapBundle\WebServiceContext
 {
-
     /** @var  SoapServiceBinder */
     protected $serviceBinder;
 
     /** @var  ApiConfigurator */
     protected $apiConfigurator;
 
+    /** @var array */
     protected $options;
 
-    public function __construct(LoaderInterface $loader, TypeConverterCollection $converters, array $options)
-    {
+    /** @var SoapServerBuilder  */
+    protected $serverBuilder;
+
+    /**
+     * WebServiceContext constructor.
+     *
+     * @param LoaderInterface           $loader
+     * @param TypeConverterCollection   $converters
+     * @param array                     $options
+     */
+    public function __construct(
+        LoaderInterface $loader,
+        TypeConverterCollection $converters,
+        array $options
+    ){
         $this->options = $options;
         parent::__construct($loader, $converters, $options);
     }
@@ -78,4 +98,33 @@ class WebServiceContext extends \BeSimple\SoapBundle\WebServiceContext
         return (string) $cache;
     }
 
+    /**
+     * @param \BeSimple\SoapServer\SoapServerBuilder $serverBuilder
+     *
+     * @return $this
+     */
+    public function setServerBuilder(SoapServerBuilder $serverBuilder)
+    {
+        $this->serverBuilder = $serverBuilder
+            ->withSoapVersion12()
+            ->withEncoding('UTF-8')
+            ->withSingleElementArrays()
+            ->withErrorReporting(false)
+            ->withWsdl($this->getWsdlFile())
+            ->withClassmap($this->getServiceDefinition()->getTypeRepository()->getClassmap())
+            ->withTypeConverters($this->converters)
+        ;
+
+        if (null !== $this->options['cache_type']) {
+            $this->serverBuilder->withWsdlCache($this->options['cache_type']);
+        }
+
+        return $this;
+    }
+
+    // getServerBuilder
+    public function getServerBuilder()
+    {
+        return $this->serverBuilder;
+    }
 }

@@ -42,7 +42,7 @@ class ConfiguratorCompilerPass implements CompilerPassInterface
         if ($config['throttling'] && $container->hasDefinition('noxlogic_rate_limit.rate_limit_annotation_listener')) {
             $throttlingListener = $container->getDefinition('noxlogic_rate_limit.rate_limit_annotation_listener');
             $throttlingListener->setClass($container->getParameter('smartapi.throttling_listener.class'));
-            $throttlingListener->addMethodCall('setLogger',[new Reference('logger')]);
+            $throttlingListener->addMethodCall('setLogger',[new Reference('monolog.logger')]);
         }
     }
 }

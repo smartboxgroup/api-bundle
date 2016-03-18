@@ -11,12 +11,16 @@ use Noxlogic\RateLimitBundle\Service\RateLimitService;
 use Noxlogic\RateLimitBundle\Util\PathLimitProcessor;
 use Predis\Connection\ConnectionException;
 use Psr\Log\LoggerAwareTrait;
-use Smartbox\CoreBundle\Utils\Monolog\Formatter\JMSSerializerFormatter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
+/**
+ * Class ThrottlingListener
+ *
+ * @package Smartbox\ApiBundle\EventListener
+ */
 class ThrottlingListener extends BaseListener
 {
     use LoggerAwareTrait;
@@ -57,6 +61,17 @@ class ThrottlingListener extends BaseListener
      */
     public function onKernelController(FilterControllerEvent $event)
     {
+        /**
+         * We must ensure that even if the throttling fails for any reason, we still handle the requests
+         */
+        try{
+            $this->handleOnKernelController($event);
+        }catch (\Exception $ex){
+            $this->logger->error($ex->getMessage(), ['exception' => $ex]);
+        }
+    }
+
+    protected function handleOnKernelController(FilterControllerEvent $event){
         $request = $event->getRequest();
         $api = $request->get('api');
 
@@ -128,10 +143,15 @@ class ThrottlingListener extends BaseListener
                 }
             }
         } catch (ConnectionException $e) {
-            $this->logger->error('Redis service is down.', ['message' => $e->getMessage(), JMSSerializerFormatter::_USE_JSON_ENCODE => true]);
+            error_log("Error: Redis service is down: ".$e->getMessage());
         }
     }
 
+    /**
+     * @param \Symfony\Component\HttpKernel\Event\FilterControllerEvent $event
+     *
+     * @return string
+     */
     private function getKey(FilterControllerEvent $event)
     {
         $request = $event->getRequest();

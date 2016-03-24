@@ -108,7 +108,7 @@ services:
         class: %smartesb.smoke_test.check_redis_connection.class%
         arguments: [@snc_redis.default]
         tags:
-            - { name: smartbox.smoke_test }
+            - { name: smartcore.smoke_test }
 
     smartapi.event_listener.redis_connection:
         class: %smartapi.event_listener.redis_connection.class%

@@ -13,6 +13,9 @@ use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\CoreBundle\Type\Entity;
 use Symfony\Component\Validator\Validator;
 
+/**
+ * Class ComplexTypeLoader
+ */
 class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
 {
     protected $aliasClass = 'BeSimple\SoapBundle\ServiceDefinition\Annotation\Alias';

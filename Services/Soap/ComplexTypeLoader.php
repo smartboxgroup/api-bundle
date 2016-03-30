@@ -10,6 +10,8 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
+use Smartbox\CoreBundle\Type\Entity;
+use Symfony\Component\Validator\Validator;
 
 class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
 {
@@ -62,11 +64,11 @@ class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
         foreach ($class->getProperties() as $property) {
             // Fetch NotBlank / NotNull from validation
             $notBlank = $this->reader->getPropertyAnnotation($property, $this->symfonyValidationNotBlank);
-            if ($notBlank && $notBlank->groups) {
+            if ($notBlank && $notBlank->groups && !in_array(Entity::GROUP_DEFAULT, $notBlank->groups)) {
                 $notBlank = in_array($group, $notBlank->groups);
             }
             $notNull = $this->reader->getPropertyAnnotation($property, $this->symfonyValidationNotNull);
-            if ($notNull && $notNull->groups) {
+            if ($notNull && $notNull->groups && !in_array(Entity::GROUP_DEFAULT, $notNull->groups)) {
                 $notNull = in_array($group, $notNull->groups);
             }
 

@@ -33,10 +33,5 @@
   },
   "required": [
     "id"
-  ],
-  "views": {
-    "public": ["id", "name", "surname"],
-    "credit": ["id", "credit"],
-    "full": ["id", "name", "surname", "birthDate", "password", "credit"]
-  }
+  ]
 }

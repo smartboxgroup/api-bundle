@@ -3,14 +3,14 @@
 namespace Smartbox\ApiBundle\Annotation;
 
 /**
- * Class JsonSchemaFile
+ * Class JsonSchema
  * @Annotation
  */
-final class JsonSchemaFile
+final class JsonSchema
 {
     /**
      * @Required
      * @var string
      */
-    public $file;
+    public $id;
 }

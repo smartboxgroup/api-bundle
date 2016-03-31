@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://example.com/schemas/person-relationship.schema.json",
+  "title": "Person Relationship",
+  "description": "Person Relationship definition",
+  "type": "object",
+  "properties": {
+    "parentPerson": {
+      "$ref": "http://example.com/schemas/person.schema.json"
+    },
+    "childPerson": {
+      "$ref": "http://example.com/schemas/person.schema.json"
+    },
+    "type": {
+      "type": "string",
+      "description": "The type of relationship"
+    }
+  },
+  "required": [
+    "id"
+  ]
+}

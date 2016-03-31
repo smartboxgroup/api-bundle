@@ -10,6 +10,7 @@ parameters:
   smartapi.event_listener.auth_key_generator.class: Smartbox\ApiBundle\EventListener\AuthKeyGenerateListener
   smartapi.event_listener.propagate_http_headers.class: Smartbox\ApiBundle\Services\Soap\PropagateHttpHeadersListener
   smartapi.event_listener.redis_connection.class: Smartbox\ApiBundle\EventListener\RedisConnectionListener
+  smartapi.metadata.json_schema_groups_driver.class: Smartbox\ApiBundle\Metadata\JsonSchemaGroupsDriver
   smartapi.soap.server.builder.class: Smartbox\ApiBundle\Services\Soap\ServerBuilder
   smartapi.soap.server.builder.server_class: Smartbox\ApiBundle\Services\Soap\Server
   besimple.soap.converter.date_time.class: Smartbox\ApiBundle\Services\Soap\TypeConverters\DateTimeTypeConverter
@@ -83,6 +84,11 @@ services:
         - @jms_serializer.metadata_factory
       tags:
         - { name: nelmio_api_doc.extractor.parser, priority: 50 }
+
+    smartapi.metadata.json_schema_groups_driver:
+      class: %smartapi.metadata.json_schema_groups_driver.class%
+      arguments:
+        - @annotations.reader
 
     smartapi.security.user_provider:
         alias: "security.user.provider.concrete.in_memory"

@@ -56,6 +56,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+            ->scalarNode('schemas_path')->defaultValue('%kernel.root_dir%/Resources/schemas')->end()
             ->scalarNode('default_controller')->defaultValue(self::API_CONTROLLER)->end()
             ->booleanNode('throttling')
                 ->defaultValue(false)

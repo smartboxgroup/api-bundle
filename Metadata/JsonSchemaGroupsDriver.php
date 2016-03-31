@@ -3,8 +3,8 @@
 namespace Smartbox\ApiBundle\Metadata;
 
 use Doctrine\Common\Annotations\Reader;
-use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
+use Metadata\MergeableClassMetadata;
 use Metadata\PropertyMetadata;
 use Smartbox\ApiBundle\Annotation\JsonSchemaFile;
 
@@ -43,7 +43,7 @@ class JsonSchemaGroupsDriver implements DriverInterface
     public function loadMetadataForClass(\ReflectionClass $class)
     {
         $annotations = $this->reader->getClassAnnotations($class);
-        $classMetadata = new ClassMetadata($name = $class->name);
+        $classMetadata = new MergeableClassMetadata($name = $class->name);
         $groupsByProperty = [];
 
         foreach($annotations as $annotation) {

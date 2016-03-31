@@ -44,5 +44,13 @@ class ConfiguratorCompilerPass implements CompilerPassInterface
             $throttlingListener->setClass($container->getParameter('smartapi.throttling_listener.class'));
             $throttlingListener->addMethodCall('setLogger',[new Reference('monolog.logger')]);
         }
+
+        // Adds JsonSchemaGroupsDriver service to the drivers
+        $schemasPath = $config['schemas_path'];
+        $jsonSchemaGroupsDriverDef = $container->getDefinition('smartapi.metadata.json_schema_groups_driver');
+        $jsonSchemaGroupsDriverDef->addArgument($schemasPath);
+
+        $metadataDriverDef = $container->findDefinition('jms_serializer.metadata_driver');
+        $metadataDriverDef->addMethodCall('addDriver', [new Reference('smartapi.metadata.json_schema_groups_driver')]);
     }
 }

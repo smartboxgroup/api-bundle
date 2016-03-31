@@ -3,7 +3,9 @@
 namespace Smartbox\ApiBundle\Metadata;
 
 use Doctrine\Common\Annotations\Reader;
+use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
+use Metadata\PropertyMetadata;
 use Smartbox\ApiBundle\Annotation\JsonSchemaFile;
 
 /**
@@ -11,8 +13,6 @@ use Smartbox\ApiBundle\Annotation\JsonSchemaFile;
  */
 class JsonSchemaGroupsDriver implements DriverInterface
 {
-    const ANNOTATION_JSON_SCHEMA_FILE = 'JsonSchemaFile';
-
     /** @var Reader  */
     protected $reader;
 
@@ -42,10 +42,73 @@ class JsonSchemaGroupsDriver implements DriverInterface
      */
     public function loadMetadataForClass(\ReflectionClass $class)
     {
-        $annotation = $this->reader->getClassAnnotation($class, self::ANNOTATION_JSON_SCHEMA_FILE);
-        if ($annotation instanceof JsonSchemaFile) {
-            // TODO
-            // load file and parse it
+        $annotations = $this->reader->getClassAnnotations($class);
+        $classMetadata = new ClassMetadata($name = $class->name);
+        $groupsByProperty = [];
+
+        foreach($annotations as $annotation) {
+            if (!$annotation instanceof JsonSchemaFile) {
+                continue;
+            }
+
+            $path = realpath($this->jsonSchemaFilesFolder . '/' . $annotation->file);
+            if (false === $path) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'File "%s" found in "%s" for the annotation "%s" is missing in path "%s"',
+                        $annotation->file,
+                        $class->getName(),
+                        self::class,
+                        $this->jsonSchemaFilesFolder
+                    )
+                );
+            }
+
+            if (!is_readable($path)) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'File "%s" found in "%s" for the annotation "%s" is not readable',
+                        $path,
+                        $class->getName(),
+                        self::class
+                    )
+                );
+            }
+
+            $schema = json_decode(file_get_contents($path), true);
+            if (null === $schema) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'File "%s" found in "%s" for the annotation "%s" does not contain a valid json schema',
+                        $path,
+                        $class->getName(),
+                        self::class
+                    )
+                );
+            }
+
+            $classMetadata->fileResources[] = $path;
+
+            if (isset($schema['views'])) {
+                foreach($schema['views'] as $group => $fields) {
+                    $fields = (array) $fields;
+                    foreach ($fields as $field) {
+                        if (!isset($groupsByProperty[$field])) {
+                            $groupsByProperty[$field] = [];
+                        }
+
+                        $groupsByProperty[$field][] = $group;
+                    }
+                }
+            }
         }
+
+        foreach ($groupsByProperty as $propertyName => $groups) {
+            $propertyMetadata = new PropertyMetadata($class->getName(), $propertyName);
+            $propertyMetadata->groups = array_unique($groups);
+            $classMetadata->addPropertyMetadata($propertyMetadata);
+        }
+
+        return $classMetadata;
     }
 }

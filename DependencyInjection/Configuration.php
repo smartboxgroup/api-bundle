@@ -3,7 +3,6 @@
 namespace Smartbox\ApiBundle\DependencyInjection;
 
 use Composer\Config;
-use Smartbox\ApiBundle\Metadata\JsonSchemaViewsRegistry;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\CoreBundle\Type\EntityInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -57,7 +56,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-            ->scalarNode('schemas_path')->defaultValue('%kernel.root_dir%/Resources/schemas')->end()
             ->scalarNode('default_controller')->defaultValue(self::API_CONTROLLER)->end()
             ->booleanNode('throttling')
                 ->defaultValue(false)
@@ -85,7 +83,6 @@ class Configuration implements ConfigurationInterface
             ->append($this->addSuccessCodesNode())
             ->append($this->addEmptyBodyResponseCodes())
             ->append($this->addServicesNode())
-            ->append($this->addJsonSchema())
             ->end()
             ->end();
 
@@ -381,56 +378,6 @@ class Configuration implements ConfigurationInterface
                     ->isRequired()
                 ->end()
             ->end();
-
-        return $node;
-    }
-
-    public function addJsonSchema()
-    {
-        $builder = new TreeBuilder();
-        $node = $builder->root('json_schema');
-
-        $node
-            ->info('Json Schema configuration')
-            ->children()
-                ->scalarNode('path')
-                    ->info('The path where Json Schema files are stored')
-                    ->isRequired()
-                ->end()
-                ->arrayNode('views')
-                    ->info('Options relevant to Json schema views')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode('filter')
-                            ->info('The filter used to find Json Schema view files inside the path')
-                            ->defaultValue('*.view.json')
-                        ->end()
-                        ->booleanNode('deep')
-                            ->info('If true will search for view files also in subdirectories starting from the path')
-                            ->defaultTrue()
-                        ->end()
-                        ->arrayNode('registry')
-                            ->info('Configuration options for the Json Schema Views registry')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('service_name')
-                                    ->info('The name of the service to be generated for the registry')
-                                    ->defaultValue('smartapi.json_schema_views.registry')
-                                ->end()
-                                ->scalarNode('class')
-                                    ->info('The class to be used to generate the registry service')
-                                    ->defaultValue(JsonSchemaViewsRegistry::class)
-                                ->end()
-                                ->arrayNode('args')
-                                    ->info('The arguments to use as service definition')
-                                    ->addDefaultsIfNotSet()
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end()
-        ;
 
         return $node;
     }

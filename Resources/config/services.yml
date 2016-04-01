@@ -10,7 +10,8 @@ parameters:
   smartapi.event_listener.auth_key_generator.class: Smartbox\ApiBundle\EventListener\AuthKeyGenerateListener
   smartapi.event_listener.propagate_http_headers.class: Smartbox\ApiBundle\Services\Soap\PropagateHttpHeadersListener
   smartapi.event_listener.redis_connection.class: Smartbox\ApiBundle\EventListener\RedisConnectionListener
-  smartapi.metadata.json_schema_groups_driver.class: Smartbox\ApiBundle\Metadata\JsonSchemaGroupsDriver
+  smartapi.metadata.json_schema_groups_driver.class: Smartbox\ApiBundle\Metadata\Driver\JsonSchemaGroupsDriver
+  smartapi.metadata.mergeable_driver.class: Smartbox\ApiBundle\Metadata\Driver\MergeableChainDriver
   smartapi.soap.server.builder.class: Smartbox\ApiBundle\Services\Soap\ServerBuilder
   smartapi.soap.server.builder.server_class: Smartbox\ApiBundle\Services\Soap\Server
   besimple.soap.converter.date_time.class: Smartbox\ApiBundle\Services\Soap\TypeConverters\DateTimeTypeConverter
@@ -89,6 +90,12 @@ services:
       class: %smartapi.metadata.json_schema_groups_driver.class%
       arguments:
         - @annotations.reader
+        - @smartapi.json_schema_views.registry
+
+    smartapi.metadata.mergeable_driver:
+      class: %smartapi.metadata.mergeable_driver.class%
+      decorates: jms_serializer.metadata_driver
+      arguments: [[@smartapi.metadata.mergeable_driver.inner, @smartapi.metadata.json_schema_groups_driver]]
 
     smartapi.security.user_provider:
         alias: "security.user.provider.concrete.in_memory"

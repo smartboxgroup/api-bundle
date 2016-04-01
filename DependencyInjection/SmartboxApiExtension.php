@@ -2,6 +2,7 @@
 
 namespace Smartbox\ApiBundle\DependencyInjection;
 
+use Smartbox\ApiBundle\Metadata\JsonSchemaViewsRegistryBuilder;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -105,5 +106,27 @@ class SmartboxApiExtension extends Extension
         $configurator->addArgument($config['successCodes']);
         $configurator->addArgument($config['errorCodes']);
         $configurator->addArgument($config['restEmptyBodyResponseCodes']);
+
+        $this->createJsonSchemaViewsRegistry($config, $container);
+    }
+
+    /**
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
+    protected function createJsonSchemaViewsRegistry(array $config, ContainerBuilder $container)
+    {
+        $builder = new JsonSchemaViewsRegistryBuilder(
+            $config['json_schema']['path'],
+            $config['json_schema']['views']['filter'],
+            $config['json_schema']['views']['deep']
+        );
+
+        $definition = $builder->buildDefinition(
+            $config['json_schema']['views']['registry']['class'],
+            $config['json_schema']['views']['registry']['args']
+        );
+
+        $container->setDefinition($config['json_schema']['views']['registry']['service_name'], $definition);
     }
 }

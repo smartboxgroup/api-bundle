@@ -71,6 +71,8 @@ smartbox_api:
        204: No content, the server has fulfilled the request but does not need to return an entity-body
 
     throttling: true
+    json_schema:
+        path: %kernel.root_dir%/../fixtures/schemas
 
     services:
         demo_v1:

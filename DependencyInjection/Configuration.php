@@ -2,7 +2,6 @@
 
 namespace Smartbox\ApiBundle\DependencyInjection;
 
-use Composer\Config;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\CoreBundle\Type\EntityInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

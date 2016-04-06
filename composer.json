@@ -9,7 +9,7 @@
     },
     "require": {
         "php": ">=5.4",
-        "symfony/symfony": ">=2.7.*",
+        "symfony/symfony": ">=2.7.0",
         "doctrine/annotations": "1.2.*",
         "symfony/assetic-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.4",

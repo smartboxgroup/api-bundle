@@ -57,7 +57,7 @@ class Item extends ApiEntity implements LocatableEntity
      *
      * @Assert\Type(type="string")
      * @Assert\NotBlank
-     * @JMS\Until("v0")
+     * @JMS\Until("v1")
      * @JMS\Type("string")
      * @JMS\Expose
      * @JMS\Groups({"update", "public"})
@@ -112,6 +112,22 @@ class Item extends ApiEntity implements LocatableEntity
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 
     /**

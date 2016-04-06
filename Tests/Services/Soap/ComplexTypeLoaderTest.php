@@ -164,7 +164,7 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Item',
                     'group'   => 'public',
-                    'version' => 'v1',
+                    'version' => 'v2',
                 ],
                 null,
                 [

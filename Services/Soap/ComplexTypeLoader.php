@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Validator;
  */
 class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
 {
-    const ANNOTATION_TYPE = 'annotation_complextype';
+    const RESOURCE_TYPE = 'annotation_complextype';
 
     protected $aliasClass                = 'BeSimple\SoapBundle\ServiceDefinition\Annotation\Alias';
     protected $complexTypeClass          = 'BeSimple\SoapBundle\ServiceDefinition\Annotation\ComplexType';
@@ -141,7 +141,7 @@ class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
      */
     public function supports($resource, $type = null)
     {
-        return $this->isResourceDefined($resource) && self::ANNOTATION_TYPE === $type;
+        return $this->isResourceDefined($resource) && self::RESOURCE_TYPE === $type;
     }
 
     /**

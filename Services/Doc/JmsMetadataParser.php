@@ -149,8 +149,9 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
                         $dataType['class']
                     )
                 ) {
-                    $visited[] = $dataType['class'];
-                    $children = $this->doParse($dataType['class'], $visited, $groups);
+                    $visitedForNext = array_merge([$dataType['class']],$visited);
+
+                    $children = $this->doParse($dataType['class'], $visitedForNext, $groups);
 
                     if ($dataType['inline']) {
                         $params = array_merge($params, $children);

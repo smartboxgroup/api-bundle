@@ -55,7 +55,7 @@ be_simple_soap:
             resource_type: smartapi_soap
 
 smartbox_api:
-    userProvider: security.user.provider.in_memory
+    userProvider: security.user.provider.concrete.in_memory
     restEmptyBodyResponseCodes: []
     default_controller: "test.dummy.controller:handleCallAction"
 

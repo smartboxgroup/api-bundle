@@ -2,9 +2,12 @@
 
 namespace Smartbox\ApiBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
  * Class ConfiguratorCompilerPass
@@ -43,6 +46,17 @@ class ConfiguratorCompilerPass implements CompilerPassInterface
             $throttlingListener = $container->getDefinition('noxlogic_rate_limit.rate_limit_annotation_listener');
             $throttlingListener->setClass($container->getParameter('smartapi.throttling_listener.class'));
             $throttlingListener->addMethodCall('setLogger',[new Reference('monolog.logger')]);
+        }
+
+        $userProviderId = $config['userProvider'];
+        if ($container->hasDefinition($userProviderId)) {
+            // securing SOAP API
+            $authenticationProviderDef = $container->getDefinition('smartapi.soap.security.authentication.provider');
+            $authenticationProviderDef->setArguments([new Reference($userProviderId)]);
+        } else {
+            throw new InvalidConfigurationException(
+                sprintf('No definition found for "%s" used in smartbox_api.userProvider configuration', $userProviderId)
+            );
         }
     }
 }

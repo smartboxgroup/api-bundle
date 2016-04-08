@@ -26,10 +26,8 @@ class Configuration implements ConfigurationInterface
     const MODE_FILTER = 'filter';
     const MODE_BODY = 'body';
     const MODE_REQUIREMENT = 'requirement';
-    const MODE_HEADER = 'header';
 
     public static $INPUT_MODES = array(self::MODE_BODY, self::MODE_FILTER, self::MODE_REQUIREMENT);
-    public static $OUTPUT_MODES = array(self::MODE_BODY, self::MODE_HEADER);
 
     public static $BASIC_TYPES = array(self::INTEGER, self::FLOAT, self::STRING, self::BOOL, self::DATETIME);
     public static $KEYWORDS = array(

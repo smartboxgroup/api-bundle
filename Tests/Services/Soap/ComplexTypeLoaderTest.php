@@ -49,14 +49,14 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
 
             'Resource does not have "group" defined' => [
                 [
-                    'phpType' => '\Invalid\Class\That\Does\Not\Even\Exists',
+                    'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
                     'version' => 'v0',
                 ]
             ],
 
             'Resource does not have "version" defined' => [
                 [
-                    'phpType' => '\Invalid\Class\That\Does\Not\Even\Exists',
+                    'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
                     'group'   => null,
                 ]
             ],

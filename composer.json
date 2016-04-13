@@ -9,11 +9,11 @@
     },
     "require": {
         "php": ">=5.4",
-        "symfony/symfony": "2.7.*",
+        "symfony/symfony": ">=2.7.0",
         "doctrine/annotations": "1.2.*",
         "symfony/assetic-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.4",
-        "sensio/distribution-bundle": "~4.0",
+        "sensio/distribution-bundle": ">=4.0",
         "sensio/framework-extra-bundle": "^3.0",
         "friendsofsymfony/rest-bundle": "^1.7",
         "jms/serializer-bundle": "^0.13.0",

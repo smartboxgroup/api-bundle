@@ -47,14 +47,14 @@ class ConfiguratorCompilerPass implements CompilerPassInterface
         }
 
         $userProviderId = $config['userProvider'];
-        if ($container->hasDefinition($userProviderId)) {
-            // securing SOAP API
-            $authenticationProviderDef = $container->getDefinition('smartapi.soap.security.authentication.provider');
-            $authenticationProviderDef->setArguments([new Reference($userProviderId)]);
-        } else {
+        if (!$container->hasDefinition($userProviderId)) {
             throw new InvalidConfigurationException(
                 sprintf('No definition found for "%s" used in smartbox_api.userProvider configuration', $userProviderId)
             );
         }
+
+        // securing SOAP API
+        $authenticationProviderDef = $container->getDefinition('smartapi.soap.security.authentication.provider');
+        $authenticationProviderDef->setArguments([new Reference($userProviderId)]);
     }
 }

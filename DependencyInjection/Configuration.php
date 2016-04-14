@@ -55,6 +55,12 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+            ->scalarNode('userProvider')
+                ->isRequired()
+                ->info("Id of user provider service which implements Symfony\\Component\\Security\\Core\\User\\UserProviderInterface\n
+    f.e.: security.user.provider.concrete.in_memory
+                ")
+            ->end()
             ->scalarNode('default_controller')->defaultValue(self::API_CONTROLLER)->end()
             ->booleanNode('throttling')
                 ->defaultValue(false)

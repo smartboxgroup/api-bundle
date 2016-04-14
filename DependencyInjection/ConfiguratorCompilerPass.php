@@ -2,6 +2,7 @@
 
 namespace Smartbox\ApiBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -44,5 +45,16 @@ class ConfiguratorCompilerPass implements CompilerPassInterface
             $throttlingListener->setClass($container->getParameter('smartapi.throttling_listener.class'));
             $throttlingListener->addMethodCall('setLogger',[new Reference('monolog.logger')]);
         }
+
+        $userProviderId = $config['userProvider'];
+        if (!$container->hasDefinition($userProviderId)) {
+            throw new InvalidConfigurationException(
+                sprintf('No definition found for "%s" used in smartbox_api.userProvider configuration', $userProviderId)
+            );
+        }
+
+        // securing SOAP API
+        $authenticationProviderDef = $container->getDefinition('smartapi.soap.security.authentication.provider');
+        $authenticationProviderDef->setArguments([new Reference($userProviderId)]);
     }
 }

@@ -27,9 +27,17 @@ To install the bundle, you just need to:
 4. Ammend the previous config.yml file to determine your endpoints. You can see the output by running:
 ```
   php console.php config:dump-reference smartbox-api
+```
 
+```
 # Default configuration for extension with alias: "smartbox_api"
 smartbox_api:
+
+    # Id of user provider service which implements Symfony\Component\Security\Core\User\UserProviderInterface
+    #
+    #     f.e.: security.user.provider.concrete.in_memory
+    #
+    userProvider:         ~ # Required
     default_controller:   'SmartboxApiBundle:API:handleCall'
 
     # Enable/Disable throttling (dafault: false).
@@ -77,6 +85,9 @@ smartbox_api:
 
         # Prototype
         id:                   ~
+
+    # List of response codes were the APIBundle should enforce an empty body, e.g.: [301,202]
+    restEmptyBodyResponseCodes:  [] # Required
     services:             # Required
 
         # Prototype
@@ -171,7 +182,6 @@ smartbox_api:
 
                         # The group of the entity to be used, acts as a view of the entity model, determines the set of attributes to be used.
                         group:                public
-
                     rest:                 # Required
 
                         # Route for the this API method
@@ -195,7 +205,6 @@ smartbox_api:
 
                         # Set period to limit requests.
                         period:               ~ # Required
-
 ```
 
 5. Add to your routing.yml file:

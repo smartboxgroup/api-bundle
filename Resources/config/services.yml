@@ -84,13 +84,8 @@ services:
       tags:
         - { name: nelmio_api_doc.extractor.parser, priority: 50 }
 
-    smartapi.security.user_provider:
-        alias: "security.user.provider.concrete.in_memory"
-
     smartapi.soap.security.authentication.provider:
         class: %smartapi.soap.security.authentication.provider.class%
-        arguments:
-          - @smartapi.security.user_provider
 
     smartapi.soap.server.builder:
         class: %smartapi.soap.server.builder.class%

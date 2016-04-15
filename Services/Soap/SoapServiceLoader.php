@@ -11,9 +11,9 @@ use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\CoreBundle\Type\EntityInterface;
 use Symfony\Component\Config\Loader\Loader;
 
-
 class SoapServiceLoader extends Loader
 {
+    const RESOURCE_TYPE = 'smartapi_soap';
 
     /** @var  TypeRepository */
     protected $typeRepository;
@@ -28,9 +28,8 @@ class SoapServiceLoader extends Loader
     public function __construct(ApiConfigurator $configurator, TypeRepository $typeRepository)
     {
         $this->apiConfigurator = $configurator;
-        $this->typeRepository = $typeRepository;
+        $this->typeRepository  = $typeRepository;
     }
-
 
     /**
      *
@@ -46,22 +45,22 @@ class SoapServiceLoader extends Loader
     {
         $serviceDefinition = new Definition\Definition($this->typeRepository);
         $serviceDefinition->setName($resource);
-        $serviceConfig = $this->apiConfigurator->getConfig($resource);
+
+        $serviceConfig  = $this->apiConfigurator->getConfig($resource);
         $serviceVersion = $serviceConfig['version'];
 
         foreach ($serviceConfig['methods'] as $methodName => $methodConfig) {
-            $methodHeaders = array();
-            $methodArguments = array();
-            $soapMethodName = $methodName;
-            $methodReturnType = null;
+            $methodArguments   = [];
+            $soapMethodName    = $methodName;
+            $methodReturnType  = null;
             $methodReturnGroup = null;
 
             $filtersPresent = false;
 
             // Input
             foreach ($methodConfig[ApiConfigurator::INPUT] as $paramName => $paramConfig) {
-                $mode = $paramConfig['mode'];
-                $type = $paramConfig['type'];
+                $mode  = $paramConfig['mode'];
+                $type  = $paramConfig['type'];
                 $group = $paramConfig['group'];
 
                 switch ($mode) {
@@ -87,60 +86,32 @@ class SoapServiceLoader extends Loader
             }
 
             // Output
-            if (!array_key_exists('output', $methodConfig)) {
-                $methodReturnType = BasicResponse::class;
-                $methodReturnGroup = EntityInterface::GROUP_PUBLIC;
-            } else {
-                $methodReturnType = $methodConfig['output']['type'];
-                $methodReturnGroup = @$methodConfig['output']['group'];
-            }
+            $methodReturnType  = BasicResponse::class;
+            $methodReturnGroup = EntityInterface::GROUP_PUBLIC;
 
-            if (array_key_exists('soap', $methodConfig)) {
-                // Headers
-                if (array_key_exists('headers', $methodConfig['soap'])) {
-                    $headers = $methodConfig['soap']['headers'];
-                    foreach ($headers as $hName => $hConfig) {
-                        $headerType = $hConfig['type'];
-                        $headerGroup = @$hConfig['group'];
-
-                        $methodArguments[$hName] = $this->loadType($headerType, $headerGroup, $serviceVersion);
-                    }
-                }
+            if (array_key_exists('output', $methodConfig)) {
+                $methodReturnType  = $methodConfig['output']['type'];
+                $methodReturnGroup = $methodConfig['output']['group'];
             }
 
             // Construction
-            $soapMethod = new Definition\Method(
-                $soapMethodName,
-                $methodConfig['controller']
-            );
+            $soapMethod = new Definition\Method($soapMethodName, $methodConfig['controller']);
 
-            if (!$soapMethod && (!empty($methodArguments) || $methodReturnType)) {
-                throw new \LogicException(sprintf('@Soap\Method non-existent for "%s".', $soapMethodName));
+            foreach ($methodArguments as $name => $type) {
+                $soapMethod->addInput($name, $type);
             }
 
-            if ($soapMethod) {
-                foreach ($methodHeaders as $name => $type) {
-                    $soapMethod->addHeader($name, $type);
-                }
-
-                foreach ($methodArguments as $name => $type) {
-                    $soapMethod->addInput($name, $type);
-                }
-
-                if (!$methodReturnType) {
-                    throw new \LogicException(sprintf('@Soap\Result non-existent for "%s".', $soapMethodName));
-                }
-
-                $soapMethod->setOutput($this->loadType($methodReturnType, $methodReturnGroup, $serviceVersion));
-
-                $serviceDefinition->addMethod($soapMethod);
+            if (!$methodReturnType) {
+                throw new \LogicException(sprintf('@Soap\Result non-existent for "%s".', $soapMethodName));
             }
+
+            $soapMethod->setOutput($this->loadType($methodReturnType, $methodReturnGroup, $serviceVersion));
+
+            $serviceDefinition->addMethod($soapMethod);
         }
 
         return $serviceDefinition;
-
     }
-
 
     /**
      * Returns true if this class supports the given resource.
@@ -152,7 +123,7 @@ class SoapServiceLoader extends Loader
      */
     public function supports($resource, $type = null)
     {
-        return is_string($resource) && $this->apiConfigurator->hasService($resource) && 'smartapi_soap' === $type;
+        return is_string($resource) && $this->apiConfigurator->hasService($resource) && self::RESOURCE_TYPE === $type;
     }
 
     /**
@@ -177,10 +148,10 @@ class SoapServiceLoader extends Loader
         }
 
         if (ApiConfigurator::isEntity($phpTypeBasic) && $group) {
-            $suffix = ucfirst($group).$suffix;
+            $suffix = ucfirst($group) . $suffix;
         }
 
-        $phpType = $phpTypeBasic.$suffix;
+        $phpType = $phpTypeBasic . $suffix;
 
         if (!$this->typeRepository->hasType($phpType)) {
 
@@ -188,11 +159,11 @@ class SoapServiceLoader extends Loader
                 throw new \Exception("Class $phpType doesn't exist");
             }
 
-            $data = array(
+            $data = [
                 'phpType' => $phpType,
-                'group' => $group,
-                'version' => $version
-            );
+                'group'   => $group,
+                'version' => $version,
+            ];
 
             $complexTypeResolver = $this->resolve($data, 'annotation_complextype');
             if (!$complexTypeResolver) {

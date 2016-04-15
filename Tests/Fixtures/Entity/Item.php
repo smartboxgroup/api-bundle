@@ -5,7 +5,6 @@ namespace Smartbox\ApiBundle\Tests\Fixtures\Entity;
 use Smartbox\ApiBundle\Entity\LocatableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as JMS;
-use BeSimple\SoapBundle\ServiceDefinition\Annotation as Soap;
 use Smartbox\ApiBundle\Entity\ApiEntity;
 
 /**
@@ -22,7 +21,8 @@ class Item extends ApiEntity implements LocatableEntity
      * @JMS\Type("integer")
      * @JMS\Expose
      * @JMS\Groups({"list", "public"})
-     * @var int
+     *
+     * @var integer
      */
     protected $id;
 
@@ -34,6 +34,7 @@ class Item extends ApiEntity implements LocatableEntity
      * @JMS\Type("string")
      * @JMS\Expose
      * @JMS\Groups({"update","list", "public"})
+     *
      * @var string
      */
     protected $name;
@@ -46,9 +47,24 @@ class Item extends ApiEntity implements LocatableEntity
      * @JMS\Type("string")
      * @JMS\Expose
      * @JMS\Groups({"update","list", "public"})
+     *
      * @var string
      */
     protected $description;
+
+    /**
+     * Type of item
+     *
+     * @Assert\Type(type="string")
+     * @Assert\NotBlank
+     * @JMS\Until("v1")
+     * @JMS\Type("string")
+     * @JMS\Expose
+     * @JMS\Groups({"update", "public"})
+     *
+     * @var string
+     */
+    protected $type;
 
     /**
      * @return int
@@ -82,7 +98,6 @@ class Item extends ApiEntity implements LocatableEntity
         $this->name = $name;
     }
 
-
     /**
      * @return string
      */
@@ -97,6 +112,22 @@ class Item extends ApiEntity implements LocatableEntity
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 
     /**

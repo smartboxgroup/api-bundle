@@ -57,7 +57,7 @@ class ThrottlingListenerTest extends WebTestCase
 
     public function testItShouldLimitRequestsAndRespondWithProperHeadersForRest()
     {
-        $responseContentItem = '{"id":1,"name":"Item name 1","description":"Item description 1"}';
+        $responseContentItem = '{"id":1,"name":"Item name 1","description":"Item description 1","type":"Item type 1"}';
         $responseContentErrorMessage = $this->container->getParameter('smartapi.rate_response_message');
 
         $client = $this->getRestClient();

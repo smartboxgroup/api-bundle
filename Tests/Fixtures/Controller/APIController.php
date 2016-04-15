@@ -53,6 +53,7 @@ class APIController extends \Smartbox\ApiBundle\Controller\APIController
                 $item->setId($input['id']);
                 $item->setName('Item name ' . $input['id']);
                 $item->setDescription('Item description ' . $input['id']);
+                $item->setType('Item type ' . $input['id']);
                 $response = $item;
                 break;
 

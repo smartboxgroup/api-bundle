@@ -1,5 +1,6 @@
 {
     "name": "smartbox/api-bundle",
+    "description": "Smartbox Api Bundle",
     "type": "symfony-bundle",
     "license": "MIT",
     "autoload": {

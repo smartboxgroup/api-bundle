@@ -19,4 +19,11 @@ class ServerBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->serverBuilder->setServerClass('\Set\Non\Existing\Class');
     }
+
+    public function testWhenWdslIsNotDefined()
+    {
+        $this->setExpectedException(\InvalidArgumentException::class);
+
+        $this->serverBuilder->build();
+    }
 }

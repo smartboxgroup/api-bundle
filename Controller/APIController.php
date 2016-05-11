@@ -142,7 +142,7 @@ class APIController extends FOSRestController
                     'message' => sprintf(
                         "Parameter '%s' with value '%s', doesn't have a valid date format",
                         $name,
-                        $param->format("Y-m-d H:i:s")
+                        $param->format('c')
                     ),
                 )
             );

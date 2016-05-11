@@ -135,13 +135,14 @@ class APIController extends FOSRestController
 
         $constraints = array();
 
+        /** @var \DateTime $param */
         if ($type == Configuration::DATETIME) {
             $constraints[] = new DateTime(
                 array(
                     'message' => sprintf(
                         "Parameter '%s' with value '%s', doesn't have a valid date format",
                         $name,
-                        $param
+                        $param->format("Y-m-d H:i:s")
                     ),
                 )
             );

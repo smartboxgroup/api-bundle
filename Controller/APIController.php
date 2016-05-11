@@ -157,20 +157,20 @@ class APIController extends FOSRestController
                     ),
                 )
             );
-        }
 
-        if ($format) {
-            $constraints[] = new Regex(
-                array(
-                    'pattern' => '#^'.$format.'$#xsu',
-                    'message' => sprintf(
-                        "Parameter '%s' with value '%s', does not match format '%s'",
-                        $name,
-                        $param,
-                        $format
-                    ),
-                )
-            );
+            if ($format) {
+                $constraints[] = new Regex(
+                    array(
+                        'pattern' => '#^'.$format.'$#xsu',
+                        'message' => sprintf(
+                            "Parameter '%s' with value '%s', does not match format '%s'",
+                            $name,
+                            $param,
+                            $format
+                        ),
+                    )
+                );
+            }
         }
 
         $errors = new ConstraintViolationList();

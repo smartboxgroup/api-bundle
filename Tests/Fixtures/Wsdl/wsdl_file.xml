@@ -1,0 +1,38 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://smartbox.com/wsdl/soap/poc_v0/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="poc_v0" targetNamespace="http://smartbox.com/wsdl/soap/poc_v0/">
+    <types>
+        <xsd:schema targetNamespace="http://smartbox.com/wsdl/soap/poc_v0/">
+            <xsd:complexType name="Smartbox.Integration.PlatformBundle.POCEntities.TimestampPublic">
+                <xsd:all>
+                    <xsd:element name="value" type="xsd:string" nillable="true"/>
+                </xsd:all>
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+    <portType name="poc_v0PortType">
+        <operation name="getTimestamp">
+            <input message="tns:getTimestampRequest"/>
+            <output message="tns:getTimestampResponse"/>
+        </operation>
+    </portType>
+    <message name="getTimestampRequest"/>
+    <message name="getTimestampResponse">
+        <part name="return" type="tns:Smartbox.Integration.PlatformBundle.POCEntities.TimestampPublic"/>
+    </message>
+    <service name="poc_v0Service">
+        <port name="poc_v0Port" binding="tns:poc_v0Binding">
+            <soap:address location="http://real.smartesb.local/api/soap/poc_v0"/>
+        </port>
+    </service>
+    <binding name="poc_v0Binding" type="tns:poc_v0PortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+        <operation name="getTimestamp">
+            <soap:operation soapAction="http://smartbox.com/wsdl/soap/poc_v0/getTimestamp"/>
+            <input>
+                <soap:body use="literal" namespace="http://smartbox.com/wsdl/soap/poc_v0/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="literal" namespace="http://smartbox.com/wsdl/soap/poc_v0/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+</definitions>

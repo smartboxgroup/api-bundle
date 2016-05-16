@@ -1563,7 +1563,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/BeSimpleSoap.git",
-                "reference": "fda110ea8263d597bc97dc4bc0ee05da89834c95"
+                "reference": "510e2facc09b1b1731f02222258d36fdc5478fdb"
             },
             "require": {
                 "ass/xmlsecurity": "~1.0",
@@ -1620,7 +1620,7 @@
             "keywords": [
                 "soap"
             ],
-            "time": "2016-04-27 14:02:11"
+            "time": "2016-05-10 10:04:00"
         },
         {
             "name": "smartbox/core-bundle",

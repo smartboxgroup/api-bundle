@@ -4,7 +4,7 @@ namespace Smartbox\ApiBundle\Services\Soap;
 use BeSimple\SoapServer\Exception\ReceiverSoapFault;
 use BeSimple\SoapServer\Exception\SenderSoapFault;
 use Psr\Log\LoggerInterface;
-use Smartbox\Integration\FrameworkBundle\Components\WebService\Exception\ExternalSystemExceptionInterface;
+use Smartbox\CoreBundle\Exception\ExternalSystemExceptionInterface;
 use Smartbox\Integration\FrameworkBundle\Exceptions\Deprecated\InvalidMessageException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpFoundation\RequestStack;

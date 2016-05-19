@@ -38,11 +38,11 @@ fos_rest:
     exception:
       codes:
         'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
-        'Smartbox\Integration\FrameworkBundle\Components\WebService\Rest\Exceptions\RestException': 520
+        'Smartbox\CoreBundle\Exception\ExternalSystemException': 520
       messages:
         'Symfony\Component\HttpKernel\Exception\BadRequestHttpException': true
         'Symfony\Component\Routing\Exception\ResourceNotFoundException': true
-        'Smartbox\Integration\FrameworkBundle\Components\WebService\Rest\Exceptions\RestException': true
+        'Smartbox\CoreBundle\Exception\ExternalSystemException': true
 
 be_simple_soap:
     cache:

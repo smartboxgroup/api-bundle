@@ -2,7 +2,8 @@
 
 namespace Smartbox\ApiBundle\Services\Rest;
 
-use Smartbox\Integration\FrameworkBundle\Components\WebService\Exception\ExternalSystemExceptionInterface;
+use Smartbox\CoreBundle\Exception\ExternalSystemException;
+use Smartbox\CoreBundle\Exception\ExternalSystemExceptionInterface;
 use Smartbox\Integration\FrameworkBundle\Components\WebService\Rest\Exceptions\RestException;
 use Symfony\Component\HttpKernel\EventListener\ExceptionListener;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -24,12 +25,10 @@ class RestExceptionListener extends ExceptionListener
             $exception = $event->getException();
             $externalSystemError = ($exception instanceof ExternalSystemExceptionInterface);
 
-            // Sets the expected exception message for external system exceptions
+            // Sets the expected exception for external system exceptions
             if ($externalSystemError) {
-                $exception->setMessage(sprintf(
-                    ExternalSystemExceptionInterface::EXCEPTION_MESSAGE_TEMPLATE,
-                    $exception->getExternalSystemName()
-                ));
+                $externalSystemException = ExternalSystemException::createFromException($exception);
+                $event->setException($externalSystemException);
             }
 
             parent::onKernelException($event);

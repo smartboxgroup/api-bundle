@@ -4,7 +4,6 @@ namespace Smartbox\ApiBundle\Services\Soap;
 use BeSimple\SoapServer\Exception\ReceiverSoapFault;
 use BeSimple\SoapServer\Exception\SenderSoapFault;
 use Psr\Log\LoggerInterface;
-use Smartbox\CoreBundle\Exception\ExternalSystemExceptionInterface;
 use Smartbox\Integration\FrameworkBundle\Exceptions\Deprecated\InvalidMessageException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -86,13 +85,6 @@ class SoapExceptionConverter
 
             if ($exception instanceof AccessDeniedHttpException) {
                 $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
-                return;
-            }
-
-            if ($exception instanceof ExternalSystemExceptionInterface) {
-                $externalSystemName = $exception->getExternalSystemName();
-                $message = sprintf(ExternalSystemExceptionInterface::EXCEPTION_MESSAGE_TEMPLATE, $externalSystemName);
-                $event->setException($this->createSoapFault(ReceiverSoapFault::class, $message, ExternalSystemExceptionInterface::STATUS_CODE));
                 return;
             }
 

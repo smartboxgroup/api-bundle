@@ -8,7 +8,7 @@ use Smartbox\CoreBundle\Type\Entity;
 use Smartbox\CoreBundle\Type\EntityInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ApiEntity extends Entity implements SerializerCacheableInterface
+class ApiEntity extends Entity
 {
     public function __construct()
     {

@@ -11,6 +11,8 @@ use Nelmio\ApiDocBundle\DataTypes;
 use Nelmio\ApiDocBundle\Parser\ParserInterface;
 use Nelmio\ApiDocBundle\Parser\PostParserInterface;
 use Smartbox\ApiBundle\Services\Serializer\Exclusion\PreserveArrayTypeStrategy;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\PropertyMetadata;
 
@@ -64,7 +66,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
         $exclusionStrategies = array();
         $c = SerializationContext::create();
         $exclusionStrategies[] = new VersionExclusionStrategy($version);
-        $exclusionStrategies[] = new PreserveArrayTypeStrategy();
+//        $exclusionStrategies[] = new PreserveArrayTypeStrategy();
 
 
         if (!empty($groups)) {
@@ -155,5 +157,30 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
         }
 
         return $parameters;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function parseConstraint(Constraint $constraint, $vparams, $className, &$visited = array())
+    {
+        $validationParams = parent::parseConstraint($constraint, $vparams, $className, $visited);
+        if ($constraint instanceof Count) {
+            $validationParams['actualType'] = DataTypes::COLLECTION;
+            $validationParams['subType'] = DataTypes::COLLECTION;
+            $messages = array();
+            if (isset($constraint->min)) {
+                if ($constraint->min > 0) {
+                    $validationParams['required'] = true;
+                }
+                $messages[] = "min: {$constraint->min}";
+            }
+            if (isset($constraint->max)) {
+                $messages[] = "max: {$constraint->max}";
+            }
+            $validationParams['format'][] = '{count: ' . join(', ', $messages) . '}';
+        }
+
+        return $validationParams;
     }
 }

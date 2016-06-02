@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6684467cbddd66d96a95c485f5bc3e5a",
-    "content-hash": "de527efe3a44d2fd3a429b389c4024a8",
+    "hash": "2bd9b0d2abe33b80c8c4e5fc373b7a02",
+    "content-hash": "0dcd46fd8e747f0b995870f3e61f4916",
     "packages": [
         {
             "name": "ass/xmlsecurity",
@@ -401,7 +401,7 @@
                     "email": "schmittjoh@gmail.com"
                 }
             ],
-            "description": "Common StringType Manipulations with regard to casing and singular/plural rules.",
+            "description": "Common String Manipulations with regard to casing and singular/plural rules.",
             "homepage": "http://www.doctrine-project.org",
             "keywords": [
                 "inflection",
@@ -1559,11 +1559,11 @@
         },
         {
             "name": "smartbox/besimple/soap",
-            "version": "dev-master",
+            "version": "dev-SIEAI-549",
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/BeSimpleSoap.git",
-                "reference": "f989c1c3c234b63795395ff0f51e07945552cac6"
+                "reference": "c8539240c6c6e72e3f8769ab6facf88ab2d1d42e"
             },
             "require": {
                 "ass/xmlsecurity": "~1.0",
@@ -1620,7 +1620,7 @@
             "keywords": [
                 "soap"
             ],
-            "time": "2016-05-16 10:59:09"
+            "time": "2016-06-02 10:12:32"
         },
         {
             "name": "smartbox/core-bundle",
@@ -1628,7 +1628,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/core-bundle.git",
-                "reference": "c9b1f52dfc1375a3b1f979511f602353a2b3f850"
+                "reference": "518911d261849b8a6e17c5b55913ad01853e240e"
             },
             "require": {
                 "doctrine/annotations": ">=1.2.0",
@@ -1656,7 +1656,7 @@
                 "MIT"
             ],
             "description": "Smartbox Core Bundle",
-            "time": "2016-05-16 15:59:53"
+            "time": "2016-05-26 14:13:57"
         },
         {
             "name": "snc/redis-bundle",

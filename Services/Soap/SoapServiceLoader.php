@@ -79,7 +79,7 @@ class SoapServiceLoader extends Loader
             // Filters
             if ($filtersPresent) {
                 $methodArguments['filters'] = $this->loadType(
-                    'BeSimple\SoapCommon\Type\KeyValue\String[]',
+                    'BeSimple\SoapCommon\Type\KeyValue\StringType[]',
                     null,
                     $serviceVersion
                 );

@@ -1563,7 +1563,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/BeSimpleSoap.git",
-                "reference": "510e2facc09b1b1731f02222258d36fdc5478fdb"
+                "reference": "f989c1c3c234b63795395ff0f51e07945552cac6"
             },
             "require": {
                 "ass/xmlsecurity": "~1.0",
@@ -1620,7 +1620,7 @@
             "keywords": [
                 "soap"
             ],
-            "time": "2016-05-10 10:04:00"
+            "time": "2016-05-16 10:59:09"
         },
         {
             "name": "smartbox/core-bundle",
@@ -1628,7 +1628,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/core-bundle.git",
-                "reference": "c782ada1a540cbef94da98ad73fee49faaf233b8"
+                "reference": "c9b1f52dfc1375a3b1f979511f602353a2b3f850"
             },
             "require": {
                 "doctrine/annotations": ">=1.2.0",
@@ -1656,7 +1656,7 @@
                 "MIT"
             ],
             "description": "Smartbox Core Bundle",
-            "time": "2016-04-18 10:57:09"
+            "time": "2016-05-16 15:59:53"
         },
         {
             "name": "snc/redis-bundle",

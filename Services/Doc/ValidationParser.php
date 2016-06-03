@@ -124,7 +124,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
                 null !== $this->factory->getMetadataFor($validationParams['class'])
             ) {
                 $visited[] = $validationParams['class'];
-                $validationParams['children'] = $this->doParse($validationParams['class'], $visited);
+                $validationParams['children'] = $this->doParse($validationParams['class'], $visited, $version, $groups);
             }
 
             $validationParams['actualType'] = isset($validationParams['actualType']) ? $validationParams['actualType'] : DataTypes::STRING;

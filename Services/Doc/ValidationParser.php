@@ -91,11 +91,11 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
         $defaults = $refl->getDefaultProperties();
 
         foreach ($properties as $property) {
-            $validationParams = array();
-
-            $validationParams['default'] = isset($defaults[$property]) ? $defaults[$property] : null;
-            $validationParams['groups'] = $groups;
-            $validationParams['version'] = $version;
+            $validationParams = [
+                'default' => isset($defaults[$property]) ? $defaults[$property] : null,
+                'groups'  => $groups,
+                'version' => $version
+            ];
 
             $pds = $meta->getPropertyMetadata($property);
             /** @var PropertyMetadata $propertyMetadata */
@@ -119,16 +119,18 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
 
             $typeKey = null;
 
-            if(array_key_exists('class',$validationParams) && $validationParams['class']){
-                $typeKey = $validationParams['class'].$version;
+            if (!empty($validationParams['class'])) {
+                $typeKey = $validationParams['class'] . $version;
 
-                if(!empty($groups)){
-                    $typeKey.= join('',$groups);
+                if (!empty($groups)) {
+                    $typeKey .= join('', $groups);
                 }
             }
 
             // check for nested classes with All constraint
-            if ($typeKey && !in_array($typeKey, $visited) &&
+            if (
+                $typeKey &&
+                !in_array($typeKey, $visited) &&
                 isset($validationParams['class']) &&
                 null !== $this->factory->getMetadataFor($validationParams['class'])
             ) {
@@ -280,7 +282,12 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
 
                         if (!in_array($nestedType, $visited)) {
                             $visited[] = $nestedType;
-                            $vparams['children'] = $this->doParse($nestedType, $visited,$vparams['version'],$vparams['groups']);
+                            $vparams['children'] = $this->doParse(
+                                $nestedType,
+                                $visited,
+                                $vparams['version'],
+                                $vparams['groups']
+                            );
                         }
                     }
                 }
@@ -289,6 +296,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
 
         $vparams = $this->parseCountConstraint($constraint, $vparams);
         $vparams = $this->parseDataType($vparams);
+
         return $vparams;
     }
 
@@ -328,7 +336,9 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
      */
     private function parseDataType(array $validationParams)
     {
-        $validationParams['class'] = null;
+        if (!array_key_exists('class', $validationParams)) {
+            $validationParams['class'] = null;
+        }
 
         if (
             isset($validationParams['dataType']) &&

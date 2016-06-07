@@ -10,7 +10,8 @@ use Metadata\MetadataFactoryInterface;
 use Nelmio\ApiDocBundle\DataTypes;
 use Nelmio\ApiDocBundle\Parser\ParserInterface;
 use Nelmio\ApiDocBundle\Parser\PostParserInterface;
-use Smartbox\ApiBundle\Services\Serializer\Exclusion\PreserveArrayTypeStrategy;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\PropertyMetadata;
 
@@ -64,8 +65,6 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
         $exclusionStrategies = array();
         $c = SerializationContext::create();
         $exclusionStrategies[] = new VersionExclusionStrategy($version);
-        $exclusionStrategies[] = new PreserveArrayTypeStrategy();
-
 
         if (!empty($groups)) {
             $exclusionStrategies[] = new GroupsExclusionStrategy($groups);
@@ -115,14 +114,17 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
                 }
             }
 
+            if (in_array($validationParams['class'], $visited)) {
+                continue;
+            }
+
             // check for nested classes with All constraint
-            if (isset($validationParams['class']) && !in_array(
-                    $validationParams['class'],
-                    $visited
-                ) && null !== $this->factory->getMetadataFor($validationParams['class'])
+            if (
+                isset($validationParams['class']) &&
+                null !== $this->factory->getMetadataFor($validationParams['class'])
             ) {
                 $visited[] = $validationParams['class'];
-                $validationParams['children'] = $this->doParse($validationParams['class'], $visited);
+                $validationParams['children'] = $this->doParse($validationParams['class'], $visited, $version, $groups);
             }
 
             $validationParams['actualType'] = isset($validationParams['actualType']) ? $validationParams['actualType'] : DataTypes::STRING;
@@ -155,5 +157,67 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
         }
 
         return $parameters;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function parseConstraint(Constraint $constraint, $vparams, $className, &$visited = array())
+    {
+        $validationParams = parent::parseConstraint($constraint, $vparams, $className, $visited);
+        $validationParams = $this->parseCountConstraint($constraint, $validationParams);
+        $validationParams = $this->parseDataType($validationParams);
+
+        return $validationParams;
+    }
+
+    /**
+     * Method to parse if constraint is count type to add the information in validation parameters.
+     *
+     * @param Constraint $constraint The constraint metadata object.
+     * @param array $validationParams The existing validation parameters.
+     *
+     * @return array
+     */
+    private function parseCountConstraint(Constraint $constraint, array $validationParams)
+    {
+        if ($constraint instanceof Count) {
+            $validationParams['actualType'] = DataTypes::COLLECTION;
+            $messages = [];
+            if (isset($constraint->min)) {
+                $messages[] = "min: {$constraint->min}";
+            }
+
+            if (isset($constraint->max)) {
+                $messages[] = "max: {$constraint->max}";
+            }
+
+            $validationParams['format'][] = '{count: ' . join(', ', $messages) . '}';
+        }
+
+        return $validationParams;
+    }
+
+    /**
+     * Method to parse the dataType to see if it is a primitive type or it is a class.
+     *
+     * @param array $validationParams The existing validation parameters.
+     *
+     * @return array
+     */
+    private function parseDataType(array $validationParams)
+    {
+        $validationParams['class'] = null;
+
+        if (
+            isset($validationParams['dataType']) &&
+            !DataTypes::isPrimitive(trim($validationParams['dataType'], '\\')) &&
+            class_exists($validationParams['dataType'])
+        ) {
+            $validationParams['actualType'] = DataTypes::MODEL;
+            $validationParams['class']      = $validationParams['dataType'];
+        }
+
+        return $validationParams;
     }
 }

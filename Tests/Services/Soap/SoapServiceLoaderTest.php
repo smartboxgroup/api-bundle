@@ -33,7 +33,7 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
         $complexTypeLoader = new ComplexTypeLoader($this->getContainer()->get('annotation_reader'), $typeRepository);
         $complexTypeLoader->setSerializer($this->getContainer()->get('serializer'));
 
-        $resolver = $this->getMock('Symfony\Component\Config\Loader\LoaderResolverInterface');
+        $resolver = $this->createMock('Symfony\Component\Config\Loader\LoaderResolverInterface');
         $resolver
             ->method('resolve')
             ->will($this->returnValue($complexTypeLoader));
@@ -235,7 +235,7 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
                         'input' => $this->newMessage('sendBoxBriefRequest', [
                             [
                                 'name'     => 'filters',
-                                'type'     => 'BeSimple\SoapCommon\Type\KeyValue\String[]',
+                                'type'     => 'BeSimple\SoapCommon\Type\KeyValue\StringType[]',
                                 'nillable' => false,
                             ]
                         ]),

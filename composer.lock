@@ -1563,7 +1563,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/BeSimpleSoap.git",
-                "reference": "f989c1c3c234b63795395ff0f51e07945552cac6"
+                "reference": "a6b3dd110ca56eb97dd132edac82b6394238a90a"
             },
             "require": {
                 "ass/xmlsecurity": "~1.0",
@@ -1620,7 +1620,7 @@
             "keywords": [
                 "soap"
             ],
-            "time": "2016-05-16 10:59:09"
+            "time": "2016-06-02 16:34:08"
         },
         {
             "name": "smartbox/core-bundle",
@@ -1628,12 +1628,12 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/core-bundle.git",
-                "reference": "c9b1f52dfc1375a3b1f979511f602353a2b3f850"
+                "reference": "15e21ef1725ae2c7db6388010fd46c998b7d8094"
             },
             "require": {
                 "doctrine/annotations": ">=1.2.0",
                 "jms/serializer-bundle": ">=0.13.0",
-                "php": ">=5.4",
+                "php": ">=5.6",
                 "sensio/distribution-bundle": ">=4.0",
                 "sensio/framework-extra-bundle": ">=3.0",
                 "symfony/monolog-bundle": ">=2.4",
@@ -1641,7 +1641,9 @@
             },
             "require-dev": {
                 "digitalnature/php-ref": "dev-master",
-                "phpunit/phpunit": "4.7.*",
+                "phpunit/php-code-coverage": "dev-master",
+                "phpunit/phpunit": "dev-master",
+                "phpunit/phpunit-mock-objects": "dev-master",
                 "predis/predis": "^1.0",
                 "sensio/generator-bundle": "~2.3",
                 "snc/redis-bundle": "^1.1"
@@ -1656,7 +1658,7 @@
                 "MIT"
             ],
             "description": "Smartbox Core Bundle",
-            "time": "2016-05-16 15:59:53"
+            "time": "2016-06-09 12:28:40"
         },
         {
             "name": "snc/redis-bundle",

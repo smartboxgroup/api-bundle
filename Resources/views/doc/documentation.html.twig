@@ -9,7 +9,9 @@
 
 $client->{{ methodName }}(array(
 {% for inputName, inputConfig in methodConfig.input %}
-    '{{ inputName }}' => ${{ inputName }},  //{{ inputConfig.description|default('') }} (Type: {{ inputConfig.type }}{% if inputConfig.group is defined %} Group: {{ inputConfig.group }}{% endif %})
+    {% set type = inputConfig.type|split('\\') %}
+
+    '{{ inputName }}' => ${{ inputName }},  //{{ inputConfig.description|default('') }} (Type: {{ type|last }}{% if inputConfig.group is defined %} Group: {{ inputConfig.group }}{% endif %})
 {% endfor %}
 ));
 

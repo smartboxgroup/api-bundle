@@ -257,15 +257,16 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
      */
     public function cleanDatatype($parameter)
     {
-        $parts = explode('\\', $parameter["dataType"]);
+        $parts = explode('\\', $parameter['dataType']);
 
-        $parameter["dataType"] = end($parts);
+        $parameter['dataType'] = end($parts);
 
-        if(isset($parameter["children"])){
-            foreach ($parameter["children"] as $name=>$child){
-                $parameter["children"][$name] = $this->cleanDatatype($child);
+        if (isset($parameter['children'])) {
+            foreach ($parameter['children'] as $name => $child) {
+                $parameter['children'][$name] = $this->cleanDatatype($child);
             }
         }
+
         return $parameter;
     }
 

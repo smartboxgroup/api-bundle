@@ -15,7 +15,7 @@ class PrintableDumpCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setDescription('Dump a printable html file')
+            ->setDescription('Dump the api documentation as a printable html file')
             ->setName('smartbox:api:dumpPrintable')
         ;
     }
@@ -27,11 +27,7 @@ class PrintableDumpCommand extends ContainerAwareCommand
         $formatter->setMotdTemplate('SmartboxApiBundle:doc:motd.html.twig');
         
         $formatter->setEnableSandbox(false);
-
-        $this->getContainer()->enterScope('request');
-
-        $this->getContainer()->set('request', new Request(), 'request');
-
+        
         $extractedDoc = $this->getContainer()->get('nelmio_api_doc.extractor.api_doc_extractor')->all("default");
         
         $formattedDoc = $formatter->format($extractedDoc);

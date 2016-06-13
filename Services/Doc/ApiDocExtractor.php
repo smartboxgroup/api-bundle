@@ -174,6 +174,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
 
                         foreach ($parameters as $parameter => $parameterConfig) {
                             $parameters[$parameter]['readonly'] = false;
+                            $parameters[$parameter] = $this->cleanDatatype($parameterConfig);
                         }
 
                         $annotationExtracted->setParameters($parameters);
@@ -246,7 +247,26 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
             }
         );
 
+
         return $array;
+    }
+
+    /**
+     * @param $parameter
+     * @return mixed
+     */
+    public function cleanDatatype($parameter)
+    {
+        $parts = explode('\\', $parameter["dataType"]);
+
+        $parameter["dataType"] = end($parts);
+
+        if(isset($parameter["children"])){
+            foreach ($parameter["children"] as $name=>$child){
+                $parameter["children"][$name] = $this->cleanDatatype($child);
+            }
+        }
+        return $parameter;
     }
 
     public function getDocumentationFor($serviceId, $methodName, $methodConfig)

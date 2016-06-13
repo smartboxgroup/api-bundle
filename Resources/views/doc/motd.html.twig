@@ -2,17 +2,21 @@
     pre ~ p {
         display: none;
     }
+
     pre{
         display: none ;
     }
+
     td {
         word-wrap: break-word;
         margin-left:15px;
         page-break-inside: avoid;
     }
 
-    table {
-        page-break-inside: avoid;
+    span.http_method i{
+        color : black !important;
+        font-weight: bold !important;
+        background: none !important;
     }
 
     tr {
@@ -88,12 +92,18 @@
 
     .date {
         margin-left: 5px;
+        font-style: italic;
+        font-size: 0.6em;
     }
 
     .heading h2{
         display: none;
     }
 
+    .heading{
+        background: none !important;;
+        border: none !important;
+    }
 </style>
 
 <div class="date">
@@ -117,7 +127,6 @@
                         <td>
                             <a href="#{{ data.id }}">
                                 {% set ressourceArray = resource|split('/') %}
-
                                 {{ ressourceArray|last }}
                             </a>
                         </td>

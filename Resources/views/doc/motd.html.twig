@@ -1,0 +1,141 @@
+<style type="text/css">
+    pre ~ p {
+        display: none;
+    }
+
+    pre {
+        display: none ;
+    }
+
+    td {
+        word-wrap: break-word;
+        margin-left: 15px;
+        page-break-inside: avoid;
+    }
+
+    span.http_method i {
+        color : black !important;
+        font-weight: bold !important;
+        background: none !important;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+
+    .summary {
+        page-break-after: always;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+        text-align: center;
+        padding: 10px;
+        page-break-inside: auto;
+    }
+
+    .summary th {
+        border: 1px black solid;
+        text-align: center;
+        page-break-inside: auto;
+    }
+
+    .summary td {
+        word-wrap: break-word;
+        margin-left: 15px;
+        border: 1px black solid;
+        font-size: 0.7em;
+        page-break-inside: auto;
+    }
+
+    .summary table {
+        margin: auto;
+        page-break-inside: auto;
+    }
+
+    div.content {
+        page-break-after: always;
+        display : block !important;
+        background: none;
+    }
+
+    .section.active {
+        border: 0;
+        background: none;
+        margin: 0;
+    }
+
+    li.operation.post div.content {
+        background: none;
+    }
+
+    li.operation div.content {
+        background: none;
+        border: none;
+        padding: 0;
+    }
+
+    .actions {
+        display: none;
+    }
+
+    .pane.content div p:last-of-type {
+        display: none;
+    }
+
+    table.fullwidth td:nth-child(3) {
+        max-width: 55px !important;
+    }
+
+    table.fullwidth td:nth-child(2) {
+        max-width: 200px !important;
+    }
+
+    .date {
+        margin-left: 5px;
+        font-style: italic;
+        font-size: 0.6em;
+    }
+
+    .heading h2 {
+        display: none;
+    }
+
+    .heading {
+        background: none !important;;
+        border: none !important;
+    }
+</style>
+
+<div class="date">
+    Documentation generated : {{ "now"|date("d/m/Y h:i:s a") }}
+</div>
+
+<div class="summary">
+    <table>
+        <tr>
+            <th>Description</th>
+            <th>Path</th>
+            <th>Type</th>
+        </tr>
+        {% for sections in resources  %}
+            {% for resource, methods in sections %}
+                {% for data in methods %}
+                    <tr>
+                        <td>
+                            {{ data.description }}
+                        </td>
+                        <td>
+                            <a href="#{{ data.id }}">
+                                {% set ressourceArray = resource|split('/') %}
+                                {{ ressourceArray|last }}
+                            </a>
+                        </td>
+                        <td>
+                            <i>{{ data.method|upper }}</i>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+    </table>
+</div>

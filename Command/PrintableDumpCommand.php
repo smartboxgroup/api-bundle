@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class PdfDumpCommand extends ContainerAwareCommand
+class PrintableDumpCommand extends ContainerAwareCommand
 {
 
     protected function configure()
@@ -22,7 +22,6 @@ class PdfDumpCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $formatter = $this->getContainer()->get('nelmio_api_doc.formatter.html_formatter');
 
         $formatter->setMotdTemplate('SmartboxApiBundle:doc:motd.html.twig');

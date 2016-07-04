@@ -15,10 +15,18 @@ class ThrottlingException extends \Exception
      */
     protected $serviceId;
 
-    public function __construct($message = "", $code = 0, RateLimitInfo $rateLimitInfo, $serviceId, \Exception $previous = null)
+    /**
+     * ThrottlingException constructor.
+     *
+     * @param string $message
+     * @param int $code
+     * @param RateLimitInfo $rateLimitInfo
+     * @param $serviceId
+     * @param \Exception|null $previous
+     */
+    public function __construct($message, $code, RateLimitInfo $rateLimitInfo, $serviceId, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
-        
         $this->rateLimitInfo = $rateLimitInfo;
         $this->serviceId = $serviceId;
     }

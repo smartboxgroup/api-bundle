@@ -13,7 +13,6 @@ use Predis\Connection\ConnectionException;
 use Psr\Log\LoggerAwareTrait;
 use Smartbox\ApiBundle\Exception\ThrottlingException;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;

@@ -161,7 +161,7 @@ smartbox_api:
                       httpMethod: GET
                     throttling:
                         limit: 2
-                        period: 3
+                        period: 10
                 updateItem:
                     description: Updates an item
                     successCode: 204

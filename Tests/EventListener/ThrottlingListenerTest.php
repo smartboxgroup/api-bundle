@@ -70,13 +70,13 @@ class ThrottlingListenerTest extends WebTestCase
             $remaining = $i - 1;
             if ($remaining >= 0) {
                 $this->assertEquals(Codes::HTTP_OK, $response->getStatusCode(), 'Response code is not correct.');
-                $this->assertTrue($response->headers->contains('X-RateLimit-Limit', $rateLimit), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
-                $this->assertTrue($response->headers->contains('X-RateLimit-Remaining', $remaining), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', $remaining));
+                $this->assertTrue($response->headers->contains('x-ratelimit-limit', $rateLimit), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
+                $this->assertTrue($response->headers->contains('x-ratelimit-remaining', $remaining), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', $remaining));
                 $this->assertEquals($responseContentItem, $response->getContent(), 'Response should contain proper content.');
             } else {
                 $this->assertEquals(Codes::HTTP_TOO_MANY_REQUESTS, $response->getStatusCode(), 'Response code is not correct.');
-                $this->assertTrue($response->headers->contains('X-RateLimit-Limit', $rateLimit), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
-                $this->assertTrue($response->headers->contains('X-RateLimit-Remaining', 0), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', 0));
+                $this->assertTrue($response->headers->contains('x-ratelimit-limit', $rateLimit), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
+                $this->assertTrue($response->headers->contains('x-ratelimit-remaining', 0), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', 0));
                 $this->assertEquals($responseContentErrorMessage, $response->getContent(), 'Response should contain proper content.');
             }
         }

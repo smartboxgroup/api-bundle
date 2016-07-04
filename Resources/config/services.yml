@@ -116,4 +116,4 @@ services:
         class: %smartapi.event_listener.propagate_http_headers.class%
         arguments: ["@smartapi.configurator"]
         tags:
-            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -999 }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -255 }

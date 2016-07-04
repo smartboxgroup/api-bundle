@@ -11,6 +11,9 @@ use Noxlogic\RateLimitBundle\Service\RateLimitService;
 use Noxlogic\RateLimitBundle\Util\PathLimitProcessor;
 use Predis\Connection\ConnectionException;
 use Psr\Log\LoggerAwareTrait;
+use Smartbox\ApiBundle\Exception\ThrottlingException;
+use Smartbox\ApiBundle\Services\ApiConfigurator;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -23,6 +26,12 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class ThrottlingListener extends BaseListener
 {
+
+    const RATE_LIMIT_INFO = "rate_limit_info";
+
+    /**
+     *
+     */
     use LoggerAwareTrait;
 
     /**
@@ -57,7 +66,7 @@ class ThrottlingListener extends BaseListener
 
     /**
      * @param FilterControllerEvent $event
-     * @throws SenderSoapFault
+     * @throws \Exception
      */
     public function onKernelController(FilterControllerEvent $event)
     {
@@ -68,10 +77,14 @@ class ThrottlingListener extends BaseListener
             $this->handleOnKernelController($event);
         }catch (\Exception $ex){
             $this->logger->error($ex->getMessage(), ['exception' => $ex]);
+            if($ex instanceof ThrottlingException){
+                throw $ex;
+            }
         }
     }
 
-    protected function handleOnKernelController(FilterControllerEvent $event){
+    protected function handleOnKernelController(FilterControllerEvent $event)
+    {
         $request = $event->getRequest();
         $api = $request->get('api');
 
@@ -111,10 +124,9 @@ class ThrottlingListener extends BaseListener
                 }
             }
 
-
             // Store the current rating info in the request attributes
             $request = $event->getRequest();
-            $request->attributes->set('rate_limit_info', $rateLimitInfo);
+            $request->attributes->set(self::RATE_LIMIT_INFO, $rateLimitInfo);
 
             // When we exceeded our limit, return a custom error response
             if ($rateLimitInfo->getCalls() > $rateLimitInfo->getLimit()) {
@@ -139,7 +151,7 @@ class ThrottlingListener extends BaseListener
                         }
                     );
                 } else {
-                    throw new SenderSoapFault($message);
+                    throw new ThrottlingException($message, $code, $rateLimitInfo, $request->get(ApiConfigurator::SERVICE_ID));
                 }
             }
         } catch (ConnectionException $e) {

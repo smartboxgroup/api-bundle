@@ -1,13 +1,21 @@
 <?php
 namespace Smartbox\ApiBundle\Services\Soap;
 
+use BeSimple\SoapBundle\Soap\SoapResponse;
 use BeSimple\SoapServer\Exception\ReceiverSoapFault;
 use BeSimple\SoapServer\Exception\SenderSoapFault;
+use Noxlogic\RateLimitBundle\NoxlogicRateLimitBundle;
+use Noxlogic\RateLimitBundle\Service\RateLimitInfo;
 use Psr\Log\LoggerInterface;
+use Smartbox\ApiBundle\EventListener\ThrottlingListener;
+use Smartbox\ApiBundle\Exception\ThrottlingException;
+use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\Integration\FrameworkBundle\Exceptions\Deprecated\InvalidMessageException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -59,6 +67,9 @@ class SoapExceptionConverter
                 $exception instanceof FatalErrorException &&
                 strpos($exception->getMessage(), 'SOAP-ERROR: Encoding') !== FALSE
             ) {
+                $exception = new \SoapFault("Error", $exception->getMessage());
+                $event->setException($exception);
+                $event->setResponse(new SoapResponse($exception->getMessage()));
                 $event->stopPropagation();
                 return;
             }
@@ -85,6 +96,28 @@ class SoapExceptionConverter
 
             if ($exception instanceof AccessDeniedHttpException) {
                 $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
+                return;
+            }
+
+            if ($exception instanceof ThrottlingException) {
+
+                $request = $event->getRequest();
+                $rateLimitInfo = $exception->getRateLimitInfo();
+
+                $request->attributes->set(ThrottlingListener::RATE_LIMIT_INFO, $rateLimitInfo);
+                $request->attributes->set(ApiConfigurator::SERVICE_ID, $exception->getServiceId());
+
+                $event->setException(
+                    $this->createSoapFault(
+                        SenderSoapFault::class,
+                        $exception->getMessage(),
+                        null,
+                        null,
+                        array(
+                            ThrottlingListener::RATE_LIMIT_INFO => $rateLimitInfo
+                        )
+                    )
+                );
                 return;
             }
 

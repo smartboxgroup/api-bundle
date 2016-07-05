@@ -89,7 +89,7 @@ class ThrottlingListenerTest extends WebTestCase
     }
 
 
-    public function testSoap()
+    public function testItShouldLimitRequestsAndRespondWithProperHeadersForSoap()
     {
         $responseContentErrorMessage =
             sprintf(

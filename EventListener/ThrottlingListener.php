@@ -69,17 +69,7 @@ class ThrottlingListener extends BaseListener
      */
     public function onKernelController(FilterControllerEvent $event)
     {
-        /**
-         * We must ensure that even if the throttling fails for any reason, we still handle the requests
-         */
-        try{
-            $this->handleOnKernelController($event);
-        }catch (\Exception $ex){
-            $this->logger->error($ex->getMessage(), ['exception' => $ex]);
-            if($ex instanceof ThrottlingException){
-                throw $ex;
-            }
-        }
+        $this->handleOnKernelController($event);
     }
 
     protected function handleOnKernelController(FilterControllerEvent $event)

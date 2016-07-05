@@ -17,7 +17,7 @@ class ThrottlingException extends \Exception
 
     /**
      * ThrottlingException constructor.
-     *
+     * 
      * @param string $message
      * @param int $code
      * @param RateLimitInfo $rateLimitInfo

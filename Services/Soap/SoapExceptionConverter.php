@@ -63,10 +63,7 @@ class SoapExceptionConverter
                 $exception instanceof FatalErrorException &&
                 strpos($exception->getMessage(), 'SOAP-ERROR: Encoding') !== FALSE
             ) {
-                $exception = new \SoapFault("SOAP-ERROR: Encoding", $exception->getMessage());
-                $event->setException($exception);
-                $event->setResponse(new SoapResponse($exception->getMessage()));
-                $event->stopPropagation();
+                $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
                 return;
             }
 
@@ -100,19 +97,14 @@ class SoapExceptionConverter
                 $request = $event->getRequest();
                 $rateLimitInfo = $exception->getRateLimitInfo();
 
-                //Set mandatory variable missing for the new request
+                //Set mandatory variable missing inside the request
                 $request->attributes->set(ApiConfigurator::SERVICE_ID, $exception->getServiceId());
                 $request->attributes->set(ThrottlingListener::RATE_LIMIT_INFO, $rateLimitInfo);
 
                 $event->setException(
                     $this->createSoapFault(
                         SenderSoapFault::class,
-                        $exception->getMessage(),
-                        null,
-                        null,
-                        array(
-                            ThrottlingListener::RATE_LIMIT_INFO => $rateLimitInfo
-                        )
+                        $exception->getMessage()
                     )
                 );
                 return;

@@ -1,9 +1,13 @@
 <?php
 namespace Smartbox\ApiBundle\Services\Soap;
 
+use BeSimple\SoapBundle\Soap\SoapResponse;
 use BeSimple\SoapServer\Exception\ReceiverSoapFault;
 use BeSimple\SoapServer\Exception\SenderSoapFault;
 use Psr\Log\LoggerInterface;
+use Smartbox\ApiBundle\EventListener\ThrottlingListener;
+use Smartbox\ApiBundle\Exception\ThrottlingException;
+use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\Integration\FrameworkBundle\Exceptions\Deprecated\InvalidMessageException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -59,7 +63,7 @@ class SoapExceptionConverter
                 $exception instanceof FatalErrorException &&
                 strpos($exception->getMessage(), 'SOAP-ERROR: Encoding') !== FALSE
             ) {
-                $event->stopPropagation();
+                $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
                 return;
             }
 
@@ -84,6 +88,19 @@ class SoapExceptionConverter
             }
 
             if ($exception instanceof AccessDeniedHttpException) {
+                $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
+                return;
+            }
+
+            if ($exception instanceof ThrottlingException) {
+
+                $request = $event->getRequest();
+                $rateLimitInfo = $exception->getRateLimitInfo();
+
+                //Set mandatory variable missing inside the request
+                $request->attributes->set(ApiConfigurator::SERVICE_ID, $exception->getServiceId());
+                $request->attributes->set(ThrottlingListener::RATE_LIMIT_INFO, $rateLimitInfo);
+
                 $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
                 return;
             }

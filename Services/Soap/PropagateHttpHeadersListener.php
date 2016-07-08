@@ -8,7 +8,7 @@ use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 /**
- * Class ExposedHeadersListener
+ * Class PropagateHttpHeadersListener
  *
  * @package \Smartbox\ApiBundle\Services\Soap
  */

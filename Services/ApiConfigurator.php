@@ -15,7 +15,6 @@ use Smartbox\CoreBundle\Type\EntityInterface;
 class ApiConfigurator
 {
     const SERVICE_ID = 'serviceId';
-    const WEBSERVICE_ID = 'webservice';
     const SERVICE_NAME = 'serviceName';
     const METHOD_NAME = 'methodName';
     const VERSION = 'version';

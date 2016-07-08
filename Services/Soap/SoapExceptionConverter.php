@@ -101,12 +101,7 @@ class SoapExceptionConverter
                 $request->attributes->set(ApiConfigurator::SERVICE_ID, $exception->getServiceId());
                 $request->attributes->set(ThrottlingListener::RATE_LIMIT_INFO, $rateLimitInfo);
 
-                $event->setException(
-                    $this->createSoapFault(
-                        SenderSoapFault::class,
-                        $exception->getMessage()
-                    )
-                );
+                $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
                 return;
             }
 

@@ -54,6 +54,11 @@ be_simple_soap:
             resource:      throttling_v1
             resource_type: smartapi_soap
 
+smartbox_core:
+  cache_drivers:
+    null:
+      service: ~
+
 smartbox_api:
     userProvider: security.user.provider.concrete.in_memory
     restEmptyBodyResponseCodes: []

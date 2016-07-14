@@ -7,6 +7,9 @@ use Predis\PredisException;
 use Smartbox\CoreBundle\Utils\SmokeTest\SmokeTestInterface;
 use Smartbox\CoreBundle\Utils\SmokeTest\Output\SmokeTestOutput;
 
+/**
+ * Class RedisConnectionSmokeTest
+ */
 class RedisConnectionSmokeTest implements SmokeTestInterface
 {
     /**
@@ -42,9 +45,6 @@ class RedisConnectionSmokeTest implements SmokeTestInterface
             $smokeTestOutput->setCode(SmokeTestOutput::OUTPUT_CODE_FAILURE);
             $smokeTestOutput->addFailureMessage('Could not connect to redis server. Error: ' . $e->getMessage());
         }
-
-//        $serverInfo = $this->redis->info();
-//        $smokeTestOutput->addInfoMessage('Server info: ' . var_export($serverInfo, true));
 
         return $smokeTestOutput;
     }

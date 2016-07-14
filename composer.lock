@@ -1628,7 +1628,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/core-bundle.git",
-                "reference": "30e2a4a9e808e7893eb04adb4174ef9b9f7fc0d5"
+                "reference": "f3e806c3750622bedae0354dd55a8bf6232171db"
             },
             "require": {
                 "doctrine/annotations": ">=1.2.0",
@@ -1658,7 +1658,7 @@
                 "MIT"
             ],
             "description": "Smartbox Core Bundle",
-            "time": "2016-07-14 14:18:21"
+            "time": "2016-07-14 15:08:59"
         },
         {
             "name": "snc/redis-bundle",

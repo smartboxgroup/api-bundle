@@ -118,7 +118,7 @@ class Configuration implements ConfigurationInterface
         $node = $treeBuilder->root('flags');
 
         $node ->useAttributeAsKey('name')
-            ->info("List of flags associated to the method \n")
+            ->info("List of flags associated to the method ")
             ->prototype('array')
             ->children()
             ->scalarNode('message')

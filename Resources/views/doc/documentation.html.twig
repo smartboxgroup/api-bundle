@@ -1,5 +1,30 @@
 <p>{{ methodConfig.description }}</p>
 
+{% if methodConfig.flags|length > 0 %}
+<h4> Flags </h4>
+<table class="fullwidth">
+    <thead>
+    <tr>
+        {% for name, data in methodConfig.flags %}
+            <th>{{ name }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        {% for name, data in methodConfig.flags %}
+            {% if data.color is defined %}
+                {% set color = data.color %}
+            {% else %}
+                {% set color = 000000 %}
+            {% endif %}
+            <td style="color:#{{ color }};">{{ data.message }}</td>
+        {% endfor %}
+    </tr>
+    </tbody>
+</table>
+{% endif %}
+
 <h4>Soap version</h4>
 <p>WSDL url: <code>{{ wsdlUrl }}</code></p>
 <p>Soap method: <code>{{ methodName }}</code></p>

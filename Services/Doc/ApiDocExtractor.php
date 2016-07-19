@@ -176,7 +176,6 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                             $parameters[$parameter]['readonly'] = false;
                             $parameters[$parameter] = $this->cleanDatatype($parameterConfig);
                         }
-
                         $annotationExtracted->setParameters($parameters);
                         $annotationExtracted->setDocumentation($this->getDocumentationFor($serviceId, $methodName, $methodConfig));
                     }
@@ -278,7 +277,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
             array(
                 ApiConfigurator::METHOD_NAME => $methodName,
                 ApiConfigurator::METHOD_CONFIG => $methodConfig,
-                'wsdlUrl' => $wsdlUrl,
+                'wsdlUrl' => $wsdlUrl
             )
         );
     }

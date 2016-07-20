@@ -1,7 +1,6 @@
 <?php
 namespace Smartbox\ApiBundle\Services\Soap;
 
-use BeSimple\SoapBundle\Soap\SoapResponse;
 use BeSimple\SoapServer\Exception\ReceiverSoapFault;
 use BeSimple\SoapServer\Exception\SenderSoapFault;
 use Psr\Log\LoggerInterface;
@@ -77,17 +76,11 @@ class SoapExceptionConverter
                 return;
             }
 
-            if ($exception instanceof BadRequestHttpException) {
-                $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
-                return;
-            }
-
-            if ($exception instanceof InvalidMessageException) {
-                $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
-                return;
-            }
-
-            if ($exception instanceof AccessDeniedHttpException) {
+            if (
+                $exception instanceof BadRequestHttpException ||
+                $exception instanceof InvalidMessageException ||
+                $exception instanceof AccessDeniedHttpException
+            ) {
                 $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
                 return;
             }

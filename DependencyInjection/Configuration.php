@@ -112,21 +112,17 @@ class Configuration implements ConfigurationInterface
         return $node;
     }
 
-    public function addFlagsNode()
+    public function addTagsNode()
     {
         $treeBuilder = new TreeBuilder();
-        $node = $treeBuilder->root('flags');
-
-        $node ->useAttributeAsKey('name')
-            ->info("List of flags associated to the method ")
+        $node = $treeBuilder->root('tags');
+        $node
+            ->info("List of tags associated to the method ")
             ->prototype('array')
-            ->children()
-            ->scalarNode('message')
-                ->isRequired()
-                ->info("Message displayed by the flag")
-            ->end()
-            ->scalarNode('color')
-                ->info("Color (in Hexadecimal) in which the message will be displayed")
+                ->children()
+                    ->scalarNode('message')->isRequired()->end()
+                    ->scalarNode('color')->end()
+                ->end()
             ->end()
         ->end();
 
@@ -253,7 +249,7 @@ class Configuration implements ConfigurationInterface
             ->append($this->addOutputNode())
             ->append($this->addRestNode())
             ->append($this->addThrottlingNode())
-            ->append($this->addFlagsNode())
+            ->append($this->addTagsNode())
             ->end()
             ->end()
             ->end();

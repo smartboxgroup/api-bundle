@@ -117,7 +117,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $node = $treeBuilder->root('tags');
         $node
-            ->info("List of tags associated to the method ")
+            ->info("List of tags associated to the method")
             ->prototype('array')
                 ->children()
                     ->scalarNode('message')->isRequired()->end()

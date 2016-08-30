@@ -277,7 +277,7 @@ class Configuration implements ConfigurationInterface
                 ->info('Defines if the parameter is a requirement, filter or the body.\nBody: There can be only one input as the body,\n and it must be an Entity or array of entities.\nRequirement: Requirements are scalar parameters which are required.\nFilter: Filters are scalar parameters which are optional.')            ->defaultValue(Configuration::MODE_REQUIREMENT)
             ->validate()
             ->ifNotInArray(self::$INPUT_MODES)
-            ->thenInvalid('Invalid database driver "%s"')
+            ->thenInvalid('Invalid input mode "%s"')
             ->end()
             ->end()
             ->scalarNode('format')->info('Regex with the format for the parameter, e.g.: d+')->defaultValue("[a-zA-Z0-9]+")->end()

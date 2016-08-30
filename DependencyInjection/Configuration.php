@@ -249,6 +249,7 @@ class Configuration implements ConfigurationInterface
             ->append($this->addOutputNode())
             ->append($this->addRestNode())
             ->append($this->addThrottlingNode())
+            ->append($this->addHeadersNode())
             ->append($this->addTagsNode())
             ->end()
             ->end()
@@ -398,6 +399,20 @@ class Configuration implements ConfigurationInterface
                     ->info('Set period to limit requests.')
                     ->isRequired()
                 ->end()
+            ->end();
+
+        return $node;
+    }
+
+    public function addHeadersNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('headers');
+
+        $node
+            ->info('Add header names required to use this method')
+            ->prototype('scalar')
+            ->defaultValue([])
             ->end();
 
         return $node;

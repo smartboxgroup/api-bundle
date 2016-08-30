@@ -2,11 +2,11 @@
 
 namespace Smartbox\ApiBundle\Command;
 
-use PhpParser\Builder\Param;
+use PhpParser\Builder\Method;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\AssignOp\Concat;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
@@ -14,16 +14,17 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\PrettyPrinter\Standard;
+use Smartbox\ApiBundle\DependencyInjection\Configuration;
+use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Routing\RouteCollection;
 
 class ClientGeneratorCommand extends ContainerAwareCommand
 {
-    const ARRAY_PREFIX      = "array<";
-
     const SIMPLE_ENTITY     = "entity";
     const ARRAY_ENTITY      = "entities";
 
@@ -34,22 +35,40 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     const OPTION_API        = "api";
     const OPTION_EXTENDS    = "extends";
 
+    /**
+     * @var array
+     */
     protected $uses = [];
+
+    /**
+     * @var string
+     */
+    protected $apiName;
+
+    /**
+     * @var string
+     */
+    protected $version;
+
+    /**
+     * @var RouteCollection
+     */
+    protected $routes;
+
     /**
      * @inheritdoc
      */
     protected function configure()
     {
         $outputPath = getcwd() . DIRECTORY_SEPARATOR;
-        $defaultApiName = "default";
         $defaultClassName = "";
         $defaultExtends = "";
 
         $this
             ->setDescription('Generate SDK for a given API')
-            ->addArgument(self::OPTION_NAMESPACE, InputArgument::REQUIRED, 'The namespace of the generated class')
+            ->addArgument(self::OPTION_API,InputArgument::REQUIRED, 'The name of the api to generate the SDK from')
             ->addArgument(self::OPTION_VERSION, InputArgument::REQUIRED, 'The version of the API to use to generate the SDK')
-            ->addOption(self::OPTION_API, "A", InputOption::VALUE_OPTIONAL, 'The name of the api to generate the SDK from', $defaultApiName)
+            ->addArgument(self::OPTION_NAMESPACE, InputArgument::REQUIRED, 'The namespace of the generated class')
             ->addOption(self::OPTION_OUTPUT, "O", InputOption::VALUE_OPTIONAL, 'The output path in which the php class will be created', $outputPath)
             ->addOption(self::OPTION_CLASS_NAME, 'C', InputOption::VALUE_OPTIONAL, 'The name of the class that will be generated', $defaultClassName)
             ->addOption(self::OPTION_EXTENDS, 'E', InputOption::VALUE_OPTIONAL, 'The name of the class to extends', $defaultExtends)
@@ -61,6 +80,9 @@ class ClientGeneratorCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        //Get all the routes to be able to match ApiMethod to correct path
+        $this->routes = $this->getContainer()->get('router')->getRouteCollection();
+
         $kernelRootDir = $this->getContainer()->getParameter('kernel.root_dir');
         $outputPath = str_replace('%kernel.root_dir%', $kernelRootDir, $input->getOption('output'));
         if(!file_exists($outputPath)){
@@ -69,18 +91,17 @@ class ClientGeneratorCommand extends ContainerAwareCommand
 
         $namespace = $input->getArgument(self::OPTION_NAMESPACE);
 
-        $version = $input->getArgument(self::OPTION_VERSION);
+        $this->version = $input->getArgument(self::OPTION_VERSION);
 
-        $apiName = $input->getOption(self::OPTION_API);
+        $this->apiName = $input->getArgument(self::OPTION_API);
 
         $className = $input->getOption(self::OPTION_CLASS_NAME);
         if(empty($className)){
-            $className = ucfirst($apiName)."V".$version."SDK";
+            $className = ucfirst($this->apiName).ucfirst($this->version)."SDK";
         }
 
-        $classToExtend = $input->getOption(self::OPTION_EXTENDS);
-
-        $extractedDoc = $this->getContainer()->get('nelmio_api_doc.extractor.api_doc_extractor')->all($apiName);
+        $apiConfigurator = $this->getContainer()->get("smartapi.configurator");
+        $methods = $apiConfigurator->getConfigByServiceNameAndVersion($this->apiName, $this->version);
 
         $factory = new BuilderFactory();
         $stmtClass = $factory->class($className)
@@ -89,15 +110,15 @@ class ClientGeneratorCommand extends ContainerAwareCommand
                   * Class $className
                   */"
             );
+
+        $classToExtend = $input->getOption(self::OPTION_EXTENDS);
         if(!empty($classToExtend)){
             $stmtClass->extend($classToExtend);
         }
 
-        $uses = [];
-        $methods = $this->buildApiMethodsList($extractedDoc);
-
-        foreach ($methods as $method){
-            $sdkMethod = $this->buildMethod($method, $factory);
+        //Build all the methods of the given API
+        foreach ($methods as $methodName=>$method){
+            $sdkMethod = $this->buildMethod($methodName, $method, $factory);
             $stmtClass->addStmt( $sdkMethod );
         }
 
@@ -108,7 +129,6 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             ->getNode();
 
         $prettyPrinter = new Standard();
-
         $content = $prettyPrinter->prettyPrintFile([$node]);
 
         $file = fopen($outputPath.$className.".php", 'wb');
@@ -116,178 +136,203 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         fclose($file);
     }
 
+
     /**
-     * @param $extractedDoc
+     * Build PHP function for a given API method
      *
-     * @return array
+     * @param $methodName
+     * @param $apiMethod
+     * @param BuilderFactory $factory
+     *
+     * @return Method
+     * @throws \Exception
      */
-    public function buildApiMethodsList($extractedDoc)
+    protected function buildMethod($methodName, $apiMethod, BuilderFactory &$factory)
     {
-        $results = [];
-        foreach ($extractedDoc as $method){
-            $uri = $method["resource"];
-            $annotation = $method["annotation"];
+        $methodArgs = [];
+        $requestArgs = [];
+        $requirements = [];
+        $filters = [];
+        $methodComment ="/**\r\n";
 
-            $row = [
-                "uri" => $uri,
-                "httpMethod" => $annotation->getMethod(),
-                "methodName" => $annotation->getRoute()->getDefaults()["methodName"],
-                "objectType" => $annotation->getInput()["class"],
-                "requirements" => $annotation->getRequirements()
-            ];
 
-            $results[] = $row;
+        foreach ($apiMethod["input"] as $inputName => $input){
+            $inputMode = $input["mode"];
+
+            $type = ApiConfigurator::getSingleType($input["type"]);
+
+            switch ($inputMode){
+                case Configuration::MODE_BODY:
+
+                    $class = new \ReflectionClass($type);
+                    $shortNameClass = $class->getShortName();
+
+                    if(self::isArray($input["type"])){
+                        $entityVariableName = self::ARRAY_ENTITY;
+                        $hint = "array";
+                        $comment = "* @param ".$shortNameClass."[] \$$entityVariableName \r\n";
+                    }else{
+                        $entityVariableName = self::SIMPLE_ENTITY;
+                        $comment = "* @param ".$shortNameClass." \$$entityVariableName \r\n";
+                        $hint = $shortNameClass;
+                    }
+
+                    // Creating new param
+                    $param = $factory->param($entityVariableName);
+                    $param->setTypeHint($hint);
+
+                    //Adding it to the list of param
+                    $methodArgs[] = $param;
+
+                    //Adding new variable to the list of argument to pass to the this->request method
+                    $requestArgs[] = new Variable($entityVariableName);
+
+                    //Add class to the list of dependencies
+                    $this->uses[$type] = $factory->use($class->getName())->as($shortNameClass);
+
+                    break;
+                case Configuration::MODE_REQUIREMENT:
+                    $requirements[] = $inputName;
+
+                    $methodArgs[] = $factory->param($inputName);
+
+                    $comment = "* @param $type \$$inputName \r\n";
+                    break;
+                case Configuration::MODE_FILTER:
+                    $filters[$inputName] = new Variable($inputName);
+
+                    $methodArgs[] = $factory->param($inputName);
+
+                    $comment = "* @param $type \$$inputName \r\n";
+                    break;
+                default:
+                    throw new \Exception("Unknown input mode $inputMode");
+            }
+            $methodComment .= $comment;
         }
-        return $results;
+        //Generate the URI for the rest call
+        $uri = $this->generateURI($methodName, $requirements);
+        $methodContent = [
+            new Assign(new Variable("uri"), $uri),
+        ];
+
+        $calledMethodArgs = [
+            new String_($apiMethod["rest"]["httpMethod"]),
+            new Variable("uri")
+        ];
+
+        $calledMethodArgs = array_merge($calledMethodArgs, $requestArgs, [new Variable("headers")]);
+
+        if(!empty($filters)){
+            $items = [];
+            foreach ($filters as $name => $filter){
+                $items[] = new ArrayItem($filter, new String_($name));
+
+                $methodComment .= "* @param string \$$name \r\n";
+
+                $methodArgs[] = $factory->param($name);
+            }
+            //Creating a new line in the method to merge the filters into one array
+            $methodContent[] = new Assign(new Variable("filters"), new Array_($items));
+            $calledMethodArgs = array_merge($calledMethodArgs, [new Variable("filters")]);
+        }
+
+        if(!empty($apiMethod["headers"])){
+            $items = [];
+            foreach ($apiMethod["headers"] as $header){
+                $headerVariable = new Variable($header);
+
+                $methodArgs[] = $factory->param($header);
+
+                $methodComment .= "* @param string \$$header \r\n";
+
+                $items[] = new ArrayItem($headerVariable, new String_($header));
+            }
+            //Creating a new line in the method to merge the headers with the existing header argument
+            $methodContent[] = new Assign(new Variable("customHeaders"), new Array_($items));
+            $methodContent[] = new Assign(new Variable("headers"), new FuncCall( new Name("array_merge"), [new Variable("customHeaders"), new Variable("headers")]));
+        }
+
+        //Add default headers param
+        $headers = $factory->param("headers");
+        $headers->setDefault(new Array_());
+        $methodArgs[] = $headers;
+        $methodComment .=
+            "* @param array \$headers \r\n";
+
+        //Add return line to the method
+        $methodContent[] = new Return_(
+            new MethodCall(
+                new Variable('this'),
+                "request",
+                $calledMethodArgs
+            )
+        );
+
+        //Building the method
+        $sdkMethod = $factory->method($methodName)
+            ->makePublic()
+            ->addStmts(
+                $methodContent
+            );
+
+        //Add all the arguments to the methods
+        foreach ($methodArgs as $param){
+            $sdkMethod->addParam($param);
+        }
+
+        $methodComment .=
+            "*
+              * @return mixed|\\Psr\\Http\\Message\\ResponseInterface
+              */";
+
+        $sdkMethod->setDocComment($methodComment);
+
+        return $sdkMethod;
+    }
+
+
+    /**
+     * Return the path of a given API method
+     *
+     * @param $methodName
+     * @param $parameters
+     *
+     * @return FuncCall|String
+     */
+    protected function generateURI($methodName, $parameters)
+    {
+        $path = $this->routes->get(sprintf("smartapi.rest.%s_%s.%s", $this->apiName, $this->version, $methodName))->getPath();
+
+        if(empty($parameters)){
+            return new String_($path);
+        }
+
+        foreach ($parameters as $requirement){
+            $position = strpos($path, "{".$requirement."}");
+            $arguments[$position] = new Variable($requirement);
+            $uri = str_replace("{".$requirement."}", "%s", $path);
+        }
+
+        // Sort arguments by appearance in the URI
+        ksort($arguments);
+        $sprintfArgs = array_merge( [new String_( $uri ) ], $arguments);
+
+        return new FuncCall( new Name("sprintf"), $sprintfArgs);
     }
 
     /**
+     * Return true if the given dataType is an array
+     *
      * @param $type
      *
      * @return bool
      */
     protected static function isArray($type)
     {
-        if( strpos($type, self::ARRAY_PREFIX) === false) {
+        if( strpos($type, "[]") === false) {
             return false;
         }
         return true;
     }
-
-    /**
-     * @param $type
-     *
-     * @return string
-     */
-    protected function extractTypeFromArray($type){
-        if(self::isArray($type)){
-            $end = strpos($type, ">");
-            $type = substr($type, strlen(self::ARRAY_PREFIX), $end - strlen(self::ARRAY_PREFIX));
-        }
-        return $type;
-    }
-
-
-    /**
-     * @param $apiMethod
-     * @param $factory
-     *
-     * @return mixed
-     */
-    protected function buildMethod($apiMethod, BuilderFactory &$factory)
-    {
-        $inputParameters = $apiMethod["objectType"];
-        $setterParam = null;
-        $requestParam = [];
-        $methodComment ="/**\r\n";
-
-        if(!empty($inputParameters)){
-
-            $entityVariableName = self::SIMPLE_ENTITY;
-            $type = $this->extractTypeFromArray($inputParameters);
-
-            $class = new \ReflectionClass($type);
-            $shortNameClass = $class->getShortName();
-
-            $hint = $shortNameClass;
-
-            $comment = "* @param ".$shortNameClass." \$$entityVariableName \r\n";
-
-            if(self::isArray($inputParameters)){
-                $entityVariableName = self::ARRAY_ENTITY;
-                $hint = "array";
-                $comment = "* @param ".$shortNameClass."[] \$$entityVariableName \r\n";
-            }
-
-            // Creating new param
-            $setterParam = $factory->param($entityVariableName);
-            $setterParam->setTypeHint($hint);
-
-            //Adding it to the list of param
-            $setterParams[] = $setterParam;
-
-            //Adding new variable to the list of argument to pass to the this->request method
-            $requestParam[] = new Variable($entityVariableName);
-
-            //Add class to the list of dependencies
-            $this->uses[$type] = $factory->use($class->getName())->as($shortNameClass);
-            $methodComment .= $comment;
-        }
-
-        foreach ($apiMethod["requirements"] as $entityVariableName=>$requirement){
-            $param = $factory->param($entityVariableName);
-            $setterParams[] = $param;
-            $type = $requirement["dataType"];
-            $methodComment .= "* @param $type \$$entityVariableName \r\n";
-        }
-
-        $uri = $this->generateURI($apiMethod["uri"], $apiMethod["requirements"]);
-        $requestMethodParameters = [
-            new String_($apiMethod["httpMethod"]),
-            new Variable("uri")
-        ];
-
-        $headers = $factory->param("headers");
-        $headers->setDefault(new Array_());
-        $setterParams[] = $headers;
-        $methodComment .=
-            "* @param array \$headers \r\n";
-        $requestMethodParameters = array_merge($requestMethodParameters, $requestParam, [new Variable("headers")]);
-
-        $sdkMethod = $factory->method($apiMethod["methodName"])
-            ->makePublic()
-            ->addStmt(
-                new Assign(new Variable("uri"), $uri)
-            )
-            ->addStmt(
-                new Return_(
-                    new MethodCall(
-                        new Variable('this'),
-                        "request",
-                        $requestMethodParameters
-                    )
-                )
-            );
-
-        if(!empty($setterParams)){
-            foreach ($setterParams as $param){
-                $sdkMethod->addParam($param);
-            }
-        }
-
-        $methodComment .=
-             "*
-              * @return mixed|\\Psr\\Http\\Message\\ResponseInterface
-              */";
-
-        $sdkMethod->setDocComment($methodComment);
-        return $sdkMethod;
-    }
-
-    /**
-     * @param $uri
-     * @param $parameters
-     *
-     * @return FuncCall|String_
-     */
-    protected function generateURI($uri, $parameters)
-    {
-        if(empty($parameters)){
-            return new String_($uri);
-        }
-
-        foreach ($parameters as $name=>$requirement){
-            $position = strpos($uri, "{".$name."}");
-            $arguments[$position] = new Variable($name);
-            $uri = str_replace("{".$name."}", "%s", $uri);
-        }
-
-        // Sort arguments by appearance in the URI
-        ksort($arguments);
-
-        $sprintfArgs = array_merge( [new String_( $uri ) ], $arguments);
-
-        return new FuncCall( new Name("sprintf"), $sprintfArgs);
-    }
-
 }

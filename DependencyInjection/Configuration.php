@@ -304,6 +304,7 @@ class Configuration implements ConfigurationInterface
             ->thenInvalid(
                 'Except the body, all other inputs must be of basic types: '.join(', ', Configuration::$BASIC_TYPES)
             )
+
             ->end()
             ->end()
             ->validate()
@@ -320,6 +321,8 @@ class Configuration implements ConfigurationInterface
                 }
             )
             ->thenInvalid('There can be only 1 input declared as body for a method but more were found.')
+            ->end()
+            ->validate()
             ->ifTrue(
                 function ($input) {
                     foreach ($input as $name => $conf) {

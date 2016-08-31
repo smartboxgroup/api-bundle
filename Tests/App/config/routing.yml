@@ -11,3 +11,8 @@ throttling_v1_rest:
     resource:  throttling_v1
     prefix:   /api
     type: 'smartapi_rest'
+
+sdk_v0_rest:
+    resource:  sdk_v0
+    prefix:   /api
+    type: 'smartapi_rest'

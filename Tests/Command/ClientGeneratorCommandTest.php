@@ -23,7 +23,7 @@ class ClientGeneratorCommandTest extends CommandTestCase
         $namespace = $reflection->getNamespaceName();
         $this->assertEquals("Smartbox\\ApiBundle\\Tests\\Command", $namespace);
         $this->assertEquals("SdkV0SDK", $reflection->getShortName());
-        $this->assertEquals(4, count($reflection->getMethods()));
+        $this->assertEquals(5, count($reflection->getMethods()));
 
         unlink($filename);
     }
@@ -47,7 +47,7 @@ class ClientGeneratorCommandTest extends CommandTestCase
         $this->assertEquals("Smartbox\\ApiBundle\\Tests\\Command", $namespace);
         $this->assertEquals("SDKTest", $reflection->getShortName());
         $this->assertEquals("Smartbox\\ApiBundle\\Tests\\Command\\EmptyClass", $reflection->getParentClass()->getName());
-        $this->assertEquals(4, count($reflection->getMethods()));
+        $this->assertEquals(5, count($reflection->getMethods()));
         $methodTestWithBody = $reflection->getMethod("testWithBody");
         $expectedComment =
             <<<EOT
@@ -70,6 +70,14 @@ EOT;
         $this->assertTrue($parameters["1"]->isOptional());
         $this->assertTrue($parameters["1"]->isArray());
 
+
+        $methodTestWithArrayBody = $reflection->getMethod("testWithArrayBody");
+
+        $parameters = $methodTestWithArrayBody->getParameters();
+        $this->assertEquals("entities", $parameters["0"]->getName());
+        $this->assertTrue($parameters["0"]->isArray());
+        $this->assertTrue($parameters["1"]->isOptional());
+        $this->assertTrue($parameters["1"]->isArray());
 
         $methodTestWithRequirements = $reflection->getMethod("testWithRequirements");
 

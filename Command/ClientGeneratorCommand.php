@@ -7,6 +7,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
@@ -180,7 +181,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $description = $apiMethod["description"];
         $methodComment = "/**\r\n* $description\r\n*\r\n";
 
-
+        $entityArgument = new ConstFetch(new Name('null'));
         foreach ($apiMethod["input"] as $inputName => $input){
             $inputMode = $input["mode"];
 
@@ -210,7 +211,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
                     $methodArgs[] = $param;
 
                     //Adding new variable to the list of argument to pass to the this->request method
-                    $requestArgs[] = new Variable($entityVariableName);
+                    $entityArgument = new Variable($entityVariableName);
 
                     //Add class to the list of dependencies
                     $this->uses[$type] = $factory->use($class->getName())->as($shortNameClass);
@@ -245,7 +246,8 @@ class ClientGeneratorCommand extends ContainerAwareCommand
 
         $calledMethodArgs = [
             new String_($apiMethod["rest"]["httpMethod"]),
-            new Variable("uri")
+            new Variable("uri"),
+            $entityArgument
         ];
         $calledMethodArgs = array_merge($calledMethodArgs, $requestArgs, [new Variable("headers")]);
 

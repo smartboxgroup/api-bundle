@@ -97,6 +97,14 @@ smartbox_api:
                     rest:
                         route: "/test1/url"
                         httpMethod: POST
+                testWithArrayBody:
+                    description: Method to send an array of entity
+                    successCode: 201
+                    input:
+                        box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box[], group: update, mode: body }
+                    rest:
+                        route: "/test1/url"
+                        httpMethod: POST
                 testWithRequirements:
                     description: Method using variable in the URI
                     input:
@@ -120,7 +128,7 @@ smartbox_api:
                     defaults:
                       id: 90
                 testWithHeadersAndFiltersAndBody:
-                    description: Method using variable in the URI
+                    description: Method using a body, filters, headers and dynamic url
                     input:
                         size: { type: integer, format: "\d+", mode: filter }
                         limit: { type: integer, format: "\d+", mode: filter }

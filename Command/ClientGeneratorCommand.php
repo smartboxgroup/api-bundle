@@ -34,6 +34,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     const OPTION_NAMESPACE  = "namespace";
     const OPTION_API        = "api";
     const OPTION_EXTENDS    = "extends";
+    const OPTION_DUMP       = "dump";
 
     /**
      * @var array
@@ -56,6 +57,11 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     protected $routes;
 
     /**
+     * @var bool
+     */
+    protected $dumpOption;
+
+    /**
      * @inheritdoc
      */
     protected function configure()
@@ -63,6 +69,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $outputPath = getcwd() . DIRECTORY_SEPARATOR;
         $defaultClassName = "";
         $defaultExtends = "";
+        $defaultDump = false;
 
         $this
             ->setDescription('Generate SDK for a given API')
@@ -72,6 +79,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             ->addOption(self::OPTION_OUTPUT, "O", InputOption::VALUE_OPTIONAL, 'The output path in which the php class will be created', $outputPath)
             ->addOption(self::OPTION_CLASS_NAME, 'C', InputOption::VALUE_OPTIONAL, 'The name of the class that will be generated', $defaultClassName)
             ->addOption(self::OPTION_EXTENDS, 'E', InputOption::VALUE_OPTIONAL, 'The name of the class to extends', $defaultExtends)
+            ->addOption(self::OPTION_DUMP, 'D', InputOption::VALUE_OPTIONAL, 'Dump the file in the console instead of writing it in files (do not print help also)', $defaultDump)
             ->setName('smartbox:api:generateSDK');
     }
 
@@ -95,6 +103,12 @@ class ClientGeneratorCommand extends ContainerAwareCommand
 
         $this->apiName = $input->getArgument(self::OPTION_API);
 
+        $dump = $input->getOption(self::OPTION_DUMP);
+
+        if(!$dump){
+            $output->writeln('<info>Generating REST client for API '.$this->apiName.' with version '.$this->version.'</info>');
+        }
+
         $className = $input->getOption(self::OPTION_CLASS_NAME);
         if(empty($className)){
             $className = ucfirst($this->apiName).ucfirst($this->version)."SDK";
@@ -106,7 +120,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $factory = new BuilderFactory();
         $stmtClass = $factory->class($className)
             ->setDocComment(
-                "/**
+                "\r\n/**
                   * Class $className
                   */"
             );
@@ -118,6 +132,10 @@ class ClientGeneratorCommand extends ContainerAwareCommand
 
         //Build all the methods of the given API
         foreach ($methods as $methodName=>$method){
+            if(!$dump){
+                $output->writeln('<info>Generating method '.$methodName.'</info>');
+            }
+
             $sdkMethod = $this->buildMethod($methodName, $method, $factory);
             $stmtClass->addStmt( $sdkMethod );
         }
@@ -131,9 +149,15 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $prettyPrinter = new Standard();
         $content = $prettyPrinter->prettyPrintFile([$node]);
 
-        $file = fopen($outputPath.$className.".php", 'wb');
-        fwrite($file, $content);
-        fclose($file);
+        if(!$dump){
+            $filepath = $outputPath.$className.".php";
+            $file = fopen($filepath, 'wb');
+            fwrite($file, $content);
+            fclose($file);
+            $output->writeln('<info>'.count($methods).' methods have been generated in file '.$filepath.'</info>');
+        }else{
+            $output->writeln($content);
+        }
     }
 
 
@@ -153,7 +177,8 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $requestArgs = [];
         $requirements = [];
         $filters = [];
-        $methodComment ="/**\r\n";
+        $description = $apiMethod["description"];
+        $methodComment = "/**\r\n* $description\r\n*\r\n";
 
 
         foreach ($apiMethod["input"] as $inputName => $input){
@@ -199,9 +224,11 @@ class ClientGeneratorCommand extends ContainerAwareCommand
                     $comment = "* @param $type \$$inputName \r\n";
                     break;
                 case Configuration::MODE_FILTER:
-                    $filters[$inputName] = new Variable($inputName);
+                    $filter = new Variable($inputName);
 
                     $methodArgs[] = $factory->param($inputName);
+
+                    $filters[] = new ArrayItem($filter, new String_($inputName));
 
                     $comment = "* @param $type \$$inputName \r\n";
                     break;
@@ -220,20 +247,11 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             new String_($apiMethod["rest"]["httpMethod"]),
             new Variable("uri")
         ];
-
         $calledMethodArgs = array_merge($calledMethodArgs, $requestArgs, [new Variable("headers")]);
 
         if(!empty($filters)){
-            $items = [];
-            foreach ($filters as $name => $filter){
-                $items[] = new ArrayItem($filter, new String_($name));
-
-                $methodComment .= "* @param string \$$name \r\n";
-
-                $methodArgs[] = $factory->param($name);
-            }
             //Creating a new line in the method to merge the filters into one array
-            $methodContent[] = new Assign(new Variable("filters"), new Array_($items));
+            $methodContent[] = new Assign(new Variable("filters"), new Array_($filters));
             $calledMethodArgs = array_merge($calledMethodArgs, [new Variable("filters")]);
         }
 
@@ -242,7 +260,9 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             foreach ($apiMethod["headers"] as $header){
                 $headerVariable = new Variable($header);
 
-                $methodArgs[] = $factory->param($header);
+                $param = $factory->param($header);
+                $param->setDefault(new String_(""));
+                $methodArgs[] = $param;
 
                 $methodComment .= "* @param string \$$header \r\n";
 
@@ -256,6 +276,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         //Add default headers param
         $headers = $factory->param("headers");
         $headers->setDefault(new Array_());
+        $headers->setTypeHint("array");
         $methodArgs[] = $headers;
         $methodComment .=
             "* @param array \$headers \r\n";
@@ -298,12 +319,16 @@ class ClientGeneratorCommand extends ContainerAwareCommand
      * @param $methodName
      * @param $parameters
      *
-     * @return FuncCall|String
+     * @return FuncCall|String_
+     * @throws \Exception
      */
     protected function generateURI($methodName, $parameters)
     {
         $path = $this->routes->get(sprintf("smartapi.rest.%s_%s.%s", $this->apiName, $this->version, $methodName))->getPath();
 
+        if(empty($path)){
+            throw new \Exception("Unable to find a route for method $methodName");
+        }
         if(empty($parameters)){
             return new String_($path);
         }

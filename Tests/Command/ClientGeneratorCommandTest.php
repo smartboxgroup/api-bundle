@@ -2,50 +2,48 @@
 
 namespace Smartbox\ApiBundle\Tests\Command;
 
-use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\NodeDumper;
-use PhpParser\ParserFactory;
 use Smartbox\ApiBundle\Tests\Fixtures\Entity\Box;
 
 class ClientGeneratorCommandTest extends CommandTestCase
 {
+    protected $fileToRemove;
+
     public function testDefaultValue()
     {
         $client = self::createClient();
         $dir = __DIR__;
-        $filename =  $dir."/SdkV0SDK.php";
-        $this->runCommand($client, "smartbox:api:generateSDK sdk v0 Smartbox\\\ApiBundle\\\Tests\\\Command  -O $dir/ ");
+        $this->fileToRemove =  $dir."/SdkV0Client.php";
+        $this->runCommand($client, "smartbox:api:generateSDK -N Smartbox\\\ApiBundle\\\Tests\\\Command -O $dir/ -A sdk -F v0 -E EmptyClass");
 
-        include $filename;
+        include_once $this->fileToRemove;
 
-        $reflection =  new \ReflectionClass(SdkV0SDK::class);
+        $reflection =  new \ReflectionClass(SdkV0Client::class);
 
         $namespace = $reflection->getNamespaceName();
         $this->assertEquals("Smartbox\\ApiBundle\\Tests\\Command", $namespace);
-        $this->assertEquals("SdkV0SDK", $reflection->getShortName());
+        $this->assertEquals("SdkV0Client", $reflection->getShortName());
         $this->assertEquals(5, count($reflection->getMethods()));
-
-        unlink($filename);
     }
 
     public function testGeneratedClass()
     {
         $client = self::createClient();
         $dir = __DIR__;
-        $filename =  $dir."/SDKTest.php";
-        $output = $this->runCommand($client, "smartbox:api:generateSDK sdk v0 Smartbox\\\ApiBundle\\\Tests\\\Command  -O -D $dir/ -C SDKTest -E EmptyClass ");
+        $this->fileToRemove =  $dir."/SdkV0Client.php";
+
+        $output = $this->runCommand($client, "smartbox:api:generateSDK -N Smartbox\\\ApiBundle\\\Tests\\\Command  -D true -O $dir/ -A sdk -F v0 -E EmptyClass ");
 
         $this->assertNotNull($output);
 
-        file_put_contents($filename, $output);
+        file_put_contents($this->fileToRemove, $output);
 
-        include $filename;
+        include_once $this->fileToRemove;
 
-        $reflection =  new \ReflectionClass(SDKTest::class);
+        $reflection =  new \ReflectionClass(SdkV0Client::class);
 
         $namespace = $reflection->getNamespaceName();
         $this->assertEquals("Smartbox\\ApiBundle\\Tests\\Command", $namespace);
-        $this->assertEquals("SDKTest", $reflection->getShortName());
+        $this->assertEquals("SdkV0Client", $reflection->getShortName());
         $this->assertEquals("Smartbox\\ApiBundle\\Tests\\Command\\EmptyClass", $reflection->getParentClass()->getName());
         $this->assertEquals(5, count($reflection->getMethods()));
         $methodTestWithBody = $reflection->getMethod("testWithBody");
@@ -123,8 +121,17 @@ EOT;
         $this->assertEquals("headers", $parameters["7"]->getName());
         $this->assertTrue($parameters["7"]->isOptional());
         $this->assertTrue($parameters["7"]->isArray());
+    }
 
-        unlink($filename);
+    /**
+     * Remove the file that has been generated
+     */
+    protected function tearDown()
+    {
+        if(file_exists($this->fileToRemove)){
+            unlink($this->fileToRemove);
+        }
+        parent::tearDown();
     }
 
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace Smartbox\ApiRestClient;
+
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
@@ -7,15 +9,15 @@ use JMS\Serializer\SerializerBuilder;
 /**
  * Class APIRestInternalClient.
  */
-class APIRestInternalClient
+class ApiRestInternalClient
 {
-    const FORMAT_JSON = 'json';
+    const FORMAT_JSON           = 'json';
 
-    const HTTP_METHOD_GET = 'GET';
-    const HTTP_METHOD_POST = 'POST';
-    const HTTP_METHOD_PUT = 'PUT';
-    const HTTP_METHOD_PATCH = 'PATCH';
-    const HTTP_METHOD_DELETE = 'DELETE';
+    const HTTP_METHOD_GET       = 'GET';
+    const HTTP_METHOD_POST      = 'POST';
+    const HTTP_METHOD_PUT       = 'PUT';
+    const HTTP_METHOD_PATCH     = 'PATCH';
+    const HTTP_METHOD_DELETE    = 'DELETE';
 
     /** @var \GuzzleHttp\Client */
     protected $client;
@@ -62,23 +64,6 @@ class APIRestInternalClient
     }
 
     /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            'auth' => [
-                $this->username,
-                $this->password,
-            ],
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
-        ];
-    }
-
-
-    /**
      * @param $method
      * @param $uri
      * @param null $object
@@ -97,13 +82,11 @@ class APIRestInternalClient
         $request = $this->buildRequest($object);
 
         if (!empty($filters)) {
-            $options = ["query" => $filters];
-            $request = array_merge($request, $options);
+            $request["query"] = $filters;
         }
 
         if (!empty($headers)) {
-            $options = ["headers" => $headers];
-            $request = array_merge($request, $options);
+            $request["headers"] = array_merge($request["headers"], $headers);
         }
 
         $uri = $this->baseUrl.$uri;
@@ -123,7 +106,7 @@ class APIRestInternalClient
      *
      * @return array
      */
-    protected function buildRequest($object = null)
+    private function buildRequest($object = null)
     {
         $jsonContent = '';
 
@@ -135,5 +118,23 @@ class APIRestInternalClient
         $request = array_merge(['body' => $jsonContent], $this->getOptions());
 
         return $request;
+    }
+
+    /**
+     * Return the defined options
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        return [
+            'auth' => [
+                $this->username,
+                $this->password,
+            ],
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ]
+        ];
     }
 }

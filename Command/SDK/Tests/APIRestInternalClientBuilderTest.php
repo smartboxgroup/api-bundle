@@ -1,25 +1,34 @@
 <?php
 
-namespace BifrostClient\Tests;
+namespace Smartbox\ApiRestClient\Tests;
 
-use Smartbox\BifrostSDK\BifrostClientBuilder;
-use Smartbox\BifrostSDK\BifrostSDK;
+use Smartbox\ApiRestClient\ApiRestInternalClient;
+use Smartbox\ApiRestClient\ApiRestInternalClientBuilder;
 
-class APIRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
+class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
 {
+    const TEST_ENV = "test";
     /**
      * @expectedException \Exception
      */
     public function testInvalidEnvironment()
     {
-        \APIRestInternalClientBuilder::createClient('DUMMY_ENV', 'TEST', 'TEST');
+        ApiRestInternalClientBuilder::createClient('DUMMY_ENV', 'TEST', 'TEST');
     }
 
-    public function testCreateBuilder()
+    public function testBuilderDefaultClient()
     {
-        $client = \APIRestInternalClientBuilder::createClient(\APIRestInternalClientBuilder::ENV_DEMO, 'TEST', 'TEST');
+        $client = ApiRestInternalClientBuilder::createClient(self::TEST_ENV, 'TEST', 'TEST');
 
         $this->assertNotNull($client);
-        $this->assertEquals(BifrostSDK::class, get_class($client));
+        $this->assertEquals(ApiRestInternalClient::class, get_class($client));
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testInvalidClientClass()
+    {
+        ApiRestInternalClientBuilder::createClient(self::TEST_ENV, 'TEST', 'TEST', "Dummy_Client");
     }
 }

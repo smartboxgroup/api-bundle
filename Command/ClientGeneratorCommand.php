@@ -18,24 +18,31 @@ use PhpParser\PrettyPrinter\Standard;
 use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Routing\RouteCollection;
 
 class ClientGeneratorCommand extends ContainerAwareCommand
 {
-    const SIMPLE_ENTITY     = "entity";
-    const ARRAY_ENTITY      = "entities";
 
-    const OPTION_OUTPUT     = "output";
-    const OPTION_VERSION    = "apiVersion";
-    const OPTION_CLASS_NAME = "className";
-    const OPTION_NAMESPACE  = "namespace";
-    const OPTION_API        = "api";
-    const OPTION_EXTENDS    = "extends";
-    const OPTION_DUMP       = "dump";
+    const DEFAULT_NAMESPACE     = "Smartbox\\ApiRestClient\\Clients";
+    const DEFAULT_SDK_FOLDER    = "/ApiRestClient/src/Smartbox/ApiRestClient/";
+    const DEFAULT_CLASS_EXTEND  = "ApiRestInternalClient";
+
+    const SIMPLE_ENTITY         = "entity";
+    const ARRAY_ENTITY          = "entities";
+
+    const OPTION_OUTPUT         = "output";
+    const OPTION_VERSION        = "apiVersion";
+    const OPTION_NAMESPACE      = "namespace";
+    const OPTION_API            = "api";
+    const OPTION_EXTENDS        = "extends";
+    const OPTION_DUMP           = "dump";
+    const OPTION_BUILT          = "built";
+
+    const CLASS_SUFFIX          = "Client";
 
     /**
      * @var array
@@ -43,14 +50,14 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     protected $uses = [];
 
     /**
-     * @var string
+     * @var bool
      */
-    protected $apiName;
+    protected $dump;
 
     /**
-     * @var string
+     * @var OutputInterface
      */
-    protected $version;
+    protected $outputInterface;
 
     /**
      * @var RouteCollection
@@ -58,28 +65,24 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     protected $routes;
 
     /**
-     * @var bool
-     */
-    protected $dumpOption;
-
-    /**
      * @inheritdoc
      */
     protected function configure()
     {
         $outputPath = getcwd() . DIRECTORY_SEPARATOR;
-        $defaultClassName = "";
-        $defaultExtends = "";
+        $defaultExtends = self::DEFAULT_CLASS_EXTEND;
+        $defaultNamespace = self::DEFAULT_NAMESPACE;
         $defaultDump = false;
+        $defaultBuilt = false;
 
         $this
             ->setDescription('Generate SDK for a given API')
-            ->addArgument(self::OPTION_API,InputArgument::REQUIRED, 'The name of the api to generate the SDK from')
-            ->addArgument(self::OPTION_VERSION, InputArgument::REQUIRED, 'The version of the API to use to generate the SDK')
-            ->addArgument(self::OPTION_NAMESPACE, InputArgument::REQUIRED, 'The namespace of the generated class')
+            ->addOption(self::OPTION_NAMESPACE,"N", InputOption::VALUE_OPTIONAL, 'The namespace of the generated classes', $defaultNamespace)
+            ->addOption(self::OPTION_API, "A", InputOption::VALUE_OPTIONAL, 'The name of the api to generate the SDK from', "")
+            ->addOption(self::OPTION_VERSION, "F", InputOption::VALUE_OPTIONAL, 'The version of the API to use to generate the SDK', "")
             ->addOption(self::OPTION_OUTPUT, "O", InputOption::VALUE_OPTIONAL, 'The output path in which the php class will be created', $outputPath)
-            ->addOption(self::OPTION_CLASS_NAME, 'C', InputOption::VALUE_OPTIONAL, 'The name of the class that will be generated', $defaultClassName)
             ->addOption(self::OPTION_EXTENDS, 'E', InputOption::VALUE_OPTIONAL, 'The name of the class to extends', $defaultExtends)
+            ->addOption(self::OPTION_BUILT, 'B', InputOption::VALUE_OPTIONAL, 'Built the full client', $defaultBuilt)
             ->addOption(self::OPTION_DUMP, 'D', InputOption::VALUE_OPTIONAL, 'Dump the file in the console instead of writing it in files (do not print help also)', $defaultDump)
             ->setName('smartbox:api:generateSDK');
     }
@@ -89,34 +92,87 @@ class ClientGeneratorCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $io = new SymfonyStyle($input, $output);
+        $io->title('Client Generator');
+
+        $kernelRootDir = $this->getContainer()->getParameter('kernel.root_dir');
+
+        $this->outputInterface = $output;
+
+        $namespace = $input->getOption(self::OPTION_NAMESPACE);
+
+        $apiName = $input->getOption(self::OPTION_API);
+
+        $version = $input->getOption(self::OPTION_VERSION);
+        if((empty($version) && !empty($apiName) )|| (empty($apiName) && !empty($version) ) ){
+            throw new \LogicException("You need to specify both api version and api name.");
+        }
+
+        $this->dump = $input->getOption(self::OPTION_DUMP);
+        $built = $input->getOption(self::OPTION_BUILT);
+        if($built && $this->dump){
+            throw new \LogicException("Cannot generate the SDK and dump in the console the clients at the same time.");
+        }
+
+        $classToExtend = $input->getOption(self::OPTION_EXTENDS);
+
         //Get all the routes to be able to match ApiMethod to correct path
         $this->routes = $this->getContainer()->get('router')->getRouteCollection();
 
-        $kernelRootDir = $this->getContainer()->getParameter('kernel.root_dir');
         $outputPath = str_replace('%kernel.root_dir%', $kernelRootDir, $input->getOption('output'));
+        if (!preg_match('/' . preg_quote("/", '/') . '$/', $outputPath)){
+            $outputPath .= "/";
+        }
         if(!file_exists($outputPath)){
             throw new \Exception("Folder $outputPath doesn't exists.");
         }
 
-        $namespace = $input->getArgument(self::OPTION_NAMESPACE);
-
-        $this->version = $input->getArgument(self::OPTION_VERSION);
-
-        $this->apiName = $input->getArgument(self::OPTION_API);
-
-        $dump = $input->getOption(self::OPTION_DUMP);
-
-        if(!$dump){
-            $output->writeln('<info>Generating REST client for API '.$this->apiName.' with version '.$this->version.'</info>');
-        }
-
-        $className = $input->getOption(self::OPTION_CLASS_NAME);
-        if(empty($className)){
-            $className = ucfirst($this->apiName).ucfirst($this->version)."SDK";
-        }
-
         $apiConfigurator = $this->getContainer()->get("smartapi.configurator");
-        $methods = $apiConfigurator->getConfigByServiceNameAndVersion($this->apiName, $this->version);
+
+        if(!empty($apiName) && !empty($version)){
+            $services["$apiName"]["methods"] = $apiConfigurator->getConfigByServiceNameAndVersion($apiName, $version);
+            $services["$apiName"]["version"] = $version;
+            $services["$apiName"]["name"] = $apiName;
+        }else{
+            $services = $apiConfigurator->getConfig();
+        }
+
+        $generatedFilePaths = [];
+        foreach ($services as $service ){
+            if(!$this->dump){
+                $io->section(sprintf('Generating REST client for API %s with version %s', $service["name"], $service["version"] ));
+            }
+
+            $generatedFilePaths[] = $this->buildClass(
+                $service,
+                $namespace,
+                $outputPath,
+                $classToExtend
+            );
+        }
+
+        if ($built && !$this->dump){
+            $output->writeln(sprintf('<info>Building full SDK with the %s generated clients.</info>', count($generatedFilePaths)));
+            $this->buildFullSDK($generatedFilePaths, $outputPath);
+        }
+    }
+
+    /**
+     * @param array $service
+     * @param $namespace
+     * @param $outputPath
+     * @param string $classToExtend
+     *
+     * @return string
+     */
+    private function buildClass(array $service, $namespace, $outputPath, $classToExtend)
+    {
+        $dump = $this->dump;
+        $apiName = $service["name"];
+        $version = $service["version"];
+        $methods = $service["methods"];
+
+        $className = ucfirst($apiName).ucfirst($version).self::CLASS_SUFFIX;
 
         $factory = new BuilderFactory();
         $stmtClass = $factory->class($className)
@@ -126,7 +182,6 @@ class ClientGeneratorCommand extends ContainerAwareCommand
                   */"
             );
 
-        $classToExtend = $input->getOption(self::OPTION_EXTENDS);
         if(!empty($classToExtend)){
             $stmtClass->extend($classToExtend);
         }
@@ -134,33 +189,37 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         //Build all the methods of the given API
         foreach ($methods as $methodName=>$method){
             if(!$dump){
-                $output->writeln('<info>Generating method '.$methodName.'</info>');
+                $this->outputInterface->writeln(sprintf('<info>Generating method %s.</info>', $methodName));
             }
 
-            $sdkMethod = $this->buildMethod($methodName, $method, $factory);
+            $sdkMethod = $this->buildMethod($methodName, $method, $factory, $apiName, $version);
             $stmtClass->addStmt( $sdkMethod );
         }
 
         $node = $factory->namespace($namespace)
             ->addStmt($factory->use('JMS\Serializer\Annotation')->as('JMS'))
+            ->addStmt($factory->use('Smartbox\ApiRestClient\ApiRestInternalClient'))
             ->addStmts($this->uses)
             ->addStmt($stmtClass)
             ->getNode();
+
+        $this->uses = [];
 
         $prettyPrinter = new Standard();
         $content = $prettyPrinter->prettyPrintFile([$node]);
 
         if(!$dump){
-            $filepath = $outputPath.$className.".php";
-            $file = fopen($filepath, 'wb');
+            $filePath = $outputPath.$className.".php";
+            $file = fopen($filePath, 'wb');
             fwrite($file, $content);
             fclose($file);
-            $output->writeln('<info>'.count($methods).' methods have been generated in file '.$filepath.'</info>');
+            $this->outputInterface->writeln(sprintf('<info>%s methods have been generated in file %s.</info>',count($methods), $filePath));
+            return $filePath;
         }else{
-            $output->writeln($content);
+            $this->outputInterface->writeln($content);
+            return null;
         }
     }
-
 
     /**
      * Build PHP function for a given API method
@@ -168,11 +227,13 @@ class ClientGeneratorCommand extends ContainerAwareCommand
      * @param $methodName
      * @param $apiMethod
      * @param BuilderFactory $factory
+     * @param $apiName
+     * @param $version
      *
      * @return Method
      * @throws \Exception
      */
-    protected function buildMethod($methodName, $apiMethod, BuilderFactory &$factory)
+    protected function buildMethod($methodName, $apiMethod, BuilderFactory &$factory, $apiName, $version)
     {
         $methodArgs = [];
         $requestArgs = [];
@@ -239,7 +300,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             $methodComment .= $comment;
         }
         //Generate the URI for the rest call
-        $uri = $this->generateURI($methodName, $requirements);
+        $uri = $this->generateURI($methodName, $requirements, $apiName, $version);
         $methodContent = [
             new Assign(new Variable("uri"), $uri),
         ];
@@ -249,12 +310,14 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             new Variable("uri"),
             $entityArgument
         ];
-        $calledMethodArgs = array_merge($calledMethodArgs, $requestArgs, [new Variable("headers")]);
 
         if(!empty($filters)){
             //Creating a new line in the method to merge the filters into one array
             $methodContent[] = new Assign(new Variable("filters"), new Array_($filters));
             $calledMethodArgs = array_merge($calledMethodArgs, [new Variable("filters")]);
+        }else{
+            $filtersArgument = new Array_();
+            $calledMethodArgs = array_merge($calledMethodArgs, [$filtersArgument]);
         }
 
         if(!empty($apiMethod["headers"])){
@@ -274,6 +337,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             $methodContent[] = new Assign(new Variable("customHeaders"), new Array_($items));
             $methodContent[] = new Assign(new Variable("headers"), new FuncCall( new Name("array_merge"), [new Variable("customHeaders"), new Variable("headers")]));
         }
+        $calledMethodArgs = array_merge($calledMethodArgs, $requestArgs, [new Variable("headers")]);
 
         //Add default headers param
         $headers = $factory->param("headers");
@@ -314,19 +378,20 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         return $sdkMethod;
     }
 
-
     /**
      * Return the path of a given API method
      *
      * @param $methodName
      * @param $parameters
+     * @param $apiName
+     * @param $version
      *
      * @return FuncCall|String_
      * @throws \Exception
      */
-    protected function generateURI($methodName, $parameters)
+    protected function generateURI($methodName, $parameters, $apiName, $version)
     {
-        $path = $this->routes->get(sprintf("smartapi.rest.%s_%s.%s", $this->apiName, $this->version, $methodName))->getPath();
+        $path = $this->routes->get(sprintf("smartapi.rest.%s_%s.%s", $apiName, $version, $methodName))->getPath();
 
         if(empty($path)){
             throw new \Exception("Unable to find a route for method $methodName");
@@ -349,6 +414,39 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     }
 
     /**
+     * @param array $generatedFilePaths
+     * @param $outputPath
+     *
+     * @throws \Exception
+     */
+    private function buildFullSDK(array $generatedFilePaths, $outputPath )
+    {
+        $dir = $outputPath.self::DEFAULT_SDK_FOLDER;
+
+        $clientsDir = $dir."Clients/";
+        if(!file_exists($clientsDir)){
+            mkdir($clientsDir, 0777, true);
+        }
+        foreach ($generatedFilePaths as $path){
+            if(file_exists($path)){
+                copy($path, $clientsDir.basename($path));
+                $this->outputInterface->writeln(sprintf('<info>Removing file %s.</info>', $path));
+                unlink($path);
+            }else{
+                throw new \Exception("File $path doesn't exists");
+            }
+        }
+
+        $this->copyToDir(__DIR__."/SDK/*",$dir);
+
+        $testDir =  $dir."/Tests/";
+        if(!file_exists($testDir)){
+            mkdir($testDir, 0777, true);
+        }
+        $this->copyToDir(__DIR__. "/SDK/Tests/*.php", $testDir);
+    }
+
+    /**
      * Return true if the given dataType is an array
      *
      * @param $type
@@ -361,5 +459,19 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             return false;
         }
         return true;
+    }
+
+    /**
+     * @param $pattern
+     * @param $dir
+     */
+    private function copyToDir($pattern, $dir)
+    {
+        foreach (glob($pattern) as $file) {
+            if(!is_dir($file) && is_readable($file)) {
+                $destination = $dir . basename($file);
+                copy($file, $destination);
+            }
+        }
     }
 }

@@ -43,3 +43,14 @@ $client->{{ methodName }}(array(
 
 ```
 {% endautoescape %}
+
+{% if methodConfig.headers|length > 0 %}
+<h4> Headers </h4>
+<ul>
+{% for header in methodConfig.headers %}
+{% autoescape false %}
+<li>{{ header|raw }}</li>
+{% endautoescape %}
+{% endfor %}
+</ul>
+{% endif %}

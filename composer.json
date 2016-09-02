@@ -5,7 +5,9 @@
     "license": "MIT",
     "autoload": {
       "psr-4": {
-        "Smartbox\\ApiBundle\\": ""
+        "Smartbox\\ApiBundle\\": "",
+        "Smartbox\\ApiRestClient\\": "Command/SDK/"
+
       }
     },
     "require": {
@@ -31,7 +33,8 @@
         "phpunit/phpunit-mock-objects": "dev-master",
         "phpunit/phpunit": "dev-master",
         "sensio/generator-bundle": "~2.3",
-        "digitalnature/php-ref": "dev-master"
+        "digitalnature/php-ref": "dev-master",
+        "guzzlehttp/guzzle": "~6.0"
     },
     "config": {
          "bin-dir": "bin"

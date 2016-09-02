@@ -21,9 +21,9 @@ class ApiRestInternalClientBuilder
     {
         if(!empty($class)){
             if(!class_exists($class)){
-                throw new \Exception("$class does not exists");
+                throw new \LogicException("$class does not exists");
             }elseif (!is_subclass_of($class, ApiRestInternalClient::class, true) ){
-                throw new \Exception("$class is not an instance of ApiRestInternalClient");
+                throw new \LogicException("$class is not an instance of ApiRestInternalClient");
             }
         }else{
             $class = ApiRestInternalClient::class;

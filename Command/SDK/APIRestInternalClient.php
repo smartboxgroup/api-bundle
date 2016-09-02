@@ -2,12 +2,12 @@
 
 namespace Smartbox\ApiRestClient;
 
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
-use JMS\Serializer\SerializerBuilder;
+use GuzzleHttp\Exception\RequestException;
 
 /**
- * Class APIRestInternalClient.
+ * Class ApiRestInternalClient.
  */
 class ApiRestInternalClient
 {
@@ -48,15 +48,13 @@ class ApiRestInternalClient
     }
 
     /**
-     * BifrostSDK constructor.
-     *
      * @param $username
      * @param $password
      * @param $baseUrl
      */
     public function __construct($username, $password, $baseUrl)
     {
-        $this->client = new \GuzzleHttp\Client();
+        $this->client = new Client();
 
         $this->password = $password;
         $this->username = $username;
@@ -69,25 +67,18 @@ class ApiRestInternalClient
      * @param null $object
      * @param array $filters
      * @param array $headers
+     * @param string $serializationType
      *
-     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @return ApiRestResponse
      * @throws \Exception
      */
-    public function request($method, $uri, $object = null, array $filters = [], array $headers = [])
+    public function request($method, $uri, $object = null, array $filters = [], array $headers = [], $serializationType = null)
     {
         if (!in_array($method, self::getAvailableHttpMethod())) {
             throw new \Exception("Unknown HTTP method $method");
         }
 
-        $request = $this->buildRequest($object);
-
-        if (!empty($filters)) {
-            $request["query"] = $filters;
-        }
-
-        if (!empty($headers)) {
-            $request["headers"] = array_merge($request["headers"], $headers);
-        }
+        $request = ApiRestRequestBuilder::buildRequest($this->username, $this->password, $object, $headers, $filters);
 
         $uri = $this->baseUrl.$uri;
 
@@ -98,43 +89,8 @@ class ApiRestInternalClient
             throw new \Exception($e);
         }
 
-        return $response;
+        return ApiRestResponseBuilder::buildResponse($response, $serializationType);
     }
 
-    /**
-     * @param null $object
-     *
-     * @return array
-     */
-    private function buildRequest($object = null)
-    {
-        $jsonContent = '';
 
-        if (!empty($object)) {
-            $serializer = SerializerBuilder::create()->build();
-            $jsonContent = $serializer->serialize($object, self::FORMAT_JSON);
-        }
-
-        $request = array_merge(['body' => $jsonContent], $this->getOptions());
-
-        return $request;
-    }
-
-    /**
-     * Return the defined options
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            'auth' => [
-                $this->username,
-                $this->password,
-            ],
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ]
-        ];
-    }
 }

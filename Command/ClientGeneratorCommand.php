@@ -199,6 +199,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $node = $factory->namespace($namespace)
             ->addStmt($factory->use('JMS\Serializer\Annotation')->as('JMS'))
             ->addStmt($factory->use('Smartbox\ApiRestClient\ApiRestInternalClient'))
+            ->addStmt($factory->use('Smartbox\ApiRestClient\ApiRestResponse'))
             ->addStmts($this->uses)
             ->addStmt($stmtClass)
             ->getNode();
@@ -288,7 +289,9 @@ class ClientGeneratorCommand extends ContainerAwareCommand
                 case Configuration::MODE_FILTER:
                     $filter = new Variable($inputName);
 
-                    $methodArgs[] = $factory->param($inputName);
+                    $param = $factory->param($inputName);
+                    $param->setDefault( new ConstFetch(new Name('null')));
+                    $methodArgs[] = $param;
 
                     $filters[] = new ArrayItem($filter, new String_($inputName));
 
@@ -325,9 +328,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             foreach ($apiMethod["headers"] as $header){
                 $headerVariable = new Variable($header);
 
-                $param = $factory->param($header);
-                $param->setDefault(new String_(""));
-                $methodArgs[] = $param;
+                $methodArgs[] = $factory->param($header);
 
                 $methodComment .= "* @param string \$$header \r\n";
 
@@ -337,15 +338,18 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             $methodContent[] = new Assign(new Variable("customHeaders"), new Array_($items));
             $methodContent[] = new Assign(new Variable("headers"), new FuncCall( new Name("array_merge"), [new Variable("customHeaders"), new Variable("headers")]));
         }
+
+
         $calledMethodArgs = array_merge($calledMethodArgs, $requestArgs, [new Variable("headers")]);
 
-        //Add default headers param
-        $headers = $factory->param("headers");
-        $headers->setDefault(new Array_());
-        $headers->setTypeHint("array");
-        $methodArgs[] = $headers;
-        $methodComment .=
-            "* @param array \$headers \r\n";
+        if(!empty($apiMethod["output"])){
+            $outputType  = $apiMethod["output"]["type"];
+            if(self::isArray($outputType)){
+                $outputType = ApiConfigurator::getSingleType($outputType);
+                $outputType = sprintf("array<%s>", $outputType);
+            }
+            $calledMethodArgs[] = new String_($outputType);
+        }
 
         //Add return line to the method
         $methodContent[] = new Return_(
@@ -355,6 +359,14 @@ class ClientGeneratorCommand extends ContainerAwareCommand
                 $calledMethodArgs
             )
         );
+
+        //Add default headers param
+        $headers = $factory->param("headers");
+        $headers->setDefault(new Array_());
+        $headers->setTypeHint("array");
+        $methodArgs[] = $headers;
+        $methodComment .=
+            "* @param array \$headers \r\n";
 
         //Building the method
         $sdkMethod = $factory->method($methodName)
@@ -370,7 +382,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
 
         $methodComment .=
             "*
-              * @return mixed|\\Psr\\Http\\Message\\ResponseInterface
+              * @return ApiRestResponse
               */";
 
         $sdkMethod->setDocComment($methodComment);
@@ -438,12 +450,6 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         }
 
         $this->copyToDir(__DIR__."/SDK/*",$dir);
-
-        $testDir =  $dir."/Tests/";
-        if(!file_exists($testDir)){
-            mkdir($testDir, 0777, true);
-        }
-        $this->copyToDir(__DIR__. "/SDK/Tests/*.php", $testDir);
     }
 
     /**

@@ -33,13 +33,14 @@
 {% autoescape false %}
 ```php
 
-$client->{{ methodName }}(array(
+$client->{{ methodName }}(
 {% for inputName, inputConfig in methodConfig.input %}
     {% set type = inputConfig.type|split('\\') %}
 
-    '{{ inputName }}' => ${{ inputName }},  //{{ inputConfig.description|default('') }} (Type: {{ type|last }}{% if inputConfig.group is defined %} Group: {{ inputConfig.group }}{% endif %})
+    ${{ inputName }},  //{{ inputConfig.description|default('') }} (Type: {{ type|last }}{% if inputConfig.group is defined %} Group: {{ inputConfig.group }}{% endif %}
 {% endfor %}
-));
+)
+);
 
 ```
 {% endautoescape %}

@@ -2,7 +2,6 @@
 
 namespace Smartbox\ApiBundle\Tests\SDK;
 
-
 use Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product;
 use Smartbox\ApiBundle\Tests\SDK\Fixture\MockApiRestInternalClient;
 use Smartbox\ApiRestClient\ApiRestInternalClient;

@@ -27,7 +27,7 @@ class ApiRestResponseBuilder
 
         $content = (string) $guzzleResponse->getBody();
         if (!empty($content)){
-            if (!empty($serializationType))  {
+            if (!empty($deserializationType))  {
 
                 $serializer = SerializerBuilder::create()->build();
                 $jsonContent = $serializer->deserialize($content, $deserializationType, ApiRestInternalClient::FORMAT_JSON);

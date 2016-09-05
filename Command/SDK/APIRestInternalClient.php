@@ -73,12 +73,12 @@ class ApiRestInternalClient
      * @param null $object
      * @param array $filters
      * @param array $headers
-     * @param string $serializationType
+     * @param string $deserializationType
      *
      * @return ApiRestResponse
      * @throws \Exception
      */
-    public function request($method, $uri, $object = null, array $filters = [], array $headers = [], $serializationType = null)
+    public function request($method, $uri, $object = null, array $filters = [], array $headers = [], $deserializationType = null)
     {
         if (!in_array($method, self::getAvailableHttpMethod())) {
             throw new \Exception("Unknown HTTP method $method");
@@ -95,7 +95,7 @@ class ApiRestInternalClient
             throw new \Exception($e);
         }
 
-        return ApiRestResponseBuilder::buildResponse($response, $serializationType);
+        return ApiRestResponseBuilder::buildResponse($response, $deserializationType);
     }
 
 

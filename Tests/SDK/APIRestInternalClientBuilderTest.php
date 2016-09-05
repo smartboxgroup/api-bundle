@@ -10,8 +10,8 @@ use Smartbox\ApiRestClient\ApiRestInternalClientBuilder;
 
 class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
 {
-    const TEST_ENV      = "test";
-    const TEST_USERNAME = "test";
+    const TEST_ENV           = "test";
+    const TEST_USERNAME      = "test";
     const TEST_PASSWORD      = "test";
 
     /**
@@ -37,7 +37,6 @@ class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
     {
         ApiRestInternalClientBuilder::createClient(self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD, "Dummy_Client");
     }
-
 
     public function testSpecificClient()
     {

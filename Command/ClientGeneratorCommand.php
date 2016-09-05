@@ -79,11 +79,11 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             ->setDescription('Generate SDK for a given API')
             ->addOption(self::OPTION_NAMESPACE,"N", InputOption::VALUE_OPTIONAL, 'The namespace of the generated classes', $defaultNamespace)
             ->addOption(self::OPTION_API, "A", InputOption::VALUE_OPTIONAL, 'The name of the api to generate the SDK from', "")
-            ->addOption(self::OPTION_VERSION, "F", InputOption::VALUE_OPTIONAL, 'The version of the API to use to generate the SDK', "")
-            ->addOption(self::OPTION_OUTPUT, "O", InputOption::VALUE_OPTIONAL, 'The output path in which the php class will be created', $outputPath)
+            ->addOption(self::OPTION_VERSION, "F", InputOption::VALUE_OPTIONAL, 'The version of the API to use to generate the SDK', "") //The shortcut is -F because -V is already used and Fassung in German means Version
+            ->addOption(self::OPTION_OUTPUT, "O", InputOption::VALUE_OPTIONAL, 'The output path in which the php class/SDK will be created', $outputPath)
             ->addOption(self::OPTION_EXTENDS, 'E', InputOption::VALUE_OPTIONAL, 'The name of the class to extends', $defaultExtends)
             ->addOption(self::OPTION_BUILT, 'B', InputOption::VALUE_OPTIONAL, 'Built the full client', $defaultBuilt)
-            ->addOption(self::OPTION_DUMP, 'D', InputOption::VALUE_OPTIONAL, 'Dump the file in the console instead of writing it in files (do not print help also)', $defaultDump)
+            ->addOption(self::OPTION_DUMP, 'D', InputOption::VALUE_OPTIONAL, 'Dump the file in the console instead of writing it in files (do not print help also, does not work with the build option)', $defaultDump)
             ->setName('smartbox:api:generateSDK');
     }
 
@@ -92,8 +92,12 @@ class ClientGeneratorCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->dump = $input->getOption(self::OPTION_DUMP);
+
         $io = new SymfonyStyle($input, $output);
-        $io->title('Client Generator');
+        if(!$this->dump) {
+            $io->title('SDK Generator');
+        }
 
         $kernelRootDir = $this->getContainer()->getParameter('kernel.root_dir');
 
@@ -108,7 +112,6 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             throw new \LogicException("You need to specify both api version and api name.");
         }
 
-        $this->dump = $input->getOption(self::OPTION_DUMP);
         $built = $input->getOption(self::OPTION_BUILT);
         if($built && $this->dump){
             throw new \LogicException("Cannot generate the SDK and dump in the console the clients at the same time.");
@@ -158,6 +161,8 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     }
 
     /**
+     * Generate a PHP class for a given API service
+     *
      * @param array $service
      * @param $namespace
      * @param $outputPath
@@ -223,7 +228,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     }
 
     /**
-     * Build PHP function for a given API method
+     * Build PHP method for a given API method
      *
      * @param $methodName
      * @param $apiMethod
@@ -319,6 +324,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             $methodContent[] = new Assign(new Variable("filters"), new Array_($filters));
             $calledMethodArgs = array_merge($calledMethodArgs, [new Variable("filters")]);
         }else{
+            //Define filters as empty array
             $filtersArgument = new Array_();
             $calledMethodArgs = array_merge($calledMethodArgs, [$filtersArgument]);
         }
@@ -343,6 +349,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $calledMethodArgs = array_merge($calledMethodArgs, $requestArgs, [new Variable("headers")]);
 
         if(!empty($apiMethod["output"])){
+            //Manage deserialization type
             $outputType  = $apiMethod["output"]["type"];
             if(self::isArray($outputType)){
                 $outputType = ApiConfigurator::getSingleType($outputType);
@@ -426,6 +433,8 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     }
 
     /**
+     * Generate the files and folder for a the full SDK
+     *
      * @param array $generatedFilePaths
      * @param $outputPath
      *

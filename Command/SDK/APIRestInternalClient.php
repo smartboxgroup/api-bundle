@@ -7,7 +7,9 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
 
 /**
- * Class ApiRestInternalClient.
+ * Class ApiRestInternalClient
+ *
+ * @package Smartbox\ApiRestClient
  */
 class ApiRestInternalClient
 {
@@ -48,6 +50,8 @@ class ApiRestInternalClient
     }
 
     /**
+     * ApiRestInternalClient constructor.
+     *
      * @param $username
      * @param $password
      * @param $baseUrl
@@ -62,6 +66,8 @@ class ApiRestInternalClient
     }
 
     /**
+     * Send a request to a given URI
+     *
      * @param $method
      * @param $uri
      * @param null $object

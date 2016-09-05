@@ -1,22 +1,27 @@
 <?php
 
-
 namespace Smartbox\ApiRestClient;
-
 
 use JMS\Serializer\SerializerBuilder;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Class ApiRestResponseBuilder
+ *
+ * @package Smartbox\ApiRestClient
+ */
 class ApiRestResponseBuilder
 {
 
     /**
+     * Build the ApiRestResponse from the Guzzle response
+     *
      * @param ResponseInterface $guzzleResponse
-     * @param $serializationType
+     * @param string $deserializationType
      *
      * @return ApiRestResponse
      */
-    public static function buildResponse(ResponseInterface $guzzleResponse, $serializationType)
+    public static function buildResponse(ResponseInterface $guzzleResponse, $deserializationType)
     {
         $apiRestResponse = new ApiRestResponse();
 
@@ -25,7 +30,7 @@ class ApiRestResponseBuilder
             if (!empty($serializationType))  {
 
                 $serializer = SerializerBuilder::create()->build();
-                $jsonContent = $serializer->deserialize($content, $serializationType, ApiRestInternalClient::FORMAT_JSON);
+                $jsonContent = $serializer->deserialize($content, $deserializationType, ApiRestInternalClient::FORMAT_JSON);
 
                 $apiRestResponse->setBody($jsonContent);
             }else{

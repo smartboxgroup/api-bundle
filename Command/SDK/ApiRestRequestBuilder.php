@@ -4,10 +4,17 @@ namespace Smartbox\ApiRestClient;
 
 use JMS\Serializer\SerializerBuilder;
 
+/**
+ * Class ApiRestRequestBuilder
+ *
+ * @package Smartbox\ApiRestClient
+ */
 class ApiRestRequestBuilder
 {
 
     /**
+     * Build the request from the given parameters
+     *
      * @param $username
      * @param $password
      * @param null $object
@@ -35,6 +42,8 @@ class ApiRestRequestBuilder
     }
 
     /**
+     * Return an array of options
+     *
      * @param $username
      * @param $password
      *

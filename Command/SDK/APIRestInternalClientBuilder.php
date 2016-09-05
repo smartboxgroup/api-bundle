@@ -2,7 +2,9 @@
 namespace Smartbox\ApiRestClient;
 
 /**
- * Class ApiRestInternalClientBuilder.
+ * Class ApiRestInternalClientBuilder
+ *
+ * @package Smartbox\ApiRestClient
  */
 class ApiRestInternalClientBuilder
 {

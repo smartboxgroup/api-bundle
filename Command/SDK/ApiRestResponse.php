@@ -20,18 +20,39 @@ class ApiRestResponse
      */
     protected $headers = [];
 
+    /**
+     * @var mixed
+     */
     protected $body;
 
+    /**
+     * @var string
+     */
     protected $statusCode;
 
+    /**
+     * @var string
+     */
     protected $transactionId;
 
+    /**
+     * @var string
+     */
     protected $rateLimitRemaining;
 
+    /**
+     * @var string
+     */
     protected $rateLimitReset;
 
+    /**
+     * @var string
+     */
     protected $rateLimitLimit;
 
+    /**
+     * @var string
+     */
     protected $rateLimitResetRemaining;
 
     /**

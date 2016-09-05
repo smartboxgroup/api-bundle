@@ -22,7 +22,7 @@ class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
         ApiRestInternalClientBuilder::createClient('DUMMY_ENV', self::TEST_USERNAME, self::TEST_PASSWORD);
     }
 
-    public function testBuilderDefaultClient()
+    public function testDefaultClient()
     {
         $client = ApiRestInternalClientBuilder::createClient(self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
 

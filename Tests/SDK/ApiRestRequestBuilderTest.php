@@ -11,7 +11,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
     const TEST_USERNAME = 'admin';
     const TEST_PASSWORD = 'admin';
 
-    public function testBuildNullBodyRequest()
+    public function testNullBodyRequest()
     {
 
         $actualRequest = ApiRestRequestBuilder::buildRequest(self::TEST_USERNAME, self::TEST_PASSWORD);
@@ -21,7 +21,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedRequest, $actualRequest);
     }
 
-    public function testBuildEmptyStringRequest()
+    public function testEmptyStringRequest()
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest(self::TEST_USERNAME, self::TEST_PASSWORD, "");
 
@@ -30,7 +30,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedRequest, $actualRequest);
     }
 
-    public function testBuildStringRequest()
+    public function testStringRequest()
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest(self::TEST_USERNAME, self::TEST_PASSWORD,"TEST");
 
@@ -39,7 +39,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedRequest, $actualRequest);
     }
 
-    public function testBuildObjectRequest()
+    public function testObjectRequest()
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest(self::TEST_USERNAME, self::TEST_PASSWORD, $this->buildProduct("productName", "universeId"));
 
@@ -50,7 +50,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedRequest, $actualRequest);
     }
 
-    public function testBuildArrayObjectRequest()
+    public function testArrayObjectRequest()
     {
         $products = [
             $this->buildProduct("productName1", "universeId1"),

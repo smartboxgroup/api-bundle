@@ -9,10 +9,23 @@ use Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
 use Smartbox\ApiRestClient\ApiRestResponse;
 
-
+/**
+ * Class MockApiRestInternalClient
+ * Class used to simulate a generated client
+ *
+ * @package Smartbox\ApiBundle\Tests\SDK\Fixture
+ */
 class MockApiRestInternalClient extends ApiRestInternalClient
 {
 
+    /**
+     * MockApiRestInternalClient constructor.
+     *
+     * @param $username
+     * @param $password
+     * @param $baseUrl
+     * @param array $responses
+     */
     public function __construct($username, $password, $baseUrl, $responses = [])
     {
         $mock = new MockHandler($responses);
@@ -32,7 +45,6 @@ class MockApiRestInternalClient extends ApiRestInternalClient
      */
     public function sendProductCreate(Product $entity, array $headers = array())
     {
-
         $uri = '/product_create';
         return $this->request('POST', $uri, $entity, array(), $headers, 'Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product');
     }
@@ -47,17 +59,5 @@ class MockApiRestInternalClient extends ApiRestInternalClient
     {
         $uri = '/product_confirmation';
         return $this->request('POST', $uri, $entity, array(), $headers, null);
-    }
-
-    /**
-     * @param null $object
-     * @param array $headers
-     * @param array $filters
-     *
-     * @return array
-     */
-    public function buildRequest ($object = null, $headers = [], $filters = [])
-    {
-        return parent::buildRequest($object);
     }
 }

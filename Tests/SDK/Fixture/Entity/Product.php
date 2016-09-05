@@ -39,7 +39,6 @@ class Product
      */
     protected $id;
 
-
     /**
      * A value representing the type of the product.
      *
@@ -54,7 +53,6 @@ class Product
      * @var string
      */
     protected $type;
-
 
     /**
      * Name of the product.
@@ -84,7 +82,6 @@ class Product
      * @var string
      */
     protected $description;
-
 
     /**
      * Universe for this Product

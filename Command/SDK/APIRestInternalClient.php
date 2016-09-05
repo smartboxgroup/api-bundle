@@ -62,14 +62,14 @@ class ApiRestInternalClient
 
         $this->password = $password;
         $this->username = $username;
-        $this->baseUrl = $baseUrl;
+        $this->baseUrl = rtrim($baseUrl, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
 
     /**
      * Send a request to a given URI
      *
      * @param $method
-     * @param $uri
+     * @param $path
      * @param null $object
      * @param array $filters
      * @param array $headers
@@ -78,7 +78,7 @@ class ApiRestInternalClient
      * @return ApiRestResponse
      * @throws \Exception
      */
-    public function request($method, $uri, $object = null, array $filters = [], array $headers = [], $deserializationType = null)
+    public function request($method, $path, $object = null, array $filters = [], array $headers = [], $deserializationType = null)
     {
         if (!in_array($method, self::getAvailableHttpMethod())) {
             throw new \Exception("Unknown HTTP method $method");
@@ -86,7 +86,8 @@ class ApiRestInternalClient
 
         $request = ApiRestRequestBuilder::buildRequest($this->username, $this->password, $object, $headers, $filters);
 
-        $uri = $this->baseUrl.$uri;
+        $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $uri = $this->baseUrl.$path;
 
         try {
             /* @var Response*/

@@ -40,7 +40,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     const OPTION_API            = "api";
     const OPTION_EXTENDS        = "extends";
     const OPTION_DUMP           = "dump";
-    const OPTION_BUILT          = "built";
+    const OPTION_BUILD          = "build";
 
     const CLASS_SUFFIX          = "Client";
 
@@ -73,7 +73,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $defaultExtends = self::DEFAULT_CLASS_EXTEND;
         $defaultNamespace = self::DEFAULT_NAMESPACE;
         $defaultDump = false;
-        $defaultBuilt = false;
+        $defaultBuild = false;
 
         $this
             ->setDescription('Generate SDK for a given API')
@@ -82,7 +82,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             ->addOption(self::OPTION_VERSION, "F", InputOption::VALUE_OPTIONAL, 'The version of the API to use to generate the SDK', "") //The shortcut is -F because -V is already used and Fassung in German means Version
             ->addOption(self::OPTION_OUTPUT, "O", InputOption::VALUE_OPTIONAL, 'The output path in which the php class/SDK will be created', $outputPath)
             ->addOption(self::OPTION_EXTENDS, 'E', InputOption::VALUE_OPTIONAL, 'The name of the class to extends', $defaultExtends)
-            ->addOption(self::OPTION_BUILT, 'B', InputOption::VALUE_OPTIONAL, 'Built the full client', $defaultBuilt)
+            ->addOption(self::OPTION_BUILD, 'B', InputOption::VALUE_OPTIONAL, 'Built the full client', $defaultBuild)
             ->addOption(self::OPTION_DUMP, 'D', InputOption::VALUE_OPTIONAL, 'Dump the file in the console instead of writing it in files (do not print help also, does not work with the build option)', $defaultDump)
             ->setName('smartbox:api:generateSDK');
     }
@@ -112,8 +112,8 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             throw new \LogicException("You need to specify both api version and api name.");
         }
 
-        $built = $input->getOption(self::OPTION_BUILT);
-        if($built && $this->dump){
+        $build = $input->getOption(self::OPTION_BUILD);
+        if($build && $this->dump){
             throw new \LogicException("Cannot generate the SDK and dump in the console the clients at the same time.");
         }
 
@@ -122,10 +122,8 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         //Get all the routes to be able to match ApiMethod to correct path
         $this->routes = $this->getContainer()->get('router')->getRouteCollection();
 
-        $outputPath = str_replace('%kernel.root_dir%', $kernelRootDir, $input->getOption('output'));
-        if (!preg_match('/' . preg_quote("/", '/') . '$/', $outputPath)){
-            $outputPath .= "/";
-        }
+        $outputPath  = rtrim(str_replace('%kernel.root_dir%', $kernelRootDir, $input->getOption('output')), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
         if(!file_exists($outputPath)){
             throw new \Exception("Folder $outputPath doesn't exists.");
         }
@@ -154,7 +152,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             );
         }
 
-        if ($built && !$this->dump){
+        if ($build && !$this->dump){
             $output->writeln(sprintf('<info>Building full SDK with the %s generated clients.</info>', count($generatedFilePaths)));
             $this->buildFullSDK($generatedFilePaths, $outputPath);
         }

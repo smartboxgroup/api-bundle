@@ -132,6 +132,25 @@ class ApiConfigurator
         return null;
     }
 
+    /**
+     * @param string $serviceName
+     * @param string $version
+     * @return array
+     */
+    public function getConfigByServiceNameAndVersion($serviceName, $version)
+    {
+        $configuration = [];
+        foreach ($this->config as $serviceId => $serviceConf) {
+            if ($serviceConf['name'] === $serviceName && $serviceConf['version'] === $version) {
+                foreach ($serviceConf['methods'] as $currentMethodName => $methodConf) {
+                    $configuration[$currentMethodName] = $methodConf;
+                }
+            }
+        }
+
+        return $configuration;
+    }
+
 
     public function getRestRouteNameFor($serviceId, $methodName)
     {

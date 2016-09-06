@@ -53,6 +53,11 @@ be_simple_soap:
             binding:       rpc-literal
             resource:      throttling_v1
             resource_type: smartapi_soap
+        sdk_v0:
+            namespace:     http://localhost/api/soap/sdk_v0/
+            binding:       rpc-literal
+            resource:      sdk_v0
+            resource_type: smartapi_soap
 
 smartbox_core:
   cache_drivers:
@@ -79,6 +84,64 @@ smartbox_api:
     throttling: true
 
     services:
+        sdk_v0:
+            name: sdk
+            version: v0
+            soapHeadersNamespace: http://smartbox/soap
+            methods:
+                testWithBody:
+                    description: Method to send an entity
+                    successCode: 201
+                    input:
+                        box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: update, mode: body }
+                    rest:
+                        route: "/test1/url"
+                        httpMethod: POST
+                testWithArrayBody:
+                    description: Method to send an array of entity
+                    successCode: 201
+                    input:
+                        box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box[], group: update, mode: body }
+                    rest:
+                        route: "/test1/url"
+                        httpMethod: POST
+                testWithRequirements:
+                    description: Method using variable in the URI
+                    input:
+                        id: { type: integer, format: "\d+" }
+                    output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: public }
+                    rest:
+                      route: "/test2/{id}"
+                      httpMethod: GET
+                    defaults:
+                      id: 90
+                testWithFilters:
+                    description: Method using filters
+                    input:
+                        size: { type: integer, format: "\d+", mode: filter }
+                        limit: { type: integer, format: "\d+", mode: filter }
+                        page: { type: integer, format: "\d+", mode: filter }
+                    output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: public }
+                    rest:
+                      route: "/test3/filters"
+                      httpMethod: GET
+                    defaults:
+                      id: 90
+                testWithHeadersAndFiltersAndBody:
+                    description: Method using a body, filters, headers and dynamic url
+                    input:
+                        size: { type: integer, format: "\d+", mode: filter }
+                        limit: { type: integer, format: "\d+", mode: filter }
+                        page: { type: integer, format: "\d+", mode: filter }
+                        box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: update, mode: body }
+                        id: { type: string, format: "\d+" }
+                    output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: public }
+                    rest:
+                      route: "/test4/full/{id}"
+                      httpMethod: GET
+                    defaults:
+                      id: 90
+                    headers: ["brand", "country"]
         demo_v1:
             name: demo
             version: v1

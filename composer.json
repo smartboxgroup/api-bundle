@@ -5,7 +5,9 @@
     "license": "MIT",
     "autoload": {
       "psr-4": {
-        "Smartbox\\ApiBundle\\": ""
+        "Smartbox\\ApiBundle\\": "",
+        "Smartbox\\ApiRestClient\\": "Command/SDK/"
+
       }
     },
     "require": {
@@ -23,14 +25,16 @@
         "snc/redis-bundle": "^1.1",
         "predis/predis": "^1.0",
         "smartbox/core-bundle": "dev-master",
-        "smartbox/besimple/soap": "dev-master"
+        "smartbox/besimple/soap": "dev-master",
+        "nikic/php-parser": "^2.0@dev"
     },
     "require-dev": {
         "phpunit/php-code-coverage": "dev-master",
         "phpunit/phpunit-mock-objects": "dev-master",
         "phpunit/phpunit": "dev-master",
         "sensio/generator-bundle": "~2.3",
-        "digitalnature/php-ref": "dev-master"
+        "digitalnature/php-ref": "dev-master",
+        "guzzlehttp/guzzle": "~6.0"
     },
     "config": {
          "bin-dir": "bin"

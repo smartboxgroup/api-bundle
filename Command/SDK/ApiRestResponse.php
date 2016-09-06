@@ -9,7 +9,6 @@ namespace Smartbox\ApiRestClient;
  */
 class ApiRestResponse
 {
-    const TRANSACTION_ID              = "X-Transaction-Id";
     const RATE_LIMIT_REMAINING        = "X-RateLimit-Remaining";
     const RATE_LIMIT_RESET            = "X-RateLimit-Reset";
     const RATE_LIMIT_LIMIT            = "X-RateLimit-Limit";
@@ -55,21 +54,6 @@ class ApiRestResponse
      */
     protected $rateLimitResetRemaining;
 
-    /**
-     * @return mixed
-     */
-    public function getTransactionId ()
-    {
-        return $this->transactionId;
-    }
-
-    /**
-     * @param mixed $transactionId
-     */
-    public function setTransactionId ($transactionId)
-    {
-        $this->transactionId = $transactionId;
-    }
 
     /**
      * @return mixed

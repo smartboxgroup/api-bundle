@@ -15,9 +15,9 @@ class ApiRestRequestBuilder
     /**
      * Build the request from the given parameters
      *
-     * @param $username
-     * @param $password
-     * @param null $object
+     * @param string|null$username
+     * @param string|null $password
+     * @param mixed|null $object
      * @param array $headers
      * @param array $filters
      *

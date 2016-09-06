@@ -62,7 +62,7 @@ class ApiRestInternalClient
 
         $this->password = $password;
         $this->username = $username;
-        $this->baseUrl = rtrim($baseUrl, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->baseUrl = rtrim($baseUrl, "/") . "/";
     }
 
     /**
@@ -86,7 +86,7 @@ class ApiRestInternalClient
 
         $request = ApiRestRequestBuilder::buildRequest($this->username, $this->password, $object, $headers, $filters);
 
-        $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $path = rtrim($path, "/") . "/";
         $uri = $this->baseUrl.$path;
 
         try {

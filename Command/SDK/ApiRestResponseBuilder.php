@@ -45,7 +45,6 @@ class ApiRestResponseBuilder
         }
         $apiRestResponse->setHeaders($headers);
 
-        $apiRestResponse->setTransactionId($guzzleResponse->getHeaderLine(ApiRestResponse::TRANSACTION_ID));
         $apiRestResponse->setRateLimitLimit($guzzleResponse->getHeaderLine(ApiRestResponse::RATE_LIMIT_LIMIT));
         $apiRestResponse->setRateLimitRemaining($guzzleResponse->getHeaderLine(ApiRestResponse::RATE_LIMIT_REMAINING));
         $apiRestResponse->setRateLimitReset($guzzleResponse->getHeaderLine(ApiRestResponse::RATE_LIMIT_RESET));

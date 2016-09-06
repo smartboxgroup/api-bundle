@@ -39,14 +39,12 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
             ApiRestResponse::RATE_LIMIT_REMAINING => "rateLimitRemaining",
             ApiRestResponse::RATE_LIMIT_RESET_REMAINING => "rateLimitResetRemaining",
             ApiRestResponse::RATE_LIMIT_RESET => "rateLimitReset",
-            ApiRestResponse::TRANSACTION_ID => "transID"
         );
 
         $guzzleResponse = new Response("200", $headers);
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, null);
         $this->assertNotNull($response);
         $this->assertEquals($headers, $response->getHeaders());
-        $this->assertEquals("transID", $response->getTransactionId());
         $this->assertEquals("rateLimitLimit", $response->getRateLimitLimit());
         $this->assertEquals("rateLimitReset", $response->getRateLimitReset());
         $this->assertEquals("rateLimitRemaining", $response->getRateLimitRemaining());

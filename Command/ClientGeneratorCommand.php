@@ -82,7 +82,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             ->addOption(self::OPTION_VERSION, "F", InputOption::VALUE_OPTIONAL, 'The version of the API to use to generate the SDK', "") //The shortcut is -F because -V is already used and Fassung in German means Version
             ->addOption(self::OPTION_OUTPUT, "O", InputOption::VALUE_OPTIONAL, 'The output path in which the php class/SDK will be created', $outputPath)
             ->addOption(self::OPTION_EXTENDS, 'E', InputOption::VALUE_OPTIONAL, 'The name of the class to extends', $defaultExtends)
-            ->addOption(self::OPTION_BUILD, 'B', InputOption::VALUE_OPTIONAL, 'Built the full client', $defaultBuild)
+            ->addOption(self::OPTION_BUILD, 'B', InputOption::VALUE_OPTIONAL, 'If true, the command will generate a full PHP SDK to use the generated client', $defaultBuild)
             ->addOption(self::OPTION_DUMP, 'D', InputOption::VALUE_OPTIONAL, 'Dump the file in the console instead of writing it in files (do not print help also, does not work with the build option)', $defaultDump)
             ->setName('smartbox:api:generateSDK');
     }

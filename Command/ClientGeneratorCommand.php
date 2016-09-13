@@ -3,6 +3,7 @@
 namespace Smartbox\ApiBundle\Command;
 
 use PhpParser\Builder\Method;
+use PhpParser\Builder\Property;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -184,6 +185,13 @@ class ClientGeneratorCommand extends ContainerAwareCommand
                   * Class $className
                   */"
             );
+
+        //Add class name helper for php 5.3
+        $stmtClass->addStmt(
+            (new Property("class"))->makePublic()
+            ->makeStatic()
+            ->setDefault($namespace."\\".$className)
+        );
 
         if(!empty($classToExtend)){
             $stmtClass->extend($classToExtend);

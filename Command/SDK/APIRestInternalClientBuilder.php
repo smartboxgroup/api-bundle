@@ -25,7 +25,7 @@ class ApiRestInternalClientBuilder
             if(!class_exists($class)){
                 throw new \LogicException("$class does not exists");
             }elseif (!is_subclass_of($class, ApiRestInternalClient::$class, true) ){
-                throw new \LogicException("$class is not an instance of ApiRestInternalClient");
+                throw new \LogicException("$class is not a subclass of ApiRestInternalClient");
             }
         }else{
             $class = ApiRestInternalClient::$class;

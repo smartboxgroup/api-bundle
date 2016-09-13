@@ -1,6 +1,6 @@
 <?php
 
-namespace Smartbox\ApiBundle\Tests\SDK\Fixture\Entity;
+namespace Smartbox\ApiRestClient\Tests\Fixture\Entity;
 
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;

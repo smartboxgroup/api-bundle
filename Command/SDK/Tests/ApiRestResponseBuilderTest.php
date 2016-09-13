@@ -4,10 +4,10 @@ namespace Smartbox\ApiBundle\Tests\SDK;
 
 use Guzzle\Http\Message\Response;
 use JMS\Serializer\SerializerBuilder;
-use Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
 use Smartbox\ApiRestClient\ApiRestResponse;
 use Smartbox\ApiRestClient\ApiRestResponseBuilder;
+use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
 
 class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,7 +60,6 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("string", $response->getBody());
     }
 
-
     public function testObjectBodyResponse()
     {
         $product = new Product();
@@ -71,8 +70,7 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
         $jsonContent = $serializer->serialize($product, ApiRestInternalClient::FORMAT_JSON);
 
         $guzzleResponse = new Response("200", array(), $jsonContent);
-        $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, "Smartbox\\ApiBundle\\Tests\\SDK\\Fixture\\Entity\\Product");
-
+        $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, 'Smartbox\ApiRestClient\Tests\Fixture\Entity\Product');
         $this->assertNotNull($response);
         $this->assertEquals($product, $response->getBody());
     }
@@ -93,9 +91,10 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
         $jsonContent = $serializer->serialize($products, ApiRestInternalClient::FORMAT_JSON);
 
         $guzzleResponse = new Response("200", array(), $jsonContent);
-        $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, "array<Smartbox\\ApiBundle\\Tests\\SDK\\Fixture\\Entity\\Product>");
-
+        $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, 'array<Smartbox\ApiRestClient\Tests\Fixture\Entity\Product>');
         $this->assertNotNull($response);
         $this->assertEquals($products, $response->getBody());
     }
+
+
 }

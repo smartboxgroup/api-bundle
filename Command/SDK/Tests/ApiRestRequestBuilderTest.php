@@ -1,11 +1,10 @@
 <?php
 
-namespace Smartbox\ApiBundle\Tests\SDK;
+namespace Smartbox\ApiRestClient\Tests;
 
-use Guzzle\Http\Message\Request;
-use Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product;
-use Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Universe;
 use Smartbox\ApiRestClient\ApiRestRequestBuilder;
+use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
+use Smartbox\ApiRestClient\Tests\Fixture\Entity\Universe;
 
 class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
 {

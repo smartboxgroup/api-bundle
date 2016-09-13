@@ -1,10 +1,9 @@
 <?php
 
-namespace Smartbox\ApiBundle\Tests\SDK\Fixture;
+namespace Smartbox\ApiRestClient\Tests\Fixture;
 
 
 use Guzzle\Http\Client;
-use Guzzle\Http\Message\Response;
 use Guzzle\Plugin\Mock\MockPlugin;
 use Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
@@ -18,6 +17,7 @@ use Smartbox\ApiRestClient\ApiRestResponse;
  */
 class MockApiRestInternalClient extends ApiRestInternalClient
 {
+    public static $class = 'Smartbox\ApiRestClient\Tests\Fixture\MockApiRestInternalClient';
 
     /**
      * MockApiRestInternalClient constructor.
@@ -51,7 +51,7 @@ class MockApiRestInternalClient extends ApiRestInternalClient
     public function sendProductCreate(Product $entity, array $headers = array())
     {
         $uri = '/product_create';
-        return $this->request('POST', $uri, $entity, array(), $headers, 'Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product');
+        return $this->request('POST', $uri, $entity, array(), $headers, 'Smartbox\ApiBundle\SDK\Tests\Fixture\Entity\Product');
     }
 
     /**

@@ -7,7 +7,6 @@
       "psr-4": {
         "Smartbox\\ApiBundle\\": "",
         "Smartbox\\ApiRestClient\\": "Command/SDK/"
-
       }
     },
     "require": {

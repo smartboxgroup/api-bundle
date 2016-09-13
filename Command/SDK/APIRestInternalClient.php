@@ -2,9 +2,10 @@
 
 namespace Smartbox\ApiRestClient;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Exception\RequestException;
+use Guzzle\Http\Client;
+use Guzzle\Http\Exception\RequestException;
+use Guzzle\Http\Message\Response;
+use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class ApiRestInternalClient
@@ -13,6 +14,8 @@ use GuzzleHttp\Exception\RequestException;
  */
 class ApiRestInternalClient
 {
+    public static $class = 'Smartbox\ApiRestClient\ApiRestInternalClient';
+
     const FORMAT_JSON           = 'json';
 
     const HTTP_METHOD_GET       = 'GET';
@@ -21,7 +24,7 @@ class ApiRestInternalClient
     const HTTP_METHOD_PATCH     = 'PATCH';
     const HTTP_METHOD_DELETE    = 'DELETE';
 
-    /** @var \GuzzleHttp\Client */
+    /** @var Client */
     protected $client;
 
     /** @var string */
@@ -33,6 +36,9 @@ class ApiRestInternalClient
     /** @var string */
     protected $password;
 
+    /** @var  EventSubscriberInterface */
+    protected $subscribers;
+
     /**
      * Return the available.
      *
@@ -40,13 +46,13 @@ class ApiRestInternalClient
      */
     public static function getAvailableHttpMethod()
     {
-        return [
+        return array(
             self::HTTP_METHOD_DELETE,
             self::HTTP_METHOD_GET,
             self::HTTP_METHOD_POST,
             self::HTTP_METHOD_PUT,
             self::HTTP_METHOD_PATCH,
-        ];
+        );
     }
 
     /**
@@ -62,7 +68,7 @@ class ApiRestInternalClient
 
         $this->password = $password;
         $this->username = $username;
-        $this->baseUrl = rtrim($baseUrl, "/") . "/";
+        $this->baseUrl = $baseUrl;
     }
 
     /**
@@ -78,26 +84,30 @@ class ApiRestInternalClient
      * @return ApiRestResponse
      * @throws \Exception
      */
-    public function request($method, $path, $object = null, array $filters = [], array $headers = [], $deserializationType = null)
+    public function request($method, $path, $object = null, array $filters = array(), array $headers = array(), $deserializationType = null)
     {
         if (!in_array($method, self::getAvailableHttpMethod())) {
             throw new \Exception("Unknown HTTP method $method");
         }
 
-        $request = ApiRestRequestBuilder::buildRequest($this->username, $this->password, $object, $headers, $filters);
-
-        $path = rtrim($path, "/") . "/";
         $uri = $this->baseUrl.$path;
+
+        $request = ApiRestRequestBuilder::buildRequest($method, $uri, $this->username, $this->password, $object, $headers, $filters);
+
+        if(!empty($this->subscribers)){
+            foreach ($this->subscribers as $subscriber){
+                $request->addSubscriber($subscriber);
+            }
+        }
 
         try {
             /* @var Response*/
-            $response = $this->client->request($method, $uri, $request);
+            $response = $this->client->send($request);
+
         } catch (RequestException $e) {
             throw new \Exception($e);
         }
 
         return ApiRestResponseBuilder::buildResponse($response, $deserializationType);
     }
-
-
 }

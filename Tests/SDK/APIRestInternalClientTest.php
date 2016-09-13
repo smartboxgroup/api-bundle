@@ -2,7 +2,7 @@
 
 namespace Smartbox\ApiBundle\Tests\SDK;
 
-use GuzzleHttp\Psr7\Response;
+use Guzzle\Http\Message\Response;
 use JMS\Serializer\SerializerBuilder;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
 use Smartbox\ApiRestClient\ApiRestResponse;
@@ -51,8 +51,15 @@ class ApiRestInternalClientTest extends \PHPUnit_Framework_TestCase
         $serializer = SerializerBuilder::create()->build();
         $jsonContent = $serializer->serialize([$product1, $product2], ApiRestInternalClient::FORMAT_JSON);
 
-        $client = $this->getClient([new Response(200, [], $jsonContent )]);
+        $headers = array(
+            ApiRestResponse::RATE_LIMIT_LIMIT => "rateLimitLimit",
+            ApiRestResponse::RATE_LIMIT_REMAINING => "rateLimitRemaining",
+            ApiRestResponse::RATE_LIMIT_RESET_REMAINING => "rateLimitResetRemaining",
+            ApiRestResponse::RATE_LIMIT_RESET => "rateLimitReset",
+            "x-transaction-id" => "42"
+        );
 
+        $client = $this->getClient([new Response(200, $headers, $jsonContent )]);
         $response = $client->request('GET', "/products", null, array(), array(), 'array<Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product>');
 
         $this->assertInstanceOf(ApiRestResponse::class, $response);
@@ -60,5 +67,12 @@ class ApiRestInternalClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, count($response->getBody()));
         $this->assertEquals("id1", $response->getBody()[0]->getId());
         $this->assertEquals("id2", $response->getBody()[1]->getId());
+
+        $this->assertEquals("42", $response->getHeaders()["x-transaction-id"]);
+        $this->assertEquals("rateLimitReset", $response->getHeaders()[ApiRestResponse::RATE_LIMIT_RESET]);
+        $this->assertEquals("rateLimitResetRemaining", $response->getHeaders()[ApiRestResponse::RATE_LIMIT_RESET_REMAINING]);
+        $this->assertEquals("rateLimitRemaining", $response->getHeaders()[ApiRestResponse::RATE_LIMIT_REMAINING]);
+        $this->assertEquals("rateLimitLimit", $response->getHeaders()[ApiRestResponse::RATE_LIMIT_LIMIT]);
+
     }
 }

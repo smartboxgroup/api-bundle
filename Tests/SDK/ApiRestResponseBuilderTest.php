@@ -2,7 +2,7 @@
 
 namespace Smartbox\ApiBundle\Tests\SDK;
 
-use GuzzleHttp\Psr7\Response;
+use Guzzle\Http\Message\Response;
 use JMS\Serializer\SerializerBuilder;
 use Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
@@ -28,8 +28,9 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
         $guzzleResponse = new Response("200", $headers);
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, null);
         $this->assertNotNull($response);
-        $this->assertEquals($headers, $response->getHeaders());
-        $this->assertEquals("accepted", $response->getHeaders()["status"]);
+        $actualHeaders = $response->getHeaders();
+        $this->assertEquals($headers, $actualHeaders);
+        $this->assertEquals("accepted", $actualHeaders["status"]);
     }
 
     public function testCorrectHeadersResponse()
@@ -44,7 +45,7 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
         $guzzleResponse = new Response("200", $headers);
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, null);
         $this->assertNotNull($response);
-        $this->assertEquals($headers, $response->getHeaders());
+        $this->assertSame($headers, $response->getHeaders());
         $this->assertEquals("rateLimitLimit", $response->getRateLimitLimit());
         $this->assertEquals("rateLimitReset", $response->getRateLimitReset());
         $this->assertEquals("rateLimitRemaining", $response->getRateLimitRemaining());
@@ -53,11 +54,12 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testStringBodyResponse()
     {
-        $guzzleResponse = new Response("200", [], "string");
+        $guzzleResponse = new Response("200", array(), "string");
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, null);
         $this->assertNotNull($response);
         $this->assertEquals("string", $response->getBody());
     }
+
 
     public function testObjectBodyResponse()
     {
@@ -68,8 +70,9 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
         $serializer = SerializerBuilder::create()->build();
         $jsonContent = $serializer->serialize($product, ApiRestInternalClient::FORMAT_JSON);
 
-        $guzzleResponse = new Response("200", [], $jsonContent);
+        $guzzleResponse = new Response("200", array(), $jsonContent);
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, "Smartbox\\ApiBundle\\Tests\\SDK\\Fixture\\Entity\\Product");
+
         $this->assertNotNull($response);
         $this->assertEquals($product, $response->getBody());
     }
@@ -84,16 +87,15 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
         $product2->setType(Product::TYPE_BOX);
         $product2->setId("id2");
 
-        $products = [$product1, $product2];
+        $products = array($product1, $product2);
 
         $serializer = SerializerBuilder::create()->build();
         $jsonContent = $serializer->serialize($products, ApiRestInternalClient::FORMAT_JSON);
 
-        $guzzleResponse = new Response("200", [], $jsonContent);
+        $guzzleResponse = new Response("200", array(), $jsonContent);
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, "array<Smartbox\\ApiBundle\\Tests\\SDK\\Fixture\\Entity\\Product>");
+
         $this->assertNotNull($response);
         $this->assertEquals($products, $response->getBody());
     }
-
-
 }

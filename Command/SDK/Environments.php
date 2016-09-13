@@ -9,10 +9,12 @@ namespace Smartbox\ApiRestClient;
 class Environments
 {
 
-    protected $environments = [
+    public static $environments = [
         'test' => "www.example.com/api/test/example",       // Replace this with real data
         'production' => "www.example.com/api/example"       // Replace this with real data
     ];
+
+
 
     /**
      * Return the entry point of the given environment
@@ -22,11 +24,11 @@ class Environments
      * @return mixed
      * @throws \Exception
      */
-    public function getEnvironmentURI($env)
+    public static function getEnvironmentURI($env)
     {
-        if (!isset($this->environments[$env])){
+        if (!isset(self::$environments[$env])){
             throw new \Exception("Unknown environment $env");
         }
-        return $this->environments[$env];
+        return self::$environments[$env];
     }
 }

@@ -19,19 +19,19 @@ class ApiRestInternalClientBuilder
      * @return mixed
      * @throws \Exception
      */
-    public static function createClient($env, $username, $password, $class = null)
+    public static function createClient($class = null, $env, $username, $password)
     {
         if(!empty($class)){
             if(!class_exists($class)){
                 throw new \LogicException("$class does not exists");
-            }elseif (!is_subclass_of($class, ApiRestInternalClient::class, true) ){
-                throw new \LogicException("$class is not an instance of ApiRestInternalClient");
+            }elseif (!is_subclass_of($class, ApiRestInternalClient::$class, true) ){
+                throw new \LogicException("$class is not a subclass of ApiRestInternalClient");
             }
         }else{
-            $class = ApiRestInternalClient::class;
+            $class = ApiRestInternalClient::$class;
         }
 
-        $baseUrl = (new Environments())->getEnvironmentURI($env);
+        $baseUrl = Environments::getEnvironmentURI($env);
 
         $client = new $class($username, $password, $baseUrl);
 

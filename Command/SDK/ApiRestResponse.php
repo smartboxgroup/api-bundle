@@ -9,15 +9,17 @@ namespace Smartbox\ApiRestClient;
  */
 class ApiRestResponse
 {
-    const RATE_LIMIT_REMAINING        = "X-RateLimit-Remaining";
-    const RATE_LIMIT_RESET            = "X-RateLimit-Reset";
-    const RATE_LIMIT_LIMIT            = "X-RateLimit-Limit";
-    const RATE_LIMIT_RESET_REMAINING  = "X-RateLimit-Reset-Remaining";
+    public static $class = 'Smartbox\ApiRestClient\ApiRestResponse';
+
+    const RATE_LIMIT_REMAINING        = "x-ratelimit-remaining";
+    const RATE_LIMIT_RESET            = "x-ratelimit-reset";
+    const RATE_LIMIT_LIMIT            = "x-ratelimit-limit";
+    const RATE_LIMIT_RESET_REMAINING  = "x-ratelimit-reset-remaining";
 
     /**
      * @var array
      */
-    protected $headers = [];
+    protected $headers = array();
 
     /**
      * @var mixed
@@ -29,10 +31,6 @@ class ApiRestResponse
      */
     protected $statusCode;
 
-    /**
-     * @var string
-     */
-    protected $transactionId;
 
     /**
      * @var string

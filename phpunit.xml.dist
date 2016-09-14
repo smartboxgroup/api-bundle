@@ -13,6 +13,7 @@
 
     <testsuite name="SmartApi Suite">
         <directory>./Tests/</directory>
+        <directory>./Command/SDK/Tests/</directory>
     </testsuite>
 
     <filter>

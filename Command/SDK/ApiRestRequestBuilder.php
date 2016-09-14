@@ -2,6 +2,7 @@
 
 namespace Smartbox\ApiRestClient;
 
+use Guzzle\Http\Message\RequestFactory;
 use JMS\Serializer\SerializerBuilder;
 
 /**
@@ -11,31 +12,40 @@ use JMS\Serializer\SerializerBuilder;
  */
 class ApiRestRequestBuilder
 {
+    public static $class = 'Smartbox\ApiRestClient\ApiRestRequestBuilder';
 
     /**
-     * Build the request from the given parameters
+     * Build a Guzzle request
      *
-     * @param string|null$username
-     * @param string|null $password
-     * @param mixed|null $object
+     * @param $method
+     * @param $url
+     * @param null $username
+     * @param null $password
+     * @param null $object
      * @param array $headers
      * @param array $filters
      *
-     * @return array
+     * @return \Guzzle\Http\Message\RequestInterface|mixed
      */
-    public static function buildRequest($username = null, $password = null, $object = null, $headers = [], $filters = [])
+    public static function buildRequest($method, $url, $username = null, $password = null, $object = null, $headers = array(), $filters = array())
     {
-        $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($object, ApiRestInternalClient::FORMAT_JSON);
+        $jsonContent = null;
+        if(! empty($object)){
+            $serializer = SerializerBuilder::create()->build();
 
-        $request = array_merge(['body' => $jsonContent], self::getOptions($username, $password));
-
-        if (!empty($filters)) {
-            $request["query"] = $filters;
+            $jsonContent = $serializer->serialize($object, ApiRestInternalClient::FORMAT_JSON);
         }
 
-        if (!empty($headers)) {
-            $request["headers"] = array_merge($request["headers"], $headers);
+        $headers = array_merge($headers, self::getOptions($username, $password));
+
+        $factory = new RequestFactory();
+
+        $request = $factory->create($method, $url, $headers, $jsonContent, self::getOptions($username, $password));
+
+        $query = $request->getQuery();
+
+        foreach ($filters as  $key=>$value){
+            $query->add($key, $value);
         }
 
         return $request;
@@ -51,14 +61,12 @@ class ApiRestRequestBuilder
      */
     protected static function getOptions($username, $password)
     {
-        return [
-            'auth' => [
+        return array(
+            'auth' => array(
                 $username,
                 $password
-            ],
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ]
-        ];
+            ),
+            'Content-Type' => 'application/json',
+        );
     }
 }

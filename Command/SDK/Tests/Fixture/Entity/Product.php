@@ -1,5 +1,5 @@
 <?php
-namespace Smartbox\ApiBundle\Tests\SDK\Fixture\Entity;
+namespace Smartbox\ApiRestClient\Tests\Fixture\Entity;
 
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -43,7 +43,7 @@ class Product
      * A value representing the type of the product.
      *
      * @Assert\Type(type="string")
-     * @Assert\Choice(callback="Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product::getValidTypes")
+     * @Assert\Choice(callback="Smartbox\ApiRestClient\Tests\Fixture\Entity\Product::getValidTypes")
      * @Assert\NotBlank
      * @JMS\Type("string")
      * @JMS\Expose
@@ -86,10 +86,10 @@ class Product
     /**
      * Universe for this Product
      *
-     * @Assert\Type(type="Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Universe")
+     * @Assert\Type(type="Smartbox\ApiRestClient\Tests\Fixture\Entity\Universe")
      * @Assert\Valid
      * @Assert\NotBlank
-     * @JMS\Type("Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Universe")
+     * @JMS\Type("Smartbox\ApiRestClient\Tests\Fixture\Entity\Universe")
      * @JMS\Expose
      * @JMS\Groups({"logs"})
      * @JMS\SerializedName("universe")

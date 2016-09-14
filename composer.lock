@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "eccf245a29adfbea8654faf1361e94cd",
+    "hash": "c9af0519d1935b6166f5af5fd6d61ede",
     "content-hash": "a0b6cf30e762b0b5d164ca923b5d501b",
     "packages": [
         {
@@ -1614,7 +1614,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/BeSimpleSoap.git",
-                "reference": "a6b3dd110ca56eb97dd132edac82b6394238a90a"
+                "reference": "835cb2a0e4b33d79f1a6df865ac941ee2a043834"
             },
             "require": {
                 "ass/xmlsecurity": "~1.0",
@@ -1623,7 +1623,7 @@
                 "php": ">=5.3.0",
                 "symfony/framework-bundle": "~2.6",
                 "symfony/twig-bundle": "~2.6",
-                "zendframework/zend-mime": "2.1.*"
+                "zendframework/zend-mime": "2.*"
             },
             "replace": {
                 "besimple/soap-bundle": "self.version",
@@ -1671,7 +1671,7 @@
             "keywords": [
                 "soap"
             ],
-            "time": "2016-06-02 16:34:08"
+            "time": "2016-09-09 15:13:44"
         },
         {
             "name": "smartbox/core-bundle",
@@ -1679,7 +1679,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/core-bundle.git",
-                "reference": "ccdef0e26fddf35af97efca1737440d9a4ef33de"
+                "reference": "9387546388aa5916db580fb3589ae658dc95e9bf"
             },
             "require": {
                 "doctrine/annotations": ">=1.2.0",
@@ -1692,9 +1692,9 @@
             },
             "require-dev": {
                 "digitalnature/php-ref": "dev-master",
-                "phpunit/php-code-coverage": "dev-master",
-                "phpunit/phpunit": "dev-master",
-                "phpunit/phpunit-mock-objects": "dev-master",
+                "phpunit/php-code-coverage": "~4.0",
+                "phpunit/phpunit": "~5.4",
+                "phpunit/phpunit-mock-objects": "~3.2",
                 "predis/predis": "^1.0",
                 "sensio/generator-bundle": "~2.3",
                 "snc/redis-bundle": "^1.1"
@@ -1709,7 +1709,7 @@
                 "MIT"
             ],
             "description": "Smartbox Core Bundle",
-            "time": "2016-07-18 15:01:48"
+            "time": "2016-08-25 12:07:48"
         },
         {
             "name": "snc/redis-bundle",

@@ -17,11 +17,12 @@ class ApiRestException extends \Exception
     /**
      * ApiRestException constructor.
      *
-     * @param ApiRestResponse $apiRestResponse
+     * @param ApiRestResponse   $apiRestResponse
+     * @param \Exception|null   $previous
      */
-    public function __construct(ApiRestResponse $apiRestResponse)
+    public function __construct(ApiRestResponse $apiRestResponse, \Exception $previous = null)
     {
-        parent::__construct($apiRestResponse->getRawBody());
+        parent::__construct($apiRestResponse->getRawBody(), $apiRestResponse->getStatusCode(), $previous);
         $this->apiRestResponse = $apiRestResponse;
     }
 

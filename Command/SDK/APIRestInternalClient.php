@@ -107,7 +107,7 @@ class ApiRestInternalClient
             $errorResponse = $e->getRequest()->getResponse();
             if(!empty($errorResponse)){
                 $response = ApiRestResponseBuilder::buildResponse($errorResponse);
-                throw new ApiRestException($response);
+                throw new ApiRestException($response, $e);
             }else{
                 throw $e;
             }

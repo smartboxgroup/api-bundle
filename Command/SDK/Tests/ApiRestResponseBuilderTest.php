@@ -58,6 +58,7 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, null);
         $this->assertNotNull($response);
         $this->assertEquals("string", $response->getBody());
+        $this->assertEquals("string", $response->getRawBody());
     }
 
     public function testObjectBodyResponse()
@@ -94,6 +95,8 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, 'array<Smartbox\ApiRestClient\Tests\Fixture\Entity\Product>');
         $this->assertNotNull($response);
         $this->assertEquals($products, $response->getBody());
+        $this->assertEquals($jsonContent, $response->getRawBody());
+
     }
 
 

@@ -21,7 +21,7 @@ class ApiRestResponseBuilder
      *
      * @return ApiRestResponse
      */
-    public static function buildResponse(Response $guzzleResponse, $deserializationType)
+    public static function buildResponse(Response $guzzleResponse, $deserializationType = null)
     {
         $apiRestResponse = new ApiRestResponse();
 
@@ -36,6 +36,7 @@ class ApiRestResponseBuilder
             }else{
                 $apiRestResponse->setBody($content);
             }
+            $apiRestResponse->setRawBody($content);
         }
         //Flatten headers array
         $headers = array();

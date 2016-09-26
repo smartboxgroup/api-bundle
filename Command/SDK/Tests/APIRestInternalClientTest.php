@@ -2,21 +2,34 @@
 
 namespace Smartbox\ApiBundle\Tests\SDK;
 
+use Guzzle\Http\Exception\CurlException;
 use Guzzle\Http\Message\Response;
 use JMS\Serializer\SerializerBuilder;
+use Smartbox\ApiRestClient\ApiRestException;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
 use Smartbox\ApiRestClient\ApiRestResponse;
 use Smartbox\ApiRestClient\Tests\Fixture\MockApiRestInternalClient;
 use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
 
+/**
+ * Class ApiRestInternalClientTest
+ *
+ * @package Smartbox\ApiBundle\Tests\SDK
+ */
 class ApiRestInternalClientTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_USERNAME = 'admin';
     const TEST_PASSWORD = 'admin';
 
-    public function getClient(array $responses)
+    /**
+     * @param array $responses
+     * @param array $exceptions
+     *
+     * @return MockApiRestInternalClient
+     */
+    public function getClient(array $responses = array(), array $exceptions = array())
     {
-        return new MockApiRestInternalClient(self::TEST_USERNAME, self::TEST_USERNAME, "http://example.com/", $responses);
+        return new MockApiRestInternalClient(self::TEST_USERNAME, self::TEST_USERNAME, "http://example.com/", $responses, $exceptions);
     }
 
     public function testMethodWithOneSerializedObjectInResponse()
@@ -78,5 +91,30 @@ class ApiRestInternalClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("rateLimitRemaining", $headers [ApiRestResponse::RATE_LIMIT_REMAINING]);
         $this->assertEquals("rateLimitLimit", $headers [ApiRestResponse::RATE_LIMIT_LIMIT]);
 
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testHandleException()
+    {
+        $client = $this->getClient(array(new Response(400, array("my_header"=>"value"), "Bad request")));
+
+        $client->request('GET', "/products");
+    }
+
+    public function testTransformException()
+    {
+        $client = $this->getClient(array(new Response(400, array("my_header"=>"value"), "Bad request")));
+
+        try{
+            $client->request('GET', "/products");
+        }catch (ApiRestException $e){
+            $response = $e->getApiRestResponse();
+            $headers = $response->getHeaders();
+            $this->assertEquals(400,$response->getStatusCode());
+            $this->assertEquals("Bad request",$response->getRawBody());
+            $this->assertEquals("value",$headers["my_header"]);
+        }
     }
 }

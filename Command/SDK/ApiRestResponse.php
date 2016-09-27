@@ -52,6 +52,11 @@ class ApiRestResponse
      */
     protected $rateLimitResetRemaining;
 
+    /**
+     * @var string
+     */
+    protected $rawBody;
+
 
     /**
      * @return mixed
@@ -163,5 +168,21 @@ class ApiRestResponse
     public function setStatusCode ($statusCode)
     {
         $this->statusCode = $statusCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRawBody()
+    {
+        return $this->rawBody;
+    }
+
+    /**
+     * @param string $rawBody
+     */
+    public function setRawBody($rawBody)
+    {
+        $this->rawBody = $rawBody;
     }
 }

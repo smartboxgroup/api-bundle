@@ -26,12 +26,17 @@ class MockApiRestInternalClient extends ApiRestInternalClient
      * @param $password
      * @param $baseUrl
      * @param array $responses
+     * @param array $exceptions
      */
-    public function __construct($username, $password, $baseUrl, $responses = array())
+    public function __construct($username, $password, $baseUrl, $responses = array(), $exceptions = array())
     {
         $mock = new MockPlugin();
         foreach ($responses as $response){
             $mock->addResponse($response);
+        }
+
+        foreach ($exceptions as $exception){
+            $mock->addException($exception);
         }
 
         $this->subscribers = array($mock);
@@ -64,6 +69,6 @@ class MockApiRestInternalClient extends ApiRestInternalClient
     {
         $uri = '/product_confirmation';
 
-        return $this->request('POST', $uri, $entity, [], $headers, null);
+        return $this->request('POST', $uri, $entity, array(), $headers, null);
     }
 }

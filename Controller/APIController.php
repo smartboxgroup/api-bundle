@@ -15,6 +15,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -103,6 +104,7 @@ class APIController extends FOSRestController
         foreach ($inputsConfig as $inputName => $inputConfig) {
             $mode = $inputConfig['mode'];
             $expectedInputType = $inputConfig['type'];
+            $expectedLimitElements = $inputConfig['limitElements'];
             $errors = array();
 
             if ($mode == Configuration::MODE_BODY) {
@@ -113,7 +115,13 @@ class APIController extends FOSRestController
                 $body = $inputValues[$inputName];
                 $expectedInputGroup = $inputConfig['group'];
 
-                $errors = $this->validateBody($body, $expectedInputType, $expectedInputGroup, $version);
+                try {
+                    $errors = $this->validateBody($body, $expectedInputType, $expectedInputGroup, $expectedLimitElements, $version);
+                } catch (\Exception $e) {
+                    $errors = new ConstraintViolationList(array(
+                        new ConstraintViolation($e->getMessage(), '', array(), 'body', 'body', $body)
+                    ));
+                }
             } else {
                 if (array_key_exists($inputName, $inputValues)) {
                     $value = $inputValues[$inputName];
@@ -209,7 +217,7 @@ class APIController extends FOSRestController
         return $requiredHeaders;
     }
 
-    protected function validateBody($body, $expectedType, $group, $version)
+    protected function validateBody($body, $expectedType, $group, $expectedLimitElements, $version)
     {
         $validator = $this->getValidator();
 
@@ -223,6 +231,9 @@ class APIController extends FOSRestController
         }
 
         if ($shouldBeArray) {
+            if ($expectedLimitElements !== null && count($body) > $expectedLimitElements) {
+                throw new \Exception("The body contains more elements than expected");
+            }
             foreach ($body as $elementKey => $elementValue) {
                 if (!($elementValue instanceof $elementType) || !($elementValue instanceof EntityInterface)) {
                     throw new \Exception("The output is not an instance of the expected class");
@@ -261,8 +272,9 @@ class APIController extends FOSRestController
             $outputConfig = $methodConfig['output'];
             $outputType = $outputConfig['type'];
             $outputGroup = $outputConfig['group'];
+            $expectedLimitElements = null;
 
-            $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $version);
+            $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $expectedLimitElements, $version);
 
             if (count($errors)) {
                 $this->throwOutputValidationErrors($errors);

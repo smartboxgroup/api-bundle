@@ -251,13 +251,12 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
     }
 
     /**
-     * @param $sourceParameter
+     * @param array $parameter
      *
      * @return array
      */
-    public function cleanDatatype($sourceParameter)
+    public function cleanDatatype(array $parameter)
     {
-        $parameter = $sourceParameter ;
         $typeField = $parameter['actualType'] === 'collection' ? 'subType' : 'dataType';
         $parts = explode('\\', $parameter[$typeField]);
         $parameter[$typeField] = end($parts);

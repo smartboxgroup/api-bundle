@@ -4,7 +4,6 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c9af0519d1935b6166f5af5fd6d61ede",
     "content-hash": "a0b6cf30e762b0b5d164ca923b5d501b",
     "packages": [
         {
@@ -1679,7 +1678,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/core-bundle.git",
-                "reference": "9387546388aa5916db580fb3589ae658dc95e9bf"
+                "reference": "71b2e6d9199991e24309d620e0e288673d2c7108"
             },
             "require": {
                 "doctrine/annotations": ">=1.2.0",
@@ -1709,7 +1708,7 @@
                 "MIT"
             ],
             "description": "Smartbox Core Bundle",
-            "time": "2016-08-25 12:07:48"
+            "time": "2016-10-12 09:32:09"
         },
         {
             "name": "snc/redis-bundle",

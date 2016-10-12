@@ -238,7 +238,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
                 break;
             case 'Choice':
                 $choices = $this->getChoices($constraint, $className);
-                $format = '[' . join('|', $choices) . ']';
+                $format = '[' . join(' | ', $choices) . ']';
                 if ($constraint->multiple) {
                     $vparams['actualType'] = DataTypes::COLLECTION;
                     $vparams['subType'] = DataTypes::ENUM;

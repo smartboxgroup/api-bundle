@@ -272,7 +272,7 @@ class APIController extends FOSRestController
             $outputConfig = $methodConfig['output'];
             $outputType = $outputConfig['type'];
             $outputGroup = $outputConfig['group'];
-            $expectedLimitElements = null;
+            $expectedLimitElements = $outputConfig['limitElements'];
 
             $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $expectedLimitElements, $version);
 

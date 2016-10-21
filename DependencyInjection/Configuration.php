@@ -349,6 +349,7 @@ class Configuration implements ConfigurationInterface
         $node->info("Section where the output parameters are specified.");
         $node->children()
             ->scalarNode('type')->info('The type of the output, it accepts only entities (e.g.: MyNamespace\\MyEntity) and arrays of them (MyNamespace\\MyEntity[])')->isRequired()->end()
+            ->scalarNode('limitElements')->defaultValue(null)->info('Limits the number of elements that an array output can have')->end()
             ->scalarNode('group')
                 ->info('The group of the entity to be used, acts as a view of the entity model, determines the set of attributes to be used.')
                 ->defaultValue(EntityInterface::GROUP_PUBLIC)->end()

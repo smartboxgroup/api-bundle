@@ -104,7 +104,12 @@ class APIController extends FOSRestController
         foreach ($inputsConfig as $inputName => $inputConfig) {
             $mode = $inputConfig['mode'];
             $expectedInputType = $inputConfig['type'];
-            $expectedLimitElements = $inputConfig['limitElements'];
+            if(isset($inputConfig['limitElements'])){
+                $expectedLimitElements = $inputConfig['limitElements'];
+            }else{
+                $expectedLimitElements = null;
+            }
+
             $errors = array();
 
             if ($mode == Configuration::MODE_BODY) {
@@ -272,7 +277,11 @@ class APIController extends FOSRestController
             $outputConfig = $methodConfig['output'];
             $outputType = $outputConfig['type'];
             $outputGroup = $outputConfig['group'];
-            $expectedLimitElements = $outputConfig['limitElements'];
+            if(isset($outputConfig['limitElements'])){
+                $expectedLimitElements = $outputConfig['limitElements'];
+            }else{
+                $expectedLimitElements = null;
+            }
 
             $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $expectedLimitElements, $version);
 

@@ -245,7 +245,7 @@ class APIController extends FOSRestController
             }
         }
 
-        $errors = $validator->validate($body);
+        $errors = $validator->validate($body, null, $group);
 
         return $errors;
     }

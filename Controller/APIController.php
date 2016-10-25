@@ -250,7 +250,7 @@ class APIController extends FOSRestController
             }
         }
 
-        $errors = $validator->validate($body, null, $group);
+        $errors = $validator->validate($body);
 
         return $errors;
     }
@@ -277,12 +277,13 @@ class APIController extends FOSRestController
             $outputConfig = $methodConfig['output'];
             $outputType = $outputConfig['type'];
             $outputGroup = $outputConfig['group'];
+            $expectedLimitElements = null;
+
             if(isset($outputConfig['limitElements'])){
                 $expectedLimitElements = $outputConfig['limitElements'];
-            }else{
-                $expectedLimitElements = null;
             }
 
+            $this->getGroupVersionHydrator()->hydrate($outputValue, $outputGroup, $version);
             $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $expectedLimitElements, $version);
 
             if (count($errors)) {

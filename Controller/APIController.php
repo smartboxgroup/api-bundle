@@ -105,6 +105,7 @@ class APIController extends FOSRestController
             $mode = $inputConfig['mode'];
             $expectedInputType = $inputConfig['type'];
             $expectedLimitElements = $inputConfig['limitElements'];
+
             $errors = array();
 
             if ($mode == Configuration::MODE_BODY) {
@@ -274,6 +275,7 @@ class APIController extends FOSRestController
             $outputGroup = $outputConfig['group'];
             $expectedLimitElements = $outputConfig['limitElements'];
 
+            $this->getGroupVersionHydrator()->hydrate($outputValue, $outputGroup, $version);
             $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $expectedLimitElements, $version);
 
             if (count($errors)) {

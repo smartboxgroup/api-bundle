@@ -104,11 +104,7 @@ class APIController extends FOSRestController
         foreach ($inputsConfig as $inputName => $inputConfig) {
             $mode = $inputConfig['mode'];
             $expectedInputType = $inputConfig['type'];
-            if(isset($inputConfig['limitElements'])){
-                $expectedLimitElements = $inputConfig['limitElements'];
-            }else{
-                $expectedLimitElements = null;
-            }
+            $expectedLimitElements = $inputConfig['limitElements'];
 
             $errors = array();
 
@@ -277,11 +273,7 @@ class APIController extends FOSRestController
             $outputConfig = $methodConfig['output'];
             $outputType = $outputConfig['type'];
             $outputGroup = $outputConfig['group'];
-            $expectedLimitElements = null;
-
-            if(isset($outputConfig['limitElements'])){
-                $expectedLimitElements = $outputConfig['limitElements'];
-            }
+            $expectedLimitElements = $outputConfig['limitElements'];
 
             $this->getGroupVersionHydrator()->hydrate($outputValue, $outputGroup, $version);
             $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $expectedLimitElements, $version);

@@ -194,7 +194,7 @@ class APIController extends FOSRestController
     }
 
     /**
-     * Method to get a specific HTTP Header or SOAP Header given the header name.
+     * Method to get a specific REST Header or SOAP Header given the header name.
      *
      * @param Request $request Request that can be HTTP or SOAP.
      * @param string $headerName Header name to get its value.

@@ -9,6 +9,7 @@ use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\ApiBundle\Entity\OK;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\CoreBundle\Type\EntityInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -193,6 +194,29 @@ class APIController extends FOSRestController
     }
 
     /**
+     * Method to get a specific REST Header or SOAP Header given the header name.
+     *
+     * @param Request $request Request that can be HTTP or SOAP.
+     * @param string $headerName Header name to get its value.
+     *
+     * @return string
+     */
+    protected function getHeader(Request $request, $headerName)
+    {
+        // SOAP
+        if ($request->get('api') == 'soap') {
+            $soapHeader = $request->getSoapHeaders()->get($headerName);
+
+            if ($soapHeader !== null) {
+                return $soapHeader->getData();
+            }
+        }
+
+        // REST
+        return $request->headers->get($headerName);
+    }
+
+    /**
      * Get and validate the required headers for a specific method
      *
      * @param array $headers Header names.
@@ -206,7 +230,7 @@ class APIController extends FOSRestController
         $requiredHeaders = [];
 
         foreach ($headers as $headerName) {
-            $headerValue = $request->headers->get($headerName);
+            $headerValue = $this->getHeader($request, $headerName);
 
             if ($headerValue === null) {
                 throw new BadRequestHttpException(sprintf('"%s" header is required to use this method', $headerName));

@@ -97,6 +97,13 @@ class SoapServiceLoader extends Loader
             // Construction
             $soapMethod = new Definition\Method($soapMethodName, $methodConfig['controller']);
 
+            // Headers
+            if (array_key_exists('headers', $methodConfig)) {
+                foreach ($methodConfig['headers'] as $header) {
+                    $soapMethod->addHeader($header, 'string');
+                }
+            }
+
             foreach ($methodArguments as $name => $type) {
                 $soapMethod->addInput($name, $type);
             }

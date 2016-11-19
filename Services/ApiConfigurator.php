@@ -7,6 +7,7 @@ use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Entity\ApiEntity;
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\CoreBundle\Type\EntityInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class ApiConfigurator
@@ -20,6 +21,8 @@ class ApiConfigurator
     const VERSION = 'version';
     const METHOD_CONFIG = 'methodConfig';
     const INPUT = 'input';
+
+    protected $cacheDir = "";
 
     /** @var MetadataFactoryInterface */
     protected $metadataFactory;
@@ -78,8 +81,9 @@ class ApiConfigurator
 
     protected $registeredAliases = array();
 
-    function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes, $restEmptyBodyResponseCodes)
+    function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes, $restEmptyBodyResponseCodes, $cacheDir)
     {
+        $this->cacheDir = $cacheDir;
         $this->metadataFactory = $metadataFactory;
         $this->config = $config;
         $this->successCodes = $successCodes;
@@ -183,27 +187,42 @@ class ApiConfigurator
      */
     protected function registerEntityAliases()
     {
-        $this->registerEntityGroupAlias(BasicResponse::class, ApiEntity::GROUP_PUBLIC);
+        $cacheFile = $this->cacheDir."/soap_aliases.php";
 
-        foreach ($this->config as $service => $serviceConfig) {
-            foreach ($serviceConfig['methods'] as $method => $methodConfig) {
-                foreach ($methodConfig[ApiConfigurator::INPUT] as $input => $inputConfig) {
-                    $mode = $inputConfig['mode'];
-                    $class = $inputConfig['type'];
-                    $group = $inputConfig['group'];
-                    if ($mode == Configuration::MODE_BODY && $class && $group) {
-                        $this->registerEntityGroupAlias($class, $group);
+        if(file_exists($cacheFile)){
+            include_once $cacheFile;
+        }
+        else{
+            $this->registerEntityGroupAlias(BasicResponse::class, ApiEntity::GROUP_PUBLIC);
+
+            foreach ($this->config as $service => $serviceConfig) {
+                foreach ($serviceConfig['methods'] as $method => $methodConfig) {
+                    foreach ($methodConfig[ApiConfigurator::INPUT] as $input => $inputConfig) {
+                        $mode = $inputConfig['mode'];
+                        $class = $inputConfig['type'];
+                        $group = $inputConfig['group'];
+                        if ($mode == Configuration::MODE_BODY && $class && $group) {
+                            $this->registerEntityGroupAlias($class, $group);
+                        }
                     }
-                }
-                if (array_key_exists('output', $methodConfig)) {
-                    $outputConfig = $methodConfig['output'];
-                    $class = $outputConfig['type'];
-                    $group = $outputConfig['group'];
-                    if ($class && $group) {
-                        $this->registerEntityGroupAlias($class, $group);
+                    if (array_key_exists('output', $methodConfig)) {
+                        $outputConfig = $methodConfig['output'];
+                        $class = $outputConfig['type'];
+                        $group = $outputConfig['group'];
+                        if ($class && $group) {
+                            $this->registerEntityGroupAlias($class, $group);
+                        }
                     }
                 }
             }
+
+            $contents = "<?php ";
+
+            foreach($this->registeredAliases as $alias => $class){
+                $contents .= "class_alias('$class','$alias');";
+            }
+
+            file_put_contents($cacheFile,$contents);
         }
     }
 

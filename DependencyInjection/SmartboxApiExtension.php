@@ -6,6 +6,7 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
@@ -105,5 +106,6 @@ class SmartboxApiExtension extends Extension
         $configurator->addArgument($config['successCodes']);
         $configurator->addArgument($config['errorCodes']);
         $configurator->addArgument($config['restEmptyBodyResponseCodes']);
+        $configurator->addArgument(new Parameter('kernel.cache_dir'));
     }
 }

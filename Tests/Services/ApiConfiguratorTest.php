@@ -4,21 +4,31 @@ namespace Smartbox\ApiBundle\Tests\Services;
 
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
+use Smartbox\ApiBundle\Tests\BaseKernelTestCase;
 use Smartbox\CoreBundle\Type\Entity;
 use Smartbox\CoreBundle\Type\EntityInterface;
 
-class ApiConfiguratorTest extends \PHPUnit_Framework_TestCase
+class ApiConfiguratorTest extends BaseKernelTestCase
 {
     /** @var  ApiConfigurator */
     protected $configurator;
 
     public function setUp()
     {
+        $this->bootKernel();
+
         /** @var \Metadata\MetadataFactoryInterface $metadataFactory */
         $metadataFactory = $this->getMockBuilder('\Metadata\MetadataFactoryInterface')
             ->setConstructorArgs([get_class($this)])
             ->getMock();
-        $this->configurator = new ApiConfigurator($metadataFactory, array(), array(), array(),[]);
+        $this->configurator = new ApiConfigurator(
+            $metadataFactory,
+            [],
+            [],
+            [],
+            [],
+            $this->getContainer()->getParameter('kernel.cache_dir')
+        );
     }
 
     public function validTypesAndGroupsProvider()

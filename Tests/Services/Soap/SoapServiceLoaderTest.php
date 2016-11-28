@@ -43,7 +43,8 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
             [],
             [],
             [],
-            []
+            [],
+            $this->getContainer()->getParameter('kernel.cache_dir')
         );
 
         $this->soapServiceLoader = new SoapServiceLoader($this->apiConfigurator, $typeRepository);

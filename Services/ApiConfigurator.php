@@ -15,6 +15,8 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class ApiConfigurator
 {
+    const SOAP_ALIASES_FILENAME = 'SoapAliases.php';
+
     const SERVICE_ID = 'serviceId';
     const SERVICE_NAME = 'serviceName';
     const METHOD_NAME = 'methodName';
@@ -187,12 +189,11 @@ class ApiConfigurator
      */
     protected function registerEntityAliases()
     {
-        $cacheFile = $this->cacheDir."/soap_aliases.php";
+        $cacheFile = $this->cacheDir.DIRECTORY_SEPARATOR.self::SOAP_ALIASES_FILENAME;
 
-        if(file_exists($cacheFile)){
+        if (file_exists($cacheFile)) {
             include_once $cacheFile;
-        }
-        else{
+        } else {
             $this->registerEntityGroupAlias(BasicResponse::class, ApiEntity::GROUP_PUBLIC);
 
             foreach ($this->config as $service => $serviceConfig) {
@@ -216,13 +217,13 @@ class ApiConfigurator
                 }
             }
 
-            $contents = "<?php ";
+            $contents = "<?php \n";
 
-            foreach($this->registeredAliases as $alias => $class){
-                $contents .= "class_alias('$class','$alias');";
+            foreach ($this->registeredAliases as $alias => $class) {
+                $contents .= "class_alias('$class', '$alias');\n";
             }
 
-            file_put_contents($cacheFile,$contents);
+            file_put_contents($cacheFile, $contents);
         }
     }
 

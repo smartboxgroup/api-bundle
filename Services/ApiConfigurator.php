@@ -7,7 +7,6 @@ use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Entity\ApiEntity;
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\CoreBundle\Type\EntityInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class ApiConfigurator

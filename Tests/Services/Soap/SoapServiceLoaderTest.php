@@ -14,14 +14,10 @@ use Smartbox\ApiBundle\Tests\BaseKernelTestCase;
 
 class SoapServiceLoaderTest extends BaseKernelTestCase
 {
-    /**
-     * @var ApiConfigurator
-     */
+    /** @var ApiConfigurator */
     private $apiConfigurator;
 
-    /**
-     * @var SoapServiceLoader
-     */
+    /** @var SoapServiceLoader */
     private $soapServiceLoader;
 
     public function setUp()
@@ -38,14 +34,19 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
             ->method('resolve')
             ->will($this->returnValue($complexTypeLoader));
 
+        $cacheDir = $this->getContainer()->getParameter('kernel.cache_dir');
+
         $this->apiConfigurator = new ApiConfigurator(
             $this->getMockBuilder(MetadataFactoryInterface::class)->disableOriginalConstructor()->getMock(),
             [],
             [],
             [],
             [],
-            $this->getContainer()->getParameter('kernel.cache_dir')
+            $cacheDir
         );
+
+        // To avoid to have cached the soap aliases file for each test case
+        unlink($cacheDir.DIRECTORY_SEPARATOR.ApiConfigurator::SOAP_ALIASES_FILENAME);
 
         $this->soapServiceLoader = new SoapServiceLoader($this->apiConfigurator, $typeRepository);
         $this->soapServiceLoader->setResolver($resolver);
@@ -70,6 +71,8 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
 
     public function testWhenMethodHasOutputButIsNotDefinedCorrectly()
     {
+        $this->expectException(\LogicException::class);
+
         $serviceConfig = [
             'eai_v0' => [
                 'name'       => 'eai',
@@ -94,14 +97,13 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
         ];
 
         $this->apiConfigurator->setConfig($serviceConfig);
-
-        $this->setExpectedException(\LogicException::class);
-
         $this->soapServiceLoader->load('eai_v0');
     }
 
     public function testWhenInputTypeHasPropertyWithNotValidType()
     {
+        $this->expectException(\Exception::class);
+
         $serviceConfig = [
             'eai_v0' => [
                 'name'       => 'eai',
@@ -122,9 +124,6 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
         ];
 
         $this->apiConfigurator->setConfig($serviceConfig);
-
-        $this->setExpectedException(\Exception::class);
-
         $this->soapServiceLoader->load('eai_v0');
     }
 

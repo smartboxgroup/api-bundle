@@ -82,7 +82,7 @@ class ApiConfigurator
 
     protected $registeredAliases = array();
 
-    function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes, $restEmptyBodyResponseCodes, $cacheDir)
+    public function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes, $restEmptyBodyResponseCodes, $cacheDir)
     {
         $this->cacheDir = $cacheDir;
         $this->metadataFactory = $metadataFactory;

@@ -36,6 +36,9 @@ class ApiConfigurator
     /** @var  array */
     protected $restEmptyBodyResponseCodes;
 
+    /** @var string  */
+    protected $fixturePath;
+
     public static $arraySymbol = '[]';
 
     public static $arraySymbolSoap = '[]';
@@ -54,6 +57,26 @@ class ApiConfigurator
     public function setRestEmptyBodyResponseCodes($restEmptyBodyResponseCodes)
     {
         $this->restEmptyBodyResponseCodes = $restEmptyBodyResponseCodes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFixturePath()
+    {
+        return $this->fixturePath;
+    }
+
+    /**
+     * @param string $fixturePath
+     *
+     * @return $this
+     */
+    public function setFixturePath($fixturePath)
+    {
+        $this->fixturePath = $fixturePath;
+
+        return $this;
     }
 
     public static $typeToSoap = array(
@@ -78,13 +101,14 @@ class ApiConfigurator
 
     protected $registeredAliases = array();
 
-    function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes, $restEmptyBodyResponseCodes)
+    function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes, $restEmptyBodyResponseCodes, $fixturePath)
     {
         $this->metadataFactory = $metadataFactory;
         $this->config = $config;
         $this->successCodes = $successCodes;
         $this->errorCodes = $errorCodes;
         $this->restEmptyBodyResponseCodes = $restEmptyBodyResponseCodes;
+        $this->fixturePath = $fixturePath;
         $this->registerEntityAliases();
     }
 

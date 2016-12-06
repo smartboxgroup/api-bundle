@@ -41,9 +41,17 @@ $client->{{ methodName }}(
 {% endfor %}
 )
 );
+```
 
+{% endautoescape %}
+{% if methodConfig.fixture is defined %}
+Payload example:
+{% autoescape false %}
+```json
+{{ methodConfig.fixture }}
 ```
 {% endautoescape %}
+{% endif %}
 
 {% if methodConfig.headers|length > 0 %}
 <h4> Headers </h4>

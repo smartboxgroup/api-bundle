@@ -105,5 +105,6 @@ class SmartboxApiExtension extends Extension
         $configurator->addArgument($config['successCodes']);
         $configurator->addArgument($config['errorCodes']);
         $configurator->addArgument($config['restEmptyBodyResponseCodes']);
+        $configurator->addArgument($config['fixtures_path']);
     }
 }

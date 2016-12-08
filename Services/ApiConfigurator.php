@@ -14,7 +14,7 @@ use Smartbox\CoreBundle\Type\EntityInterface;
  */
 class ApiConfigurator
 {
-    protected static $aliasRegitered = false;
+    protected static $areAliasesRegistered = false;
 
     const SOAP_ALIASES_FILENAME = 'SoapAliases.php';
 
@@ -190,7 +190,7 @@ class ApiConfigurator
      */
     protected function registerEntityAliases()
     {
-        if(self::$aliasRegitered){
+        if(self::$areAliasesRegistered){
             return;
         }
 
@@ -231,7 +231,7 @@ class ApiConfigurator
             file_put_contents($cacheFile, $contents);
         }
 
-        self::$aliasRegitered = true;
+        self::$areAliasesRegistered = true;
     }
 
     /**

@@ -60,7 +60,7 @@ class Configuration implements ConfigurationInterface
                 ")
             ->end()
             ->scalarNode('default_controller')->defaultValue(self::API_CONTROLLER)->end()
-            ->scalarNode('fixtures_path')
+            ->scalarNode('fixturesPath')
                 ->info('Path of the fixtures example to be displayed on the documentation')
                 ->defaultValue('')
                 ->end()

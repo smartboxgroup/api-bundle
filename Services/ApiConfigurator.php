@@ -214,13 +214,13 @@ class ApiConfigurator
      */
     protected function registerEntityAliases()
     {
-        if (self::$areAliasesRegistered) {
-            return;
-        }
-
         $cacheFile = $this->cacheDir.DIRECTORY_SEPARATOR.self::SOAP_ALIASES_FILENAME;
 
         if (file_exists($cacheFile)) {
+            if (self::$areAliasesRegistered) {
+                return;
+            }
+
             include_once $cacheFile;
         } else {
             $this->registerEntityGroupAlias(BasicResponse::class, ApiEntity::GROUP_PUBLIC);

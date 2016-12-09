@@ -60,6 +60,10 @@ class Configuration implements ConfigurationInterface
                 ")
             ->end()
             ->scalarNode('default_controller')->defaultValue(self::API_CONTROLLER)->end()
+            ->scalarNode('fixturesPath')
+                ->info('Path of the fixtures example to be displayed on the documentation')
+                ->defaultValue('')
+                ->end()
             ->booleanNode('throttling')
                 ->defaultValue(false)
                 ->info("Enable/Disable throttling (dafault: false).\n
@@ -229,6 +233,7 @@ class Configuration implements ConfigurationInterface
             ->prototype('array')
             ->children()
             ->scalarNode('successCode')->info('Success code to be returned')->defaultValue(200)->end()
+            ->scalarNode('fixture')->info('Example payload related to this API')->end()
             ->scalarNode('description')->info('Description of the method, it will be used in the documentation')->isRequired()->end()
             ->scalarNode('controller')->info('Controller to handle the requests to this method')->defaultValue('default')->end()
             ->arrayNode('roles')

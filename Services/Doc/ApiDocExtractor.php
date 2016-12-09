@@ -169,7 +169,10 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                             }
                         }
                         $annotationExtracted->setRequirements($requirements);
-
+                        $fixturePath = $methodConfig['fixture'];
+                        if (!empty($fixturePath)) {
+                            $methodConfig['fixture'] = $this->loadFixture($fixturePath, $configurator->getFixturePath());
+                        }
                         $parameters = $annotationExtracted->getParameters();
 
                         foreach ($parameters as $parameter => $parameterConfig) {
@@ -248,6 +251,59 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
 
 
         return $array;
+    }
+
+    /**
+     * Load fixture from fixture name
+     *
+     * @param string $fixtureName
+     * @param string $path
+     *
+     * @return string
+     * @throws \Exception
+     */
+    protected function loadFixture($fixtureName, $path)
+    {
+        if ($fixtureName[0] != '@') {
+            throw new \Exception(sprintf('Fixture name should start with "@", "%s". given', $fixtureName));
+        }
+
+        if (empty($path)) {
+            throw new \Exception('Fixtures path should not be empty');
+        }
+
+        $fixtureName = substr($fixtureName, 1);
+        $path = $path.'/'.$fixtureName.'.json';
+
+        if (!file_exists($path) || !is_readable($path)) {
+            throw new \Exception(sprintf('Fixture "%s" not found, looking in "%s". The file doesn\'t exist or it\'s not readable', $fixtureName, $path));
+        }
+
+        $json = trim(file_get_contents($path));
+        $data = $this->deHydrate(json_decode($json, true));
+
+        return json_encode($data, JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Return dehydrated array
+     *
+     * @param $data
+     *
+     * @return array
+     */
+    protected function deHydrate($data)
+    {
+        $hydrationKeys = ['_group', '_type', '_apiVersion'];
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = $this->deHydrate($value);
+            } elseif (in_array($key, $hydrationKeys)) {
+                unset($data[$key]);
+            }
+        }
+
+        return $data;
     }
 
     /**

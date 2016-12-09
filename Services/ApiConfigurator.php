@@ -42,6 +42,9 @@ class ApiConfigurator
     /** @var  array */
     protected $restEmptyBodyResponseCodes;
 
+    /** @var string  */
+    protected $fixturePath;
+
     public static $arraySymbol = '[]';
 
     public static $arraySymbolSoap = '[]';
@@ -60,6 +63,26 @@ class ApiConfigurator
     public function setRestEmptyBodyResponseCodes($restEmptyBodyResponseCodes)
     {
         $this->restEmptyBodyResponseCodes = $restEmptyBodyResponseCodes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFixturePath()
+    {
+        return $this->fixturePath;
+    }
+
+    /**
+     * @param string $fixturePath
+     *
+     * @return $this
+     */
+    public function setFixturePath($fixturePath)
+    {
+        $this->fixturePath = $fixturePath;
+
+        return $this;
     }
 
     public static $typeToSoap = array(
@@ -84,7 +107,7 @@ class ApiConfigurator
 
     protected $registeredAliases = array();
 
-    public function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes, $restEmptyBodyResponseCodes, $cacheDir)
+    public function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes, $restEmptyBodyResponseCodes, $cacheDir, $fixturePath = null)
     {
         $this->cacheDir = $cacheDir;
         $this->metadataFactory = $metadataFactory;
@@ -92,6 +115,7 @@ class ApiConfigurator
         $this->successCodes = $successCodes;
         $this->errorCodes = $errorCodes;
         $this->restEmptyBodyResponseCodes = $restEmptyBodyResponseCodes;
+        $this->fixturePath = $fixturePath;
         $this->registerEntityAliases();
     }
 
@@ -190,13 +214,13 @@ class ApiConfigurator
      */
     protected function registerEntityAliases()
     {
-        if(self::$areAliasesRegistered){
-            return;
-        }
-
         $cacheFile = $this->cacheDir.DIRECTORY_SEPARATOR.self::SOAP_ALIASES_FILENAME;
 
         if (file_exists($cacheFile)) {
+            if (self::$areAliasesRegistered) {
+                return;
+            }
+
             include_once $cacheFile;
         } else {
             $this->registerEntityGroupAlias(BasicResponse::class, ApiEntity::GROUP_PUBLIC);

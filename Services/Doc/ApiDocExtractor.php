@@ -170,8 +170,8 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                         }
                         $annotationExtracted->setRequirements($requirements);
                         $fixturePath = $methodConfig['fixture'];
-                        if(!empty($fixturePath )) {
-                            $methodConfig["fixture"] = $this->loadFixture($fixturePath, $configurator->getFixturePath());
+                        if (!empty($fixturePath)) {
+                            $methodConfig['fixture'] = $this->loadFixture($fixturePath, $configurator->getFixturePath());
                         }
                         $parameters = $annotationExtracted->getParameters();
 
@@ -264,11 +264,11 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
      */
     protected function loadFixture($fixtureName, $path)
     {
-        if($fixtureName[0] != "@"){
+        if ($fixtureName[0] != '@') {
             throw new \Exception(sprintf('Fixture name should start with "@", "%s". given', $fixtureName));
         }
 
-        if(empty($path)){
+        if (empty($path)) {
             throw new \Exception('Fixtures path should not be empty');
         }
 
@@ -276,13 +276,13 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
         $path = $path.'/'.$fixtureName.'.json';
 
         if (!file_exists($path) || !is_readable($path)) {
-            throw new \Exception( sprintf('Fixture "%s" not found, looking in "%s". The file doesn\'t exist or it\'s not readable', $fixtureName, $path));
+            throw new \Exception(sprintf('Fixture "%s" not found, looking in "%s". The file doesn\'t exist or it\'s not readable', $fixtureName, $path));
         }
 
         $json = trim(file_get_contents($path));
         $data = $this->deHydrate(json_decode($json, true));
-        $json = json_encode($data, JSON_PRETTY_PRINT);
-        return $json;
+
+        return json_encode($data, JSON_PRETTY_PRINT);
     }
 
     /**
@@ -295,16 +295,14 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
     protected function deHydrate($data)
     {
         $hydrationKeys = ['_group', '_type', '_apiVersion'];
-        foreach ($data as $key=>$value)
-        {
-            if(is_array($value)){
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
                 $data[$key] = $this->deHydrate($value);
-            }else{
-                if(in_array($key, $hydrationKeys)){
-                    unset($data[$key]);
-                }
+            } elseif (in_array($key, $hydrationKeys)) {
+                unset($data[$key]);
             }
         }
+
         return $data;
     }
 

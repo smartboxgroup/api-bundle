@@ -298,7 +298,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 $data[$key] = $this->deHydrate($value);
-            } elseif (in_array($key, $hydrationKeys)) {
+            } elseif (in_array($key, $hydrationKeys, true)) {
                 unset($data[$key]);
             }
         }

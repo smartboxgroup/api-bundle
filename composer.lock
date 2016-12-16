@@ -4,7 +4,6 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c9af0519d1935b6166f5af5fd6d61ede",
     "content-hash": "a0b6cf30e762b0b5d164ca923b5d501b",
     "packages": [
         {
@@ -1614,7 +1613,7 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.production.smartbox.com:smartesb/BeSimpleSoap.git",
-                "reference": "904781bd9ce888c99dc6da591a3d461bf63a34de"
+                "reference": "c6751ddee564ea6132dc434f1d12fede794227a8"
             },
             "require": {
                 "ass/xmlsecurity": "~1.0",
@@ -1671,7 +1670,7 @@
             "keywords": [
                 "soap"
             ],
-            "time": "2016-12-01 09:45:29"
+            "time": "2016-12-16 12:18:45"
         },
         {
             "name": "smartbox/core-bundle",

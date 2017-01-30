@@ -145,43 +145,59 @@ class APIController extends FOSRestController
 
         $constraints = array();
 
-        /** @var \DateTime $param */
-        if ($type == Configuration::DATETIME) {
-            $constraints[] = new DateTime(
-                array(
-                    'message' => sprintf(
-                        "Parameter '%s' with value '%s', doesn't have a valid date format",
-                        $name,
-                        $param->format('c')
-                    ),
-                )
-            );
-        } else {
-            $constraints[] = new Type(
-                array(
-                    'type' => $type,
-                    'message' => sprintf(
-                        "Parameter '%s' with value '%s', is not of type '%s'",
-                        $name,
-                        $param,
-                        $type
-                    ),
-                )
-            );
+        switch( $type ){
 
-            if ($format) {
-                $constraints[] = new Regex(
+            case Configuration::DATETIME:
+                $constraints[] = new DateTime(
                     array(
-                        'pattern' => '#^'.$format.'$#xsu',
                         'message' => sprintf(
-                            "Parameter '%s' with value '%s', does not match format '%s'",
+                            "Parameter '%s' with value '%s', doesn't have a valid date format",
                             $name,
-                            $param,
-                            $format
+                            $param->format('c')
                         ),
                     )
                 );
-            }
+            break;
+            case Configuration::BOOL:
+                // do some thing here
+                $constraints[] = new Type(
+                    array(
+                        'message' => sprintf(
+                            "Parameter '%s' with value '%s', is not a valid bool.",
+                            $name,
+                            $param
+                        ),
+                        'type' => 'bool',
+                    )
+                );
+                break;
+            default:
+                $constraints[] = new Type(
+                    array(
+                        'type' => $type,
+                        'message' => sprintf(
+                            "Parameter '%s' with value '%s', is not of type '%s'",
+                            $name,
+                            $param,
+                            $type
+                        ),
+                    )
+                );
+
+                if ($format) {
+                    $constraints[] = new Regex(
+                        array(
+                            'pattern' => '#^'.$format.'$#xsu',
+                            'message' => sprintf(
+                                "Parameter '%s' with value '%s', does not match format '%s'",
+                                $name,
+                                $param,
+                                $format
+                            ),
+                        )
+                    );
+                }
+
         }
 
         $errors = new ConstraintViolationList();
@@ -287,10 +303,8 @@ class APIController extends FOSRestController
 
         if ($outputValue && !array_key_exists('output', $methodConfig)) {
             throw new \Exception("This API method should return an empty response");
-        } else {
-            if (!$outputValue && array_key_exists('output', $methodConfig)) {
-                throw new \Exception("This API method should return a response");
-            }
+        } else if (!is_array($outputValue) && empty($outputValue) && array_key_exists('output', $methodConfig)) {
+            throw new \Exception("This API method should return a response");
         }
 
         if ($outputValue) {

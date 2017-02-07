@@ -66,6 +66,14 @@ class SoapExceptionConverter
                 return;
             }
 
+            if (
+                $exception instanceof FatalErrorException &&
+                strpos($exception->getMessage(), 'Error: Procedure') !== FALSE
+            ) {
+                $event->setException($this->createSoapFault(SenderSoapFault::class, $exception->getMessage()));
+                return;
+            }
+
             if ($exception instanceof UnauthorizedHttpException) {
                 $event->setException($this->createSoapFault(SenderSoapFault::class, 'Not authorized'));
                 return;

@@ -172,6 +172,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
 
                         // Test if the fixture exists in the config, if not set it null
                         $fixturePath = isset( $methodConfig['fixture'] ) ? $methodConfig['fixture'] : null;
+                        
                         if (!empty($fixturePath)) {
                             $methodConfig['fixture'] = $this->loadFixture($fixturePath, $configurator->getFixturePath());
                         }

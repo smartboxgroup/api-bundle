@@ -6,8 +6,12 @@
     "autoload": {
         "psr-4": {
             "Smartbox\\ApiBundle\\": ""
-        },
-        "exclude-from-classmap": ["/SDK/"]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Smartbox\\ApiRestClient\\": "Command/SDK/"
+        }
     },
     "require": {
         "php": ">=5.6",

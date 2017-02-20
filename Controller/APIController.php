@@ -117,18 +117,18 @@ class APIController extends FOSRestController
                 $body = $inputValues[$inputName];
                 $expectedInputGroup = $inputConfig['group'];
 
+                $shouldBeArray = strpos($expectedInputType, ApiConfigurator::$arraySymbol) !== false;
+
+                if ($shouldBeArray && is_array($body) && empty($body)) {
+                    throw new BadRequestHttpException('The input should not be an empty array');
+                }
+
                 try {
                     $errors = $this->validateBody($body, $expectedInputType, $expectedInputGroup, $expectedLimitElements, $version);
                 } catch (\Exception $e) {
                     $errors = new ConstraintViolationList(array(
                         new ConstraintViolation($e->getMessage(), '', array(), 'body', 'body', $body)
                     ));
-                }
-
-                $shouldBeArray = strpos($expectedInputType, ApiConfigurator::$arraySymbol) !== false;
-
-                if($shouldBeArray && is_array($body) && empty($body)){
-                    throw new BadRequestHttpException("The input should not be an empty array");
                 }
             } else {
                 if (array_key_exists($inputName, $inputValues)) {

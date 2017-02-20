@@ -113,7 +113,6 @@ class APIController extends FOSRestController
                 if (!array_key_exists($inputName, $inputValues)) {
                     throw new BadRequestHttpException("Missing required input: $inputName");
                 }
-
                 /** @var EntityInterface $value */
                 $body = $inputValues[$inputName];
                 $expectedInputGroup = $inputConfig['group'];
@@ -131,7 +130,6 @@ class APIController extends FOSRestController
                 if($shouldBeArray && is_array($body) && empty($body)){
                     throw new BadRequestHttpException("The input should not be an empty array");
                 }
-
             } else {
                 if (array_key_exists($inputName, $inputValues)) {
                     $value = $inputValues[$inputName];

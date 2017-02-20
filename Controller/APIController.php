@@ -113,9 +113,16 @@ class APIController extends FOSRestController
                 if (!array_key_exists($inputName, $inputValues)) {
                     throw new BadRequestHttpException("Missing required input: $inputName");
                 }
+
                 /** @var EntityInterface $value */
                 $body = $inputValues[$inputName];
                 $expectedInputGroup = $inputConfig['group'];
+
+                $shouldBeArray = strpos($expectedInputGroup, ApiConfigurator::$arraySymbol) !== false;
+
+                if($shouldBeArray && is_array($body) && empty($body)){
+                    throw new BadRequestHttpException("The input should not be an empty array");
+                }
 
                 try {
                     $errors = $this->validateBody($body, $expectedInputType, $expectedInputGroup, $expectedLimitElements, $version);
@@ -266,9 +273,9 @@ class APIController extends FOSRestController
         $elementType = str_replace(ApiConfigurator::$arraySymbol, "", $expectedType);
 
         if (is_array($body) && !$shouldBeArray) {
-            throw new \Exception("The output is an array but an object was expected");
+            throw new \Exception("The body is an array but an object was expected");
         } elseif (!is_array($body) && $shouldBeArray) {
-            throw new \Exception("The output was expected to be an array but it isn't");
+            throw new \Exception("The body was expected to be an array but it isn't");
         }
 
         if ($shouldBeArray) {
@@ -277,12 +284,12 @@ class APIController extends FOSRestController
             }
             foreach ($body as $elementKey => $elementValue) {
                 if (!($elementValue instanceof $elementType) || !($elementValue instanceof EntityInterface)) {
-                    throw new \Exception("The output is not an instance of the expected class");
+                    throw new \Exception("The body is not an instance of the expected class");
                 }
             }
         } else {
             if (!($body instanceof $elementType) || !($body instanceof EntityInterface)) {
-                throw new \Exception("The output is not an instance of the expected class");
+                throw new \Exception("The body is not an instance of the expected class");
             }
         }
 

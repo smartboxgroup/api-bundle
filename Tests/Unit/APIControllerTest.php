@@ -8,9 +8,15 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class APIControllerTest extends BaseKernelTestCase
 {
 
-    public function methodConfigWithEmptyInputProvider()
+    /**
+     * Check input test data provider
+     *
+     * @return array
+     */
+    public function methodConfigProvider()
     {
-        return [[
+        return [
+            'Case when the input is empty' => [
                 'version' => 'v1',
                 'inputsConfig' => [
                     'voucherDiscounts' => [
@@ -20,20 +26,23 @@ class APIControllerTest extends BaseKernelTestCase
                         'mode' => 'body'
                     ]
                 ],
-                'inputValues' => ['voucherDiscounts' => []]
+                'inputValues' => ['voucherDiscounts' => []],
+                'exceptionClass' => BadRequestHttpException::class
             ]
         ];
     }
 
     /**
-     * @dataProvider methodConfigWithEmptyInputProvider
+     * @dataProvider methodConfigProvider
+     *
      * @param $version
      * @param $inputsConfig
      * @param $inputValues
+     * @param $exceptionClass
      */
-    public function testCheckInput($version, $inputsConfig, $inputValues)
+    public function testCheckInput($version, $inputsConfig, $inputValues, $exceptionClass)
     {
-        $this->expectException(BadRequestHttpException::class);
+        $this->expectException($exceptionClass);
 
         $controller = $this->getContainer()->get('test.dummy.controller');
 

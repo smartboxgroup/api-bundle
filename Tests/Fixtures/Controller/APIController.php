@@ -66,4 +66,12 @@ class APIController extends \Smartbox\ApiBundle\Controller\APIController
 
         return $this->respond($response);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function checkInput($version, $inputsConfig, $inputValues)
+    {
+        parent::checkInput($version, $inputsConfig, $inputValues);
+    }
 }

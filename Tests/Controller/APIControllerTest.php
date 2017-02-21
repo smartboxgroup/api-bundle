@@ -1,13 +1,12 @@
 <?php
 
-namespace Smartbox\ApiBundle\Tests\Unit;
+namespace Smartbox\ApiBundle\Tests\Controller;
 
 use Smartbox\ApiBundle\Tests\BaseKernelTestCase;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class APIControllerTest extends BaseKernelTestCase
 {
-
     /**
      * Check input test data provider
      *
@@ -27,7 +26,7 @@ class APIControllerTest extends BaseKernelTestCase
                     ]
                 ],
                 'inputValues' => ['voucherDiscounts' => []],
-                'exceptionClass' => BadRequestHttpException::class
+                'exceptionClass' => BadRequestHttpException::class,
             ]
         ];
     }
@@ -35,12 +34,12 @@ class APIControllerTest extends BaseKernelTestCase
     /**
      * @dataProvider methodConfigProvider
      *
-     * @param $version
-     * @param $inputsConfig
-     * @param $inputValues
-     * @param $exceptionClass
+     * @param string $version
+     * @param array $inputsConfig
+     * @param array $inputValues
+     * @param string $exceptionClass
      */
-    public function testCheckInput($version, $inputsConfig, $inputValues, $exceptionClass)
+    public function testCheckInput($version, array $inputsConfig, array $inputValues, $exceptionClass)
     {
         $this->expectException($exceptionClass);
 
@@ -48,5 +47,4 @@ class APIControllerTest extends BaseKernelTestCase
 
         $controller->checkInput($version, $inputsConfig, $inputValues);
     }
-
 }

@@ -20,7 +20,7 @@ class APIControllerTest extends BaseKernelTestCase
                 'inputsConfig' => [
                     'voucherDiscounts' => [
                         'limitElements' => '100',
-                       'type' => 'ActivationVoucherEvent[]',
+                        'type' => 'ActivationVoucherEvent[]',
                         'group' => 'group',
                         'mode' => 'body'
                     ]

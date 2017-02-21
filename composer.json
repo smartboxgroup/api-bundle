@@ -4,10 +4,14 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "autoload": {
-      "psr-4": {
-        "Smartbox\\ApiBundle\\": "",
-        "Smartbox\\ApiRestClient\\": "Command/SDK/"
-      }
+        "psr-4": {
+            "Smartbox\\ApiBundle\\": ""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Smartbox\\ApiRestClient\\": "Command/SDK/"
+        }
     },
     "require": {
         "php": ">=5.6",

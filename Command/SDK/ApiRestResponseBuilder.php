@@ -1,9 +1,8 @@
 <?php
-
 namespace Smartbox\ApiRestClient;
 
 use Guzzle\Http\Message\Response;
-use JMS\Serializer\SerializerBuilder;
+
 
 /**
  * Class ApiRestResponseBuilder
@@ -12,7 +11,6 @@ use JMS\Serializer\SerializerBuilder;
  */
 class ApiRestResponseBuilder
 {
-
     /**
      * Build the ApiRestResponse from the Guzzle response
      *
@@ -28,10 +26,8 @@ class ApiRestResponseBuilder
         $content = (string) $guzzleResponse->getBody();
         if (!empty($content)){
             if (!empty($deserializationType))  {
-
-                $serializer = SerializerBuilder::create()->build();
+                $serializer = JMSSerializerBuilder::buildSerializer();
                 $jsonContent = $serializer->deserialize($content, $deserializationType, ApiRestInternalClient::FORMAT_JSON);
-
                 $apiRestResponse->setBody($jsonContent);
             }else{
                 $apiRestResponse->setBody($content);

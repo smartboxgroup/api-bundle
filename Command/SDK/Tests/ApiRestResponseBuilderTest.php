@@ -1,5 +1,4 @@
 <?php
-
 namespace Smartbox\ApiBundle\Tests\SDK;
 
 use Guzzle\Http\Message\Response;
@@ -96,8 +95,5 @@ class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($response);
         $this->assertEquals($products, $response->getBody());
         $this->assertEquals($jsonContent, $response->getRawBody());
-
     }
-
-
 }

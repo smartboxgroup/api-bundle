@@ -1,13 +1,16 @@
 <?php
-
 namespace Smartbox\ApiRestClient\Tests\Fixture\Entity;
 
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class Universe
+ *
+ * @package Smartbox\ApiRestClient\Tests\Fixture\Entity
+ */
 class Universe
 {
-
     /**
      * The unique identifier of the Universe
      *

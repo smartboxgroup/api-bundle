@@ -1,8 +1,6 @@
 <?php
-
 namespace Smartbox\ApiBundle\Tests\SDK;
 
-use Guzzle\Http\Exception\CurlException;
 use Guzzle\Http\Message\Response;
 use JMS\Serializer\SerializerBuilder;
 use Smartbox\ApiRestClient\ApiRestException;
@@ -90,7 +88,6 @@ class ApiRestInternalClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("rateLimitResetRemaining", $headers [ApiRestResponse::RATE_LIMIT_RESET_REMAINING]);
         $this->assertEquals("rateLimitRemaining", $headers [ApiRestResponse::RATE_LIMIT_REMAINING]);
         $this->assertEquals("rateLimitLimit", $headers [ApiRestResponse::RATE_LIMIT_LIMIT]);
-
     }
 
     /**

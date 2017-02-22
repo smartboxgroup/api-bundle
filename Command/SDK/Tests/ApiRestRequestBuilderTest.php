@@ -1,5 +1,4 @@
 <?php
-
 namespace Smartbox\ApiRestClient\Tests;
 
 use Smartbox\ApiRestClient\ApiRestRequestBuilder;
@@ -52,14 +51,20 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
         $actualRequest = ApiRestRequestBuilder::buildRequest("POST", "/", self::TEST_USERNAME, self::TEST_PASSWORD, "");
 
         $this->assertEquals(null, $actualRequest->getResponse());
-
     }
 
     public function testStringRequest()
     {
-        $actualRequest = ApiRestRequestBuilder::buildRequest("PUT", "/", self::TEST_USERNAME, self::TEST_PASSWORD,"TEST");
+        $actualRequest = ApiRestRequestBuilder::buildRequest("PUT", "/", self::TEST_USERNAME, self::TEST_PASSWORD, "TEST");
 
         $this->assertEquals(json_encode("TEST"), (string) $actualRequest->getBody());
+    }
+
+    public function testBooleanRequest()
+    {
+        $actualRequest = ApiRestRequestBuilder::buildRequest("PUT", "/", self::TEST_USERNAME, self::TEST_PASSWORD, null, array(), array("myBool" => true));
+
+        $this->assertEquals(array("myBool" => "true"), $actualRequest->getQuery()->getAll());
     }
 
     public function testObjectRequest()

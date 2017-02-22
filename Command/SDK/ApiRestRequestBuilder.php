@@ -1,9 +1,7 @@
 <?php
-
 namespace Smartbox\ApiRestClient;
 
 use Guzzle\Http\Message\RequestFactory;
-use JMS\Serializer\SerializerBuilder;
 
 /**
  * Class ApiRestRequestBuilder
@@ -30,9 +28,8 @@ class ApiRestRequestBuilder
     public static function buildRequest($method, $url, $username = null, $password = null, $object = null, $headers = array(), $filters = array())
     {
         $jsonContent = null;
-        if(! empty($object)){
-            $serializer = SerializerBuilder::create()->build();
-
+        if (!empty($object)){
+            $serializer = JMSSerializerBuilder::buildSerializer();
             $jsonContent = $serializer->serialize($object, ApiRestInternalClient::FORMAT_JSON);
         }
 
@@ -45,6 +42,9 @@ class ApiRestRequestBuilder
         $query = $request->getQuery();
 
         foreach ($filters as  $key=>$value){
+            if(is_bool($value)){
+                $value = ($value) ? 'true' : 'false';
+            }
             $query->add($key, $value);
         }
 

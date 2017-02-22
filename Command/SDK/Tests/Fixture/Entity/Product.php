@@ -25,6 +25,7 @@ class Product
             self::TYPE_EXPERIENCE,
         );
     }
+
     /**
      * The unique identifier of the Product
      *
@@ -177,6 +178,4 @@ class Product
     {
         $this->universe = $universe;
     }
-
-
 }

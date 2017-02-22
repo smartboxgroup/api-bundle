@@ -1,7 +1,5 @@
 <?php
-
 namespace Smartbox\ApiRestClient\Tests\Fixture;
-
 
 use Guzzle\Http\Client;
 use Guzzle\Plugin\Mock\MockPlugin;

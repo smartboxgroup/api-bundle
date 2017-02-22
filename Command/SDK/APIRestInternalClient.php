@@ -1,5 +1,4 @@
 <?php
-
 namespace Smartbox\ApiRestClient;
 
 use Guzzle\Http\Client;

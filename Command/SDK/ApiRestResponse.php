@@ -1,5 +1,4 @@
 <?php
-
 namespace Smartbox\ApiRestClient;
 
 /**
@@ -30,7 +29,6 @@ class ApiRestResponse
      * @var string
      */
     protected $statusCode;
-
 
     /**
      * @var string

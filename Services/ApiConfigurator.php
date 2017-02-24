@@ -7,7 +7,7 @@ use Smartbox\ApiBundle\DependencyInjection\Configuration;
 use Smartbox\ApiBundle\Entity\ApiEntity;
 use Smartbox\ApiBundle\Entity\BasicResponse;
 use Smartbox\CoreBundle\Type\EntityInterface;
-use Smartbox\Integration\FrameworkBundle\Exceptions\Deprecated\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ApiConfigurator
@@ -570,13 +570,13 @@ class ApiConfigurator
         switch ($type) {
             case Configuration::INTEGER:
                 if (!is_numeric($value)) {
-                    throw new BadRequestException("Parameter $inputName with value $value is not numeric ");
+                    throw new BadRequestHttpException("Parameter $inputName with value $value is not numeric ");
                 }
                 $param = intval($value);
                 break;
             case Configuration::FLOAT:
                 if (!is_numeric($value)) {
-                    throw new BadRequestException("Parameter $inputName with value $value is not numeric");
+                    throw new BadRequestHttpException("Parameter $inputName with value $value is not numeric");
                 }
                 $param = floatval($value);
                 break;
@@ -584,7 +584,7 @@ class ApiConfigurator
                 try {
                     $param = new \DateTime($value);
                 } catch (\Exception $e) {
-                    throw new BadRequestException("Parameter $inputName with value $value doesn't have a valid date format");
+                    throw new BadRequestHttpException("Parameter $inputName with value $value doesn't have a valid date format");
                 }
                 break;
             case Configuration::BOOL:
@@ -593,7 +593,7 @@ class ApiConfigurator
                 } elseif (in_array($value, array('0', 'false', 0, false), true)) {
                     $param = false;
                 } else {
-                    throw new BadRequestException("Parameter $inputName with value $value doesn't have a valid bool");
+                    throw new BadRequestHttpException("Parameter $inputName with value $value doesn't have a valid bool");
                 }
                 break;
             default:

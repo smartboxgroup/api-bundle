@@ -1,17 +1,18 @@
 <?php
+
 namespace Smartbox\ApiRestClient\Tests\Fixture\Entity;
 
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class Product
+ * Class Product.
  */
 class Product
 {
     /** Type constants */
-    const TYPE_BOX                      = 'box';
-    const TYPE_EXPERIENCE               = 'experience';
+    const TYPE_BOX = 'box';
+    const TYPE_EXPERIENCE = 'experience';
 
     /**
      * Get a list with all the accepted types.
@@ -25,8 +26,9 @@ class Product
             self::TYPE_EXPERIENCE,
         );
     }
+
     /**
-     * The unique identifier of the Product
+     * The unique identifier of the Product.
      *
      * @Assert\Type(type="string")
      * @Assert\NotBlank
@@ -35,6 +37,7 @@ class Product
      * @JMS\Expose
      * @JMS\Groups({"logs"})
      * @JMS\SerializedName("id")
+     *
      * @var string
      */
     protected $id;
@@ -70,7 +73,7 @@ class Product
     protected $name;
 
     /**
-     * Description of the product
+     * Description of the product.
      *
      * @Assert\Type(type="string")
      * @Assert\Length(min="1",max="700")
@@ -84,7 +87,7 @@ class Product
     protected $description;
 
     /**
-     * Universe for this Product
+     * Universe for this Product.
      *
      * @Assert\Type(type="Smartbox\ApiRestClient\Tests\Fixture\Entity\Universe")
      * @Assert\Valid
@@ -101,7 +104,7 @@ class Product
     /**
      * @return string
      */
-    public function getId ()
+    public function getId()
     {
         return $this->id;
     }
@@ -109,7 +112,7 @@ class Product
     /**
      * @param string $id
      */
-    public function setId ($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
@@ -117,7 +120,7 @@ class Product
     /**
      * @return string
      */
-    public function getType ()
+    public function getType()
     {
         return $this->type;
     }
@@ -125,7 +128,7 @@ class Product
     /**
      * @param string $type
      */
-    public function setType ($type)
+    public function setType($type)
     {
         $this->type = $type;
     }
@@ -133,7 +136,7 @@ class Product
     /**
      * @return string
      */
-    public function getName ()
+    public function getName()
     {
         return $this->name;
     }
@@ -141,7 +144,7 @@ class Product
     /**
      * @param string $name
      */
-    public function setName ($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
@@ -149,7 +152,7 @@ class Product
     /**
      * @return string
      */
-    public function getDescription ()
+    public function getDescription()
     {
         return $this->description;
     }
@@ -157,7 +160,7 @@ class Product
     /**
      * @param string $description
      */
-    public function setDescription ($description)
+    public function setDescription($description)
     {
         $this->description = $description;
     }
@@ -165,7 +168,7 @@ class Product
     /**
      * @return Universe
      */
-    public function getUniverse ()
+    public function getUniverse()
     {
         return $this->universe;
     }
@@ -173,10 +176,8 @@ class Product
     /**
      * @param Universe $universe
      */
-    public function setUniverse ($universe)
+    public function setUniverse($universe)
     {
         $this->universe = $universe;
     }
-
-
 }

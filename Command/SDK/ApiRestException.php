@@ -3,9 +3,7 @@
 namespace Smartbox\ApiRestClient;
 
 /**
- * Class ApiRestException
- *
- * @package Smartbox\ApiRestClient
+ * Class ApiRestException.
  */
 class ApiRestException extends \Exception
 {
@@ -17,8 +15,8 @@ class ApiRestException extends \Exception
     /**
      * ApiRestException constructor.
      *
-     * @param ApiRestResponse   $apiRestResponse
-     * @param \Exception|null   $previous
+     * @param ApiRestResponse $apiRestResponse
+     * @param \Exception|null $previous
      */
     public function __construct(ApiRestResponse $apiRestResponse, \Exception $previous = null)
     {

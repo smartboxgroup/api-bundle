@@ -2,7 +2,6 @@
 
 namespace Smartbox\ApiRestClient\Tests\Fixture;
 
-
 use Guzzle\Http\Client;
 use Guzzle\Plugin\Mock\MockPlugin;
 use Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product;
@@ -11,9 +10,7 @@ use Smartbox\ApiRestClient\ApiRestResponse;
 
 /**
  * Class MockApiRestInternalClient
- * Class used to simulate a generated client
- *
- * @package Smartbox\ApiBundle\Tests\SDK\Fixture
+ * Class used to simulate a generated client.
  */
 class MockApiRestInternalClient extends ApiRestInternalClient
 {
@@ -31,11 +28,11 @@ class MockApiRestInternalClient extends ApiRestInternalClient
     public function __construct($username, $password, $baseUrl, $responses = array(), $exceptions = array())
     {
         $mock = new MockPlugin();
-        foreach ($responses as $response){
+        foreach ($responses as $response) {
             $mock->addResponse($response);
         }
 
-        foreach ($exceptions as $exception){
+        foreach ($exceptions as $exception) {
             $mock->addException($exception);
         }
 
@@ -49,19 +46,20 @@ class MockApiRestInternalClient extends ApiRestInternalClient
 
     /**
      * @param Product $entity
-     * @param array $headers
+     * @param array   $headers
      *
      * @return ApiRestResponse
      */
     public function sendProductCreate(Product $entity, array $headers = array())
     {
         $uri = '/product_create';
+
         return $this->request('POST', $uri, $entity, array(), $headers, 'Smartbox\ApiBundle\SDK\Tests\Fixture\Entity\Product');
     }
 
     /**
      * @param Product $entity
-     * @param array $headers
+     * @param array   $headers
      *
      * @return ApiRestResponse
      */

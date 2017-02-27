@@ -3,21 +3,17 @@
 namespace Smartbox\ApiRestClient;
 
 use Guzzle\Http\Message\Response;
-use JMS\Serializer\SerializerBuilder;
 
 /**
- * Class ApiRestResponseBuilder
- *
- * @package Smartbox\ApiRestClient
+ * Class ApiRestResponseBuilder.
  */
 class ApiRestResponseBuilder
 {
-
     /**
-     * Build the ApiRestResponse from the Guzzle response
+     * Build the ApiRestResponse from the Guzzle response.
      *
      * @param Response $guzzleResponse
-     * @param string $deserializationType
+     * @param string   $deserializationType
      *
      * @return ApiRestResponse
      */
@@ -26,35 +22,33 @@ class ApiRestResponseBuilder
         $apiRestResponse = new ApiRestResponse();
 
         $content = (string) $guzzleResponse->getBody();
-        if (!empty($content)){
-            if (!empty($deserializationType))  {
-
-                $serializer = SerializerBuilder::create()->build();
+        if (!empty($content)) {
+            if (!empty($deserializationType)) {
+                $serializer = JMSSerializerBuilder::buildSerializer();
                 $jsonContent = $serializer->deserialize($content, $deserializationType, ApiRestInternalClient::FORMAT_JSON);
-
                 $apiRestResponse->setBody($jsonContent);
-            }else{
+            } else {
                 $apiRestResponse->setBody($content);
             }
             $apiRestResponse->setRawBody($content);
         }
         //Flatten headers array
         $headers = array();
-        foreach ($guzzleResponse->getHeaders() as $name=>$value){
+        foreach ($guzzleResponse->getHeaders() as $name => $value) {
             $headers[$name] = $guzzleResponse->getHeader($name)->__toString();
         }
         $apiRestResponse->setHeaders($headers);
 
-        if(isset($headers[ApiRestResponse::RATE_LIMIT_LIMIT])){
+        if (isset($headers[ApiRestResponse::RATE_LIMIT_LIMIT])) {
             $apiRestResponse->setRateLimitLimit($headers[ApiRestResponse::RATE_LIMIT_LIMIT]);
         }
-        if(isset($headers[ApiRestResponse::RATE_LIMIT_REMAINING])){
+        if (isset($headers[ApiRestResponse::RATE_LIMIT_REMAINING])) {
             $apiRestResponse->setRateLimitRemaining($headers[ApiRestResponse::RATE_LIMIT_REMAINING]);
         }
-        if(isset($headers[ApiRestResponse::RATE_LIMIT_RESET_REMAINING])){
+        if (isset($headers[ApiRestResponse::RATE_LIMIT_RESET_REMAINING])) {
             $apiRestResponse->setRateLimitResetRemaining($headers[ApiRestResponse::RATE_LIMIT_RESET_REMAINING]);
         }
-        if(isset($headers[ApiRestResponse::RATE_LIMIT_RESET])){
+        if (isset($headers[ApiRestResponse::RATE_LIMIT_RESET])) {
             $apiRestResponse->setRateLimitReset($headers[ApiRestResponse::RATE_LIMIT_RESET]);
         }
 

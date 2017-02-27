@@ -1,4 +1,5 @@
 <?php
+
 namespace Smartbox\ApiRestClient;
 
 use Guzzle\Http\Client;
@@ -7,21 +8,19 @@ use Guzzle\Http\Message\Response;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class ApiRestInternalClient
- *
- * @package Smartbox\ApiRestClient
+ * Class ApiRestInternalClient.
  */
 class ApiRestInternalClient
 {
     public static $class = 'Smartbox\ApiRestClient\ApiRestInternalClient';
 
-    const FORMAT_JSON           = 'json';
+    const FORMAT_JSON = 'json';
 
-    const HTTP_METHOD_GET       = 'GET';
-    const HTTP_METHOD_POST      = 'POST';
-    const HTTP_METHOD_PUT       = 'PUT';
-    const HTTP_METHOD_PATCH     = 'PATCH';
-    const HTTP_METHOD_DELETE    = 'DELETE';
+    const HTTP_METHOD_GET = 'GET';
+    const HTTP_METHOD_POST = 'POST';
+    const HTTP_METHOD_PUT = 'PUT';
+    const HTTP_METHOD_PATCH = 'PATCH';
+    const HTTP_METHOD_DELETE = 'DELETE';
 
     /** @var Client */
     protected $client;
@@ -35,7 +34,7 @@ class ApiRestInternalClient
     /** @var string */
     protected $password;
 
-    /** @var  EventSubscriberInterface */
+    /** @var EventSubscriberInterface */
     protected $subscribers;
 
     /**
@@ -71,16 +70,17 @@ class ApiRestInternalClient
     }
 
     /**
-     * Send a request to a given URI
+     * Send a request to a given URI.
      *
      * @param $method
      * @param $path
-     * @param null $object
-     * @param array $filters
-     * @param array $headers
+     * @param null   $object
+     * @param array  $filters
+     * @param array  $headers
      * @param string $deserializationType
      *
      * @return ApiRestResponse
+     *
      * @throws \Exception
      */
     public function request($method, $path, $object = null, array $filters = array(), array $headers = array(), $deserializationType = null)
@@ -93,8 +93,8 @@ class ApiRestInternalClient
 
         $request = ApiRestRequestBuilder::buildRequest($method, $uri, $this->username, $this->password, $object, $headers, $filters);
 
-        if(!empty($this->subscribers)){
-            foreach ($this->subscribers as $subscriber){
+        if (!empty($this->subscribers)) {
+            foreach ($this->subscribers as $subscriber) {
                 $request->addSubscriber($subscriber);
             }
         }
@@ -104,10 +104,10 @@ class ApiRestInternalClient
             $response = $this->client->send($request);
         } catch (RequestException $e) {
             $errorResponse = $e->getRequest()->getResponse();
-            if(!empty($errorResponse)){
+            if (!empty($errorResponse)) {
                 $response = ApiRestResponseBuilder::buildResponse($errorResponse);
                 throw new ApiRestException($response, $e);
-            }else{
+            } else {
                 throw $e;
             }
         }

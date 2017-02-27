@@ -1,4 +1,5 @@
 <?php
+
 namespace Smartbox\ApiRestClient\Tests;
 
 use Smartbox\ApiRestClient\ApiRestInternalClient;
@@ -7,9 +8,9 @@ use Smartbox\ApiRestClient\Tests\Fixture\MockApiRestInternalClient;
 
 class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
 {
-    const TEST_ENV           = "test";
-    const TEST_USERNAME      = "test";
-    const TEST_PASSWORD      = "test";
+    const TEST_ENV = 'test';
+    const TEST_USERNAME = 'test';
+    const TEST_PASSWORD = 'test';
 
     /**
      * @expectedException \Exception
@@ -32,7 +33,7 @@ class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testUnknownClientClass()
     {
-        ApiRestInternalClientBuilder::createClient("Dummy_Client", self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
+        ApiRestInternalClientBuilder::createClient('Dummy_Client', self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
     }
 
     public function testSpecificClient()

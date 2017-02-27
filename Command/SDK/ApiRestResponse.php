@@ -1,19 +1,18 @@
 <?php
+
 namespace Smartbox\ApiRestClient;
 
 /**
- * Class ApiRestResponse
- *
- * @package Smartbox\ApiRestClient
+ * Class ApiRestResponse.
  */
 class ApiRestResponse
 {
     public static $class = 'Smartbox\ApiRestClient\ApiRestResponse';
 
-    const RATE_LIMIT_REMAINING        = "x-ratelimit-remaining";
-    const RATE_LIMIT_RESET            = "x-ratelimit-reset";
-    const RATE_LIMIT_LIMIT            = "x-ratelimit-limit";
-    const RATE_LIMIT_RESET_REMAINING  = "x-ratelimit-reset-remaining";
+    const RATE_LIMIT_REMAINING = 'x-ratelimit-remaining';
+    const RATE_LIMIT_RESET = 'x-ratelimit-reset';
+    const RATE_LIMIT_LIMIT = 'x-ratelimit-limit';
+    const RATE_LIMIT_RESET_REMAINING = 'x-ratelimit-reset-remaining';
 
     /**
      * @var array
@@ -55,11 +54,10 @@ class ApiRestResponse
      */
     protected $rawBody;
 
-
     /**
      * @return mixed
      */
-    public function getRateLimitRemaining ()
+    public function getRateLimitRemaining()
     {
         return $this->rateLimitRemaining;
     }
@@ -67,7 +65,7 @@ class ApiRestResponse
     /**
      * @param mixed $rateLimitRemaining
      */
-    public function setRateLimitRemaining ($rateLimitRemaining)
+    public function setRateLimitRemaining($rateLimitRemaining)
     {
         $this->rateLimitRemaining = $rateLimitRemaining;
     }
@@ -75,7 +73,7 @@ class ApiRestResponse
     /**
      * @return mixed
      */
-    public function getRateLimitReset ()
+    public function getRateLimitReset()
     {
         return $this->rateLimitReset;
     }
@@ -83,7 +81,7 @@ class ApiRestResponse
     /**
      * @param mixed $rateLimitReset
      */
-    public function setRateLimitReset ($rateLimitReset)
+    public function setRateLimitReset($rateLimitReset)
     {
         $this->rateLimitReset = $rateLimitReset;
     }
@@ -91,7 +89,7 @@ class ApiRestResponse
     /**
      * @return mixed
      */
-    public function getRateLimitLimit ()
+    public function getRateLimitLimit()
     {
         return $this->rateLimitLimit;
     }
@@ -99,7 +97,7 @@ class ApiRestResponse
     /**
      * @param mixed $rateLimitLimit
      */
-    public function setRateLimitLimit ($rateLimitLimit)
+    public function setRateLimitLimit($rateLimitLimit)
     {
         $this->rateLimitLimit = $rateLimitLimit;
     }
@@ -107,7 +105,7 @@ class ApiRestResponse
     /**
      * @return mixed
      */
-    public function getRateLimitResetRemaining ()
+    public function getRateLimitResetRemaining()
     {
         return $this->rateLimitResetRemaining;
     }
@@ -115,7 +113,7 @@ class ApiRestResponse
     /**
      * @param mixed $rateLimitResetRemaining
      */
-    public function setRateLimitResetRemaining ($rateLimitResetRemaining)
+    public function setRateLimitResetRemaining($rateLimitResetRemaining)
     {
         $this->rateLimitResetRemaining = $rateLimitResetRemaining;
     }
@@ -123,7 +121,7 @@ class ApiRestResponse
     /**
      * @return array
      */
-    public function getHeaders ()
+    public function getHeaders()
     {
         return $this->headers;
     }
@@ -131,7 +129,7 @@ class ApiRestResponse
     /**
      * @param array $headers
      */
-    public function setHeaders ($headers)
+    public function setHeaders($headers)
     {
         $this->headers = $headers;
     }
@@ -139,7 +137,7 @@ class ApiRestResponse
     /**
      * @return mixed
      */
-    public function getBody ()
+    public function getBody()
     {
         return $this->body;
     }
@@ -147,7 +145,7 @@ class ApiRestResponse
     /**
      * @param mixed $body
      */
-    public function setBody ($body)
+    public function setBody($body)
     {
         $this->body = $body;
     }
@@ -155,7 +153,7 @@ class ApiRestResponse
     /**
      * @return mixed
      */
-    public function getStatusCode ()
+    public function getStatusCode()
     {
         return $this->statusCode;
     }
@@ -163,7 +161,7 @@ class ApiRestResponse
     /**
      * @param mixed $statusCode
      */
-    public function setStatusCode ($statusCode)
+    public function setStatusCode($statusCode)
     {
         $this->statusCode = $statusCode;
     }

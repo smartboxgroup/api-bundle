@@ -7,6 +7,7 @@ use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\ApiBundle\Tests\BaseKernelTestCase;
 use Smartbox\CoreBundle\Type\Entity;
 use Smartbox\CoreBundle\Type\EntityInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApiConfiguratorTest extends BaseKernelTestCase
 {
@@ -197,6 +198,22 @@ class ApiConfiguratorTest extends BaseKernelTestCase
         $this->assertEquals($type,'test');
     }
 
+    public function testGetCleanParameterValidatesString(){
+
+        //test a good case
+        $inputName = 'id';
+        $type = 'string';
+        $value = 'I am a string';
+        $param = $this->configurator->getCleanParameter($inputName, $type, $value);
+        $this->assertSame($value, $param);
+
+        //test it should throw and helpful bad request exception
+        $inputName = 'id';
+        $type = 'string';
+        $value = ['i'=>'am', 'not'=>'string'];
+        $this->expectException(BadRequestHttpException::class);
+        $this->configurator->getCleanParameter($inputName, $type, $value);
+    }
 
     /* TODO:
      * getSoapTypeFor

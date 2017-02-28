@@ -568,6 +568,13 @@ class ApiConfigurator
         }
 
         switch ($type) {
+            case Configuration::STRING:
+                if (!is_string($value)) {
+                    $actualType = gettype( $value );
+                    throw new BadRequestHttpException("Parameter $inputName is not string. $actualType given.");
+                }
+                $param = $value;
+                break;
             case Configuration::INTEGER:
                 if (!is_numeric($value)) {
                     throw new BadRequestHttpException("Parameter $inputName with value $value is not numeric ");

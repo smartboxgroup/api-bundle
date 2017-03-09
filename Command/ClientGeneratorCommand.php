@@ -437,12 +437,15 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             }
             $uri = str_replace("{".$requirement."}", "%s", $path);
         }
-        if (substr($uri, -1) != '?') {
+        if (!empty($lastRequirements) && substr($uri, -1) != '?') {
             $uri .= "?";
         }
 
         foreach ($lastRequirements as $key=>$requirement){
-            $uri .= "&".$key."=%s";
+            if (substr($uri, -1) != '?') {
+                $uri .= "&".$key."=%s";
+            }
+            $uri .= $key."=%s";
         }
         
         // Sort arguments by appearance in the URI

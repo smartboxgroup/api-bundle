@@ -95,6 +95,14 @@ class ThrottlingListener extends BaseListener
         try {
             // Ratelimit the call
             $rateLimitInfo = $this->rateLimitService->limitRate($key);
+            
+            if($rateLimitInfo){
+                if(time() > $rateLimitInfo->getResetTimestamp()){
+                    $this->rateLimitService->resetRate($key);
+                    $rateLimitInfo = null;
+                }
+            }
+            
             if (!$rateLimitInfo) {
                 // Create new rate limit entry for this call
                 $rateLimitInfo = $this->rateLimitService->createRate(

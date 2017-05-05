@@ -1,47 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project activeEnvironment="Default" name="{{ api.projectName }}" resourceRoot="" soapui-version="5.3.0" abortOnError="false" runType="SEQUENTIAL"
+<con:soapui-project activeEnvironment="Default" name="{{ apiConfig.projectName }}" resourceRoot="" soapui-version="5.3.0" abortOnError="false" runType="SEQUENTIAL"
                     xmlns:con="http://eviware.com/soapui/config">
     <con:settings/>
-    <con:interface xsi:type="con:RestService" wadlVersion="http://wadl.dev.java.net/2009/02" name="{{ api.endpoint }}" type="rest"
+    <con:interface xsi:type="con:RestService" wadlVersion="http://wadl.dev.java.net/2009/02" name="{{ apiConfig.endpoint }}" type="rest"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <con:settings/>
         <con:definitionCache type="TEXT" rootPart=""/>
         <con:endpoints>
-            <con:endpoint>{{ api.endpoint }}</con:endpoint>
+            <con:endpoint>http://{{ apiConfig.endpoint }}</con:endpoint>
         </con:endpoints>
-        <con:resource name="{{ api.methodName }}" path="{{ api.path }}">
-            <con:settings/>
-            <con:parameters/>
-            <con:method name="{{ api.methodName }}" method="{{ api.httpMethod }}">
+        {% for api in apis %}
+            <con:resource name="{{ api.methodName }}" path="{{ api.path }}">
                 <con:settings/>
                 <con:parameters/>
-                <con:request name="{{ api.methodName }}" mediaType="application/json" postQueryString="false">
-                    <con:settings>
-                        <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment
-                            xmlns:con="http://eviware.com/soapui/config">
-                            {% for headerName, headerValue in api.headers %}
-                                &lt;con:entry key="{{ headerName }}" value="{{ headerValue }}"/>
-                            {% endfor %}
-                            &lt;/xml-fragment>
-                        </con:setting>
-                    </con:settings>
-                    <con:encoding/>
-                    <con:endpoint>{{ api.endpoint }}</con:endpoint>
-                    <con:request>{{ api.fixtureContent }}</con:request>
-                    <con:credentials>
-                        <con:username>admin</con:username>
-                        <con:password>admin</con:password>
-                        <con:selectedAuthProfile>Basic</con:selectedAuthProfile>
-                        <con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes>
-                        <con:preemptive>true</con:preemptive>
-                        <con:authType>Preemptive</con:authType>
-                    </con:credentials>
-                    <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
-                    <con:jmsPropertyConfig/>
+                <con:method name="{{ api.methodName }}" method="{{ api.httpMethod }}">
+                    <con:settings/>
                     <con:parameters/>
-                </con:request>
-            </con:method>
-        </con:resource>
+                    <con:request name="{{ api.methodName }}" mediaType="application/json" postQueryString="false">
+                        <con:settings>
+                            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment
+                                xmlns:con="http://eviware.com/soapui/config">
+                                {% for headerName, headerValue in api.headers %}
+                                    &lt;con:entry key="{{ headerName }}" value="{{ headerValue }}"/>
+                                {% endfor %}
+                                &lt;/xml-fragment>
+                            </con:setting>
+                        </con:settings>
+                        <con:encoding/>
+                        <con:endpoint>http://{{ apiConfig.endpoint }}</con:endpoint>
+                        <con:request>{{ api.fixtureContent }}</con:request>
+                        <con:credentials>
+                            <con:username>admin</con:username>
+                            <con:password>admin</con:password>
+                            <con:selectedAuthProfile>Basic</con:selectedAuthProfile>
+                            <con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes>
+                            <con:preemptive>true</con:preemptive>
+                            <con:authType>Preemptive</con:authType>
+                        </con:credentials>
+                        <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+                        <con:jmsPropertyConfig/>
+                        <con:parameters/>
+                    </con:request>
+                </con:method>
+            </con:resource>
+        {% endfor %}
     </con:interface>
     <con:properties/>
     <con:wssContainer/>

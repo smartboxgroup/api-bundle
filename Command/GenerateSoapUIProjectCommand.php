@@ -15,7 +15,7 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
 {
 //    const ENDPOINT = "ganesh-tt-one17.smartbox-test.local";
     const ENDPOINT = "real.ganesh.local";
-    const SOAPUI_PROJECTS_DIR = "SoapUIProjects";
+    const SOAPUI_PROJECTS_DIR = "app/Resources/SoapUIProjects";
 
     protected $apiConfig;
     protected $methodOption;
@@ -30,7 +30,7 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
         // TODO: We should base the generation only on the YAML test file...
         $this
             ->setName('smartbox:api:generate-soapui')
-            ->setDescription('Generate a sample SoapUI project for a flow, using the api defined in a YAML test file.')
+            ->setDescription('Generate a sample SoapUI project for a flow, using the api defined in a YAML test file. The generated XML file is saved in '. self::SOAPUI_PROJECTS_DIR)
             ->setHelp("Ex.: app/console smartbox:api:generate-soapui -f \"Product/sendProductInformation\" -p ganesh-tt-one17.smartbox-test.local")
             ->addOption('flow-test-file', 'f', InputOption::VALUE_OPTIONAL, 'The Flow test file to use for fixtures and headers. Ex.: Product/sendProductInformation')
             ->addOption('endpoint', 'p', InputOption::VALUE_REQUIRED, 'Endpoint of the API. Ex.: ganesh-tt-one17.smartbox-test.local', self::ENDPOINT)
@@ -52,7 +52,7 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
         $configurator = $this->getContainer()->get('smartapi.configurator');
         $this->apiConfig = $configurator->getConfig();
 
-        $exportDir = "app/Resources/".self::SOAPUI_PROJECTS_DIR;
+        $exportDir = self::SOAPUI_PROJECTS_DIR;
         if (!is_dir($exportDir)) {
             mkdir($exportDir);
         }

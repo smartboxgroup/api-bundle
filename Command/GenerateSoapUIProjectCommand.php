@@ -65,15 +65,19 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
         // Find apis in yml flow test file
         $apis = $this->generateAPIs($this->flowTestFileOption);
 
-        // Generate XML content
-        $soapUIProjectContent = $this->getContainer()->get('templating')->render('SmartboxApiBundle:Command:SoapUIProject.xml.twig',['apiConfig' => $apiConfig, 'apis' => $apis] ); // mainBundle:Email:default.html.twig
+        if (count($apis) > 0) {
+            // Generate XML content
+            $soapUIProjectContent = $this->getContainer()->get('templating')->render('SmartboxApiBundle:Command:SoapUIProject.xml.twig',['apiConfig' => $apiConfig, 'apis' => $apis] ); // mainBundle:Email:default.html.twig
 
-        // Save the SoapUI project
-        if ($soapUIProjectContent) {
-            file_put_contents($soapUIProjectFile, $soapUIProjectContent);
-            echo "\"$soapUIProjectFile\" was generated\n";
+            // Save the SoapUI project
+            if ($soapUIProjectContent) {
+                file_put_contents($soapUIProjectFile, $soapUIProjectContent);
+                echo "\"$soapUIProjectFile\" was generated\n";
+            } else {
+                throw new \Exception("\"$soapUIProjectFile\" could not be generated.");
+            }
         } else {
-            throw new \Exception("\"$soapUIProjectFile\" could not be generated.");
+            echo "No API call was found in $this->flowTestFileOption\n";
         }
 
 

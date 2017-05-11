@@ -12,7 +12,16 @@
         {% for api in apis %}
             <con:resource name="{{ api.methodName }}" path="{{ api.path }}">
                 <con:settings/>
+            {% if api.params %}
+                <con:parameters>
+                    {% for paramName, paramValue in api.params %}
+                    <con:parameter><con:name>{{ paramName }}</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter>
+                    {% endfor %}
+                </con:parameters>
+            {% else %}
                 <con:parameters/>
+            {% endif %}
+
                 <con:method name="{{ api.methodName }}" method="{{ api.httpMethod }}">
                     <con:settings/>
                     <con:parameters/>
@@ -39,7 +48,20 @@
                         </con:credentials>
                         <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
                         <con:jmsPropertyConfig/>
-                        <con:parameters/>
+                        {% if api.params %}
+                            <con:parameters>
+                            {% for paramName, paramValue in api.params %}
+                                <entry key="{{  paramName }}" value="{{  paramValue }}" xmlns="http://eviware.com/soapui/config"/>
+                            {% endfor %}
+                            </con:parameters>
+                            <con:parameterOrder>
+                            {% for paramName, paramValue in api.params %}
+                                <con:entry>{{ paramName }}</con:entry>
+                            {% endfor %}
+                            </con:parameterOrder>
+                        {% else %}
+                            <con:parameters/>
+                        {% endif %}
                     </con:request>
                 </con:method>
             </con:resource>

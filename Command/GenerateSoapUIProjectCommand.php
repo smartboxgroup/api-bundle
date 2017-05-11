@@ -151,6 +151,7 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
                 $apis[$i]['projectName'] = $space."_".$version." ".$this->flowTestFileOption;
                 $apis[$i]['path'] = "/api/rest/".$space."/".$version.$method['rest']['route'];
                 $apis[$i]['httpMethod'] = $method['rest']['httpMethod'];
+                $apis[$i]['params'] = $step['params'];
                 $i++;
             }
         }

@@ -56,6 +56,27 @@ class ExportAPIListCommand extends ContainerAwareCommand
                 $api['REST HTTP Method'] = $method['rest']['httpMethod'];
                 $api['Asynchronous'] = ($method['defaults']['async'] == true) ? 'True' : 'False';
                 $api['Throttling'] = $method['throttling']['limit'] . ' / ' . $method['throttling']['period'];
+
+                $api['Max Output Elements'] = 1;
+                if (isset($method['output']['limitElements'])) {
+                    $api['Max Output Elements'] = $method['output']['limitElements'];
+                }
+
+                $api['Max Input Elements'] = 1;
+                if (is_array($method['input'])) {
+                    $limitExists = 0;
+                    $sum = 0;
+                    foreach ($method['input'] as $object) {
+                        if (isset($object['limitElements'])){
+                            $limitExists = 1;
+                            $sum += $object['limitElements'];
+                        }
+                    }
+                    if ($limitExists) {
+                        $api['Max Input Elements'] = $sum;
+                    }
+                }
+
                 if (is_array($method['tags'])) {
                     $flows = [];
                     foreach ($method['tags'] as $tag) {

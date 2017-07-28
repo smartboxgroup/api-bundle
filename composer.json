@@ -28,7 +28,7 @@
         "snc/redis-bundle": "^1.1",
         "predis/predis": "^1.0",
         "smartbox/core-bundle": "dev-master",
-        "smartbox/besimple/soap": "dev-master",
+        "smartbox/besimple-soap": "dev-master",
         "nikic/php-parser": "^2.0@dev"
     },
     "require-dev": {
@@ -42,12 +42,6 @@
     "config": {
          "bin-dir": "bin"
     },
-    "repositories": [
-        {
-          "type": "vcs",
-          "url":  "git@gitlab.production.smartbox.com:smartesb/BeSimpleSoap.git"
-        }
-    ],
     "minimum-stability": "dev",
     "prefer-stable" : true
 }

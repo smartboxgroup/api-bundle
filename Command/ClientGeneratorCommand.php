@@ -337,7 +337,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         if(!empty($apiMethod["headers"])){
             $items = [];
             foreach ($apiMethod["headers"] as $header){
-                $headerName = $header."Header";
+                $headerName = $header."_API_Header";
                 $headerVariable = new Variable($headerName);
 
                 $methodArgs[] = $factory->param($headerName);
@@ -442,7 +442,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
 
         foreach ($lastRequirements as $key=>$requirement){
             if (substr($uri, -1) != '?') {
-                $uri .= "&".$key."=%s";
+                $uri .= "&";
             }
             $uri .= $key."=%s";
         }

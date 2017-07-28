@@ -337,12 +337,12 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         if(!empty($apiMethod["headers"])){
             $items = [];
             foreach ($apiMethod["headers"] as $header){
-                $headerVariable = new Variable($header);
+                $headerName = $header."Header";
+                $headerVariable = new Variable($headerName);
 
-                $methodArgs[] = $factory->param($header);
+                $methodArgs[] = $factory->param($headerName);
 
-                $methodComment .= "* @param string \$$header \r\n";
-
+                $methodComment .= "* @param string \$$headerName \r\n";
                 $items[] = new ArrayItem($headerVariable, new String_($header));
             }
             //Creating a new line in the method to merge the headers with the existing header argument
@@ -415,6 +415,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
      */
     protected function generateURI($methodName, $parameters, $apiName, $version)
     {
+        $arguments = [];
         $path = $this->routes->get(sprintf("smartapi.rest.%s_%s.%s", $apiName, $version, $methodName))->getPath();
 
         if(empty($path)){
@@ -424,14 +425,31 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             return new String_($path);
         }
 
+        $uri = $path;
+        $lastRequirements = [];
         foreach ($parameters as $requirement){
             $position = strpos($path, "{".$requirement."}");
-            $arguments[$position] = new Variable($requirement);
+            if($position){
+                $arguments[$position] = new Variable($requirement);
+            }else{
+                $lastRequirements[$requirement] = new Variable($requirement);
+            }
             $uri = str_replace("{".$requirement."}", "%s", $path);
         }
+        if (!empty($lastRequirements) && substr($uri, -1) != '?') {
+            $uri .= "?";
+        }
 
+        foreach ($lastRequirements as $key=>$requirement){
+            if (substr($uri, -1) != '?') {
+                $uri .= "&".$key."=%s";
+            }
+            $uri .= $key."=%s";
+        }
+        
         // Sort arguments by appearance in the URI
         ksort($arguments);
+        $arguments = array_merge($arguments, $lastRequirements);
         $sprintfArgs = array_merge( [new String_( $uri ) ], $arguments);
 
         return new FuncCall( new Name("sprintf"), $sprintfArgs);

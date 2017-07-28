@@ -46,10 +46,6 @@
         {
           "type": "vcs",
           "url":  "git@gitlab.production.smartbox.com:smartesb/BeSimpleSoap.git"
-        },
-        {
-          "type": "vcs",
-          "url":  "git@gitlab.production.smartbox.com:smartesb/core-bundle.git"
         }
     ],
     "minimum-stability": "dev",

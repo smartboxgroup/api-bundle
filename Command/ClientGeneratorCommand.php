@@ -208,7 +208,6 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         }
 
         $node = $factory->namespace($namespace)
-            ->addStmt($factory->use('JMS\Serializer\Annotation')->as('JMS'))
             ->addStmt($factory->use('Smartbox\ApiRestClient\ApiRestInternalClient'))
             ->addStmt($factory->use('Smartbox\ApiRestClient\ApiRestResponse'))
             ->addStmts($this->uses)

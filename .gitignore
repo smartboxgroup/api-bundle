@@ -5,9 +5,12 @@ Tests/App/logs/*
 # Composer
 /vendor/
 /bin/
+composer.lock
 
 # IDE files
 /.idea
 
 # Coverage report files
 /.coverage
+
+

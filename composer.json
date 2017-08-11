@@ -27,8 +27,8 @@
         "noxlogic/ratelimit-bundle": "^1.5",
         "snc/redis-bundle": "^1.1",
         "predis/predis": "^1.0",
-        "smartbox/core-bundle": "dev-master",
-        "smartbox/besimple-soap": "dev-master",
+        "smartbox/core-bundle": "~1.0.0",
+        "smartbox/besimple-soap": "~1.0.0",
         "nikic/php-parser": "^2.0@dev"
     },
     "require-dev": {

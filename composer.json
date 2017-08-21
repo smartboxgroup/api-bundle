@@ -27,17 +27,17 @@
         "noxlogic/ratelimit-bundle": "^1.5",
         "snc/redis-bundle": "^1.1",
         "predis/predis": "^1.0",
-        "smartbox/core-bundle": "~1.0.0",
-        "smartbox/besimple-soap": "~1.0.0",
         "nikic/php-parser": "^2.0@dev"
     },
     "require-dev": {
+        "digitalnature/php-ref": "dev-master",
+        "guzzlehttp/guzzle": "~3.8",
         "phpunit/php-code-coverage": "~4.0",
         "phpunit/phpunit-mock-objects": "~3.2",
         "phpunit/phpunit": "~5.4",
         "sensio/generator-bundle": "~2.3",
-        "digitalnature/php-ref": "dev-master",
-        "guzzlehttp/guzzle": "~3.8"
+        "smartbox/core-bundle": "~1.0.0",
+        "smartbox/besimple-soap": "~1.0.0"
     },
     "config": {
          "bin-dir": "bin"

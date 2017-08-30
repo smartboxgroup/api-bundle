@@ -251,7 +251,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $requirements = [];
         $filters = [];
         $description = $apiMethod["description"];
-        $methodComment = "/**\r\n* $description\r\n*\r\n";
+        $methodComment = "/**\r\n * $description\r\n *\r\n";
 
         $entityArgument = new ConstFetch(new Name('null'));
         foreach ($apiMethod["input"] as $inputName => $input){
@@ -310,7 +310,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
                 default:
                     throw new \Exception("Unknown input mode $inputMode");
             }
-            $methodComment .= $comment;
+            $methodComment .= " ".$comment;
         }
         //Generate the URI for the rest call
         $uri = $this->generateURI($methodName, $requirements, $apiName, $version);
@@ -342,7 +342,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
 
                 $methodArgs[] = $factory->param($headerName);
 
-                $methodComment .= "* @param string \$$headerName \r\n";
+                $methodComment .= " * @param string \$$headerName \r\n";
                 $items[] = new ArrayItem($headerVariable, new String_($header));
             }
             //Creating a new line in the method to merge the headers with the existing header argument
@@ -378,7 +378,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $headers->setTypeHint("array");
         $methodArgs[] = $headers;
         $methodComment .=
-            "* @param array \$headers \r\n";
+            " * @param array \$headers \r\n";
 
         //Building the method
         $sdkMethod = $factory->method($methodName)
@@ -393,9 +393,9 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         }
 
         $methodComment .=
-            "*
-              * @return ApiRestResponse
-              */";
+            " *
+               * @return ApiRestResponse
+               */";
 
         $sdkMethod->setDocComment($methodComment);
 

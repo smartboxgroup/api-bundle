@@ -242,26 +242,29 @@ class APIController extends FOSRestController
      * Get and validate the required headers for a specific method
      *
      * @param array $headers Header names.
+     * @param bool $required
      *
      * @return array
      */
-    protected function validateHeaders(array $headers)
+    protected function validateHeaders(array $headers, $required = true)
     {
         $request = $this->getRequest();
 
-        $requiredHeaders = [];
+        $existingHeaders = [];
 
         foreach ($headers as $headerName) {
             $headerValue = $this->getHeader($request, $headerName);
 
-            if ($headerValue === null) {
-                throw new BadRequestHttpException(sprintf('"%s" header is required to use this method', $headerName));
+            if ($headerValue !== null) {
+                $existingHeaders[$headerName] = $headerValue;
             }
 
-            $requiredHeaders[$headerName] = $headerValue;
+            if ($headerValue === null && $required) {
+                throw new BadRequestHttpException(sprintf('"%s" header is required to use this method', $headerName));
+            }
         }
 
-        return $requiredHeaders;
+        return $existingHeaders;
     }
 
     protected function validateBody($body, $expectedType, $group, $expectedLimitElements, $version)

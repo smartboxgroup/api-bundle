@@ -255,6 +255,7 @@ class Configuration implements ConfigurationInterface
             ->append($this->addRestNode())
             ->append($this->addThrottlingNode())
             ->append($this->addHeadersNode())
+            ->append($this->addOptionalHeadersNode())
             ->append($this->addTagsNode())
             ->end()
             ->end()
@@ -427,4 +428,19 @@ class Configuration implements ConfigurationInterface
 
         return $node;
     }
+
+    public function addOptionalHeadersNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('optionalHeaders');
+
+        $node
+            ->info('Add optional header names to use with this method')
+            ->prototype('scalar')
+            ->defaultValue([])
+            ->end();
+
+        return $node;
+    }
+
 }

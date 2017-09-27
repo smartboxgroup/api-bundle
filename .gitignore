@@ -13,4 +13,7 @@ composer.lock
 # Coverage report files
 /.coverage
 
+# PHP CS Fixer
+.php_cs.cache
+
 

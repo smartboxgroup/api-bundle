@@ -182,7 +182,7 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $stmtClass = $factory->class($className)
             ->setDocComment(
                 "\r\n/**
-                  * Class $className
+                  * Class $className.
                   */"
             );
 
@@ -251,7 +251,10 @@ class ClientGeneratorCommand extends ContainerAwareCommand
         $requirements = [];
         $filters = [];
         $description = $apiMethod["description"];
-        $methodComment = "/**\r\n * $description\r\n *\r\n";
+        if (substr($description,-1,1) != ".") {
+            $description .= '.';
+        }
+        $methodComment = "\n/**\r\n * $description\r\n *\r\n";
 
         $entityArgument = new ConstFetch(new Name('null'));
         foreach ($apiMethod["input"] as $inputName => $input){

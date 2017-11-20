@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
@@ -63,13 +64,13 @@ class APIController extends FOSRestController
     protected function throwOutputValidationErrors(ConstraintViolationListInterface $list)
     {
         if (count($list) > 0) {
-            $message = "Internal server error; ";
+            $message = "External system failure; ";
             /** @var ConstraintViolationInterface $error */
             foreach ($list as $error) {
                 $message .= $error->getPropertyPath().":".$error->getMessage().",";
             }
 
-            throw new \Exception($message);
+            throw new HttpException(520, $message);
         }
     }
 
@@ -323,7 +324,13 @@ class APIController extends FOSRestController
             $expectedLimitElements = $outputConfig['limitElements'];
 
             $this->getGroupVersionHydrator()->hydrate($outputValue, $outputGroup, $version);
-            $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $expectedLimitElements, $version);
+            try {
+                $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $expectedLimitElements, $version);
+            } catch (\Exception $e) {
+                $errors = new ConstraintViolationList(array(
+                    new ConstraintViolation($e->getMessage(), '', array(), 'body', 'body', $outputValue)
+                ));
+            }
 
             if (count($errors)) {
                 $this->throwOutputValidationErrors($errors);

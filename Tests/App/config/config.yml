@@ -159,6 +159,7 @@ smartbox_api:
                         httpMethod: POST
                 getBox:
                     description: Returns a box given its id
+                    successCode: 200
                     input:
                         id: { type: integer, description: Id of the box to be fetched, format: "\d+" }
                     output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: public }
@@ -167,6 +168,23 @@ smartbox_api:
                       httpMethod: GET
                     defaults:
                       id: 90
+                getBoxes:
+                    description: Returns boxes
+                    successCode: 200
+                    input:
+                        quantity:
+                            type: integer
+                            description: Quantity of boxes to be fetched
+                            format: "\d+"
+                    output:
+                        type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box[]
+                        group: public
+                        limitElements: 2
+                    rest:
+                      route: "/boxes/{quantity}"
+                      httpMethod: GET
+                    defaults:
+                      quantity: 1
                 updateBox:
                     description: Updates a box
                     successCode: 204

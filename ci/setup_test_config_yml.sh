@@ -4,8 +4,8 @@ set -e
 
 YML_PARAMETERS_FILE="Tests/App/config/config.yml"
 
-echo "Using $YML_PARAMETERS_FILE file."
+echo "Using ${YML_PARAMETERS_FILE} file."
 
 sed \
   -e 's,redis://localhost,redis://redis,' \
-  -i app/config/parameters.yml
+  -i ${YML_PARAMETERS_FILE}

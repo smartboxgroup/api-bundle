@@ -1,7 +1,7 @@
 image: docker-registry.production.smartbox.com/eai/bifrostqa
 
 services:
-#  - redis
+  - redis
 #  - mysql:5.7.16
 #  - docker-registry.production.smartbox.com/eai/rabbitmq-stomp
 
@@ -24,22 +24,14 @@ before_script:
   # Configure docker based on the ENV variables
   - bash ci/docker_env_init.sh
   # configure app (check script for credentials and settings)
-#  - bash ci/setup_parameters_yml.sh
+  - bash ci/setup_test_config_yml.sh
   # install dependencies with .git information (prefer-source)
   - composer install --prefer-source
-  # checkout same branch dependencies if they exist
-#  - bash ci/checkout_dependencies.sh
-  # install DB Schema
-#  - php app/console doctrine:schema:update --force
-  # Clearing RabbitMq Queues for gitlab_ci user
-#  - bash ci/clear_gitlab_ci_rabbitmq.sh
 
 cache:
-  key: ${CI_BUILD_REF_NAME}-1
   paths:
   - vendor/
 
 test:app:
   script:
-#    -  bin/mocks-checking
     -  bin/phpunit --colors --debug --coverage-text

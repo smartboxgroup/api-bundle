@@ -359,7 +359,7 @@ class APIController extends FOSRestController
         $methodConfig = $apiConfigurator->getConfig($serviceId, $methodName);
 
         $successCode = $methodConfig['successCode'];
-        $outputGroup = (isset($methodConfig['output']['group'])) ? $methodConfig['output']['group'] : null; // I think that it should be taken like in ->validateOutput from $methodConfig = $configurator->getConfig($serviceId, $methodName);
+        $outputGroup = (isset($methodConfig['output']['group'])) ? $methodConfig['output']['group'] : null;
 
         $this->validateOutput($body);
 

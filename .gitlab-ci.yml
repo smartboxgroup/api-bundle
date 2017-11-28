@@ -2,18 +2,9 @@ image: docker-registry.production.smartbox.com/eai/bifrostqa
 
 services:
   - redis
-#  - mysql:5.7.16
-#  - docker-registry.production.smartbox.com/eai/rabbitmq-stomp
 
 variables:
-#  AUTH: "no"
-#  MOCKS_ENABLED: "true"
-#  MYSQL_ROOT_PASSWORD: "12345"
-#  MYSQL_DATABASE: "eai"
-#  MERGE_REQUEST_TARGET_BRANCH: "bau"
-#  SKIP_CHECKOUT_DEPENDENCIES: "false" # "true" of "false"
   GIT_STRATEGY: clone
-#  RABBITMQ_HOST: "docker-registry.production.smartbox.com-eai-rabbitmq-stomp"
 
 before_script:
   - composer self-update

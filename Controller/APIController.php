@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
@@ -50,10 +51,10 @@ class APIController extends FOSRestController
     protected function throwInputValidationErrors(ConstraintViolationListInterface $list)
     {
         if (count($list) > 0) {
-            $message = "Bad Request; ";
+            $message = 'Bad Request; ';
             /** @var ConstraintViolationInterface $error */
             foreach ($list as $error) {
-                $message .= $error->getPropertyPath().":".$error->getMessage().",";
+                $message .= $error->getPropertyPath().':'.$error->getMessage().',';
             }
 
             throw new BadRequestHttpException($message);
@@ -63,13 +64,13 @@ class APIController extends FOSRestController
     protected function throwOutputValidationErrors(ConstraintViolationListInterface $list)
     {
         if (count($list) > 0) {
-            $message = "Internal server error; ";
+            $message = 'External system failure; ';
             /** @var ConstraintViolationInterface $error */
             foreach ($list as $error) {
-                $message .= $error->getPropertyPath().":".$error->getMessage().",";
+                $message .= $error->getPropertyPath().':'.$error->getMessage().',';
             }
 
-            throw new \Exception($message);
+            throw new HttpException(520, $message);
         }
     }
 
@@ -83,13 +84,14 @@ class APIController extends FOSRestController
         $roles = $config['roles'];
 
         if (false === $this->get('security.authorization_checker')->isGranted($roles)) {
-            throw new  AccessDeniedHttpException("Access denied");
+            throw new  AccessDeniedHttpException('Access denied');
         }
     }
 
-    protected function prepareInput($version, $inputsConfig, $inputValues){
+    protected function prepareInput($version, $inputsConfig, $inputValues)
+    {
         foreach ($inputsConfig as $inputName => $inputConfig) {
-            if ($inputConfig['mode'] == Configuration::MODE_BODY) {
+            if (Configuration::MODE_BODY == $inputConfig['mode']) {
                 if (!array_key_exists($inputName, $inputValues)) {
                     throw new BadRequestHttpException("Missing required input: $inputName");
                 }
@@ -109,7 +111,7 @@ class APIController extends FOSRestController
 
             $errors = array();
 
-            if ($mode == Configuration::MODE_BODY) {
+            if (Configuration::MODE_BODY == $mode) {
                 if (!array_key_exists($inputName, $inputValues)) {
                     throw new BadRequestHttpException("Missing required input: $inputName");
                 }
@@ -117,7 +119,7 @@ class APIController extends FOSRestController
                 $body = $inputValues[$inputName];
                 $expectedInputGroup = $inputConfig['group'];
 
-                $shouldBeArray = strpos($expectedInputType, ApiConfigurator::$arraySymbol) !== false;
+                $shouldBeArray = false !== strpos($expectedInputType, ApiConfigurator::$arraySymbol);
 
                 if ($shouldBeArray && is_array($body) && empty($body)) {
                     throw new BadRequestHttpException('The input should not be an empty array');
@@ -127,14 +129,14 @@ class APIController extends FOSRestController
                     $errors = $this->validateBody($body, $expectedInputType, $expectedInputGroup, $expectedLimitElements, $version);
                 } catch (\Exception $e) {
                     $errors = new ConstraintViolationList(array(
-                        new ConstraintViolation($e->getMessage(), '', array(), 'body', 'body', $body)
+                        new ConstraintViolation($e->getMessage(), '', array(), 'body', 'body', $body),
                     ));
                 }
             } else {
                 if (array_key_exists($inputName, $inputValues)) {
                     $value = $inputValues[$inputName];
                     $errors = $this->checkParam($inputName, $value, $inputConfig['type'], $inputConfig['format']);
-                } elseif ($mode == Configuration::MODE_REQUIREMENT) {
+                } elseif (Configuration::MODE_REQUIREMENT == $mode) {
                     throw new BadRequestHttpException("Missing required input: $inputName");
                 }
             }
@@ -151,8 +153,7 @@ class APIController extends FOSRestController
 
         $constraints = array();
 
-        switch( $type ){
-
+        switch ($type) {
             case Configuration::DATETIME:
                 $constraints[] = new DateTime(
                     array(
@@ -203,7 +204,6 @@ class APIController extends FOSRestController
                         )
                     );
                 }
-
         }
 
         $errors = new ConstraintViolationList();
@@ -218,18 +218,18 @@ class APIController extends FOSRestController
     /**
      * Method to get a specific REST Header or SOAP Header given the header name.
      *
-     * @param Request $request Request that can be HTTP or SOAP.
-     * @param string $headerName Header name to get its value.
+     * @param Request $request    request that can be HTTP or SOAP
+     * @param string  $headerName header name to get its value
      *
      * @return string
      */
     protected function getHeader(Request $request, $headerName)
     {
         // SOAP
-        if ($request->get('api') == 'soap') {
+        if ('soap' == $request->get('api')) {
             $soapHeader = $request->getSoapHeaders()->get($headerName);
 
-            if ($soapHeader !== null) {
+            if (null !== $soapHeader) {
                 return $soapHeader->getData();
             }
         }
@@ -239,10 +239,10 @@ class APIController extends FOSRestController
     }
 
     /**
-     * Get and validate the required headers for a specific method
+     * Get and validate the required headers for a specific method.
      *
-     * @param array $headers Header names.
-     * @param bool $required
+     * @param array $headers  header names
+     * @param bool  $required
      *
      * @return array
      */
@@ -255,11 +255,11 @@ class APIController extends FOSRestController
         foreach ($headers as $headerName) {
             $headerValue = $this->getHeader($request, $headerName);
 
-            if ($headerValue !== null) {
+            if (null !== $headerValue) {
                 $existingHeaders[$headerName] = $headerValue;
             }
 
-            if ($headerValue === null && $required) {
+            if (null === $headerValue && $required) {
                 throw new BadRequestHttpException(sprintf('"%s" header is required to use this method', $headerName));
             }
         }
@@ -271,27 +271,27 @@ class APIController extends FOSRestController
     {
         $validator = $this->getValidator();
 
-        $shouldBeArray = strpos($expectedType, ApiConfigurator::$arraySymbol) !== false;
-        $elementType = str_replace(ApiConfigurator::$arraySymbol, "", $expectedType);
+        $shouldBeArray = false !== strpos($expectedType, ApiConfigurator::$arraySymbol);
+        $elementType = str_replace(ApiConfigurator::$arraySymbol, '', $expectedType);
 
         if (is_array($body) && !$shouldBeArray) {
-            throw new \Exception("The body is an array but an object was expected");
+            throw new \Exception('The body is an array but an object was expected');
         } elseif (!is_array($body) && $shouldBeArray) {
             throw new \Exception("The body was expected to be an array but it isn't");
         }
 
         if ($shouldBeArray) {
-            if ($expectedLimitElements !== null && count($body) > $expectedLimitElements) {
-                throw new \Exception("The body contains more elements than expected");
+            if (null !== $expectedLimitElements && count($body) > $expectedLimitElements) {
+                throw new \Exception('The body contains more elements than expected');
             }
             foreach ($body as $elementKey => $elementValue) {
                 if (!($elementValue instanceof $elementType) || !($elementValue instanceof EntityInterface)) {
-                    throw new \Exception("The body is not an instance of the expected class");
+                    throw new \Exception('The body is not an instance of the expected class');
                 }
             }
         } else {
             if (!($body instanceof $elementType) || !($body instanceof EntityInterface)) {
-                throw new \Exception("The body is not an instance of the expected class");
+                throw new \Exception('The body is not an instance of the expected class');
             }
         }
 
@@ -302,18 +302,18 @@ class APIController extends FOSRestController
 
     protected function validateOutput($outputValue)
     {
-        $configurator = $this->get('smartapi.configurator');
+        $apiConfigurator = $this->get('smartapi.configurator');
         $request = $this->getRequest();
         $serviceId = $request->get(ApiConfigurator::SERVICE_ID);
         $methodName = $request->get(ApiConfigurator::METHOD_NAME);
         $version = $request->get(ApiConfigurator::VERSION);
 
-        $methodConfig = $configurator->getConfig($serviceId, $methodName);
+        $methodConfig = $apiConfigurator->getConfig($serviceId, $methodName);
 
         if ($outputValue && !array_key_exists('output', $methodConfig)) {
-            throw new \Exception("This API method should return an empty response");
-        } else if (!is_array($outputValue) && empty($outputValue) && array_key_exists('output', $methodConfig)) {
-            throw new \Exception("This API method should return a response");
+            throw new \Exception('This API method should return an empty response');
+        } elseif (!is_array($outputValue) && empty($outputValue) && array_key_exists('output', $methodConfig)) {
+            throw new \Exception('This API method should return a response');
         }
 
         if ($outputValue) {
@@ -323,7 +323,13 @@ class APIController extends FOSRestController
             $expectedLimitElements = $outputConfig['limitElements'];
 
             $this->getGroupVersionHydrator()->hydrate($outputValue, $outputGroup, $version);
-            $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $expectedLimitElements, $version);
+            try {
+                $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $expectedLimitElements, $version);
+            } catch (\Exception $e) {
+                $errors = new ConstraintViolationList(array(
+                    new ConstraintViolation($e->getMessage(), '', array(), 'body', 'body', $outputValue),
+                ));
+            }
 
             if (count($errors)) {
                 $this->throwOutputValidationErrors($errors);
@@ -335,27 +341,32 @@ class APIController extends FOSRestController
      * @param $body
      *
      * @return null|BasicResponse|\Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Exception
      */
     protected function respond($body, $headers = [])
     {
-        if ($body instanceof OK){
+        if ($body instanceof OK) {
             $body = null;
         }
 
         $response = null;
+        $apiConfigurator = $this->get('smartapi.configurator');
         $request = $this->getRequest();
-        $config = $request->get(ApiConfigurator::METHOD_CONFIG);
-        $successCode = $config['successCode'];
-        $outputGroup = @$config['output']['group'];
+        $serviceId = $request->get(ApiConfigurator::SERVICE_ID);
+        $methodName = $request->get(ApiConfigurator::METHOD_NAME);
+
+        $methodConfig = $apiConfigurator->getConfig($serviceId, $methodName);
+
+        $successCode = $methodConfig['successCode'];
+        $outputGroup = (isset($methodConfig['output']['group'])) ? $methodConfig['output']['group'] : null;
 
         $this->validateOutput($body);
-        $apiConfigurator = $this->get('smartapi.configurator');
 
         // REST
-        if ($request->get('api') == 'rest') {
+        if ('rest' == $request->get('api')) {
             // REST HEADERS
-            if (in_array($successCode,$apiConfigurator->getRestEmptyBodyResponseCodes())) {
+            if (in_array($successCode, $apiConfigurator->getRestEmptyBodyResponseCodes())) {
                 $body = null;
             }
 
@@ -389,6 +400,6 @@ class APIController extends FOSRestController
         $this->prepareInput($version, $inputsConfig, $input);
         $this->checkInput($version, $inputsConfig, $input);
 
-        return $this->respond("Please place here your response");
+        return $this->respond('Please place here your response');
     }
 }

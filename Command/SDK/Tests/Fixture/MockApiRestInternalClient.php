@@ -4,7 +4,7 @@ namespace Smartbox\ApiRestClient\Tests\Fixture;
 
 use Guzzle\Http\Client;
 use Guzzle\Plugin\Mock\MockPlugin;
-use Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product;
+use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
 use Smartbox\ApiRestClient\ApiRestResponse;
 

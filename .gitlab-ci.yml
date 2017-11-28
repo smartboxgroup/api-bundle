@@ -1,0 +1,28 @@
+image: docker-registry.production.smartbox.com/eai/bifrostqa
+
+services:
+  - redis
+
+variables:
+  GIT_STRATEGY: clone
+
+before_script:
+  - composer self-update
+  # Prevents commands with | to display an error message in Gitlab CI (tput: No value for $TERM and no -T specified)
+  - export TERM=dumb
+  # make sure we have the ssh-agent running
+  - eval $(ssh-agent -s)
+  # Configure docker based on the ENV variables
+  - bash ci/docker_env_init.sh
+  # configure app (check script for credentials and settings)
+  - bash ci/setup_test_config_yml.sh
+  # install dependencies with .git information (prefer-source)
+  - composer install --prefer-source
+
+cache:
+  paths:
+  - vendor/
+
+test:app:
+  script:
+    -  bin/phpunit --colors --debug --coverage-text

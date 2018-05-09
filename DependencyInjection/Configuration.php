@@ -257,6 +257,7 @@ class Configuration implements ConfigurationInterface
             ->append($this->addHeadersNode())
             ->append($this->addOptionalHeadersNode())
             ->append($this->addTagsNode())
+            ->booleanNode('logEnabled')->info('Add optional boolean to define if we should log the related events and transaction in the admin panel')->defaultValue(true)
             ->end()
             ->end()
             ->end();
@@ -442,5 +443,4 @@ class Configuration implements ConfigurationInterface
 
         return $node;
     }
-
 }

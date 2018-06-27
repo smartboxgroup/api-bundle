@@ -92,7 +92,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
 
         foreach ($properties as $property) {
             $validationParams = [
-                'default' => isset($defaults[$property]) ? $defaults[$property] : null,
+                'default' => isset($defaults[$property]) && is_scalar($defaults[$property]) ? $defaults[$property] : null,
                 'groups'  => $groups,
                 'version' => $version
             ];

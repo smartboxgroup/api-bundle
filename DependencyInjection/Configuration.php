@@ -54,10 +54,20 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
             ->scalarNode('userProvider')
+                ->defaultValue('smartapi.security.user_provider')
                 ->isRequired()
                 ->info("Id of user provider service which implements Symfony\\Component\\Security\\Core\\User\\UserProviderInterface\n
     f.e.: security.user.provider.concrete.in_memory
                 ")
+            ->end()
+            ->scalarNode('usersFile')
+                ->info(<<<'EOL'
+Full path to your JSON/YAML user config file, if you want to use the file user provider.
+   
+    f.e.: '%kernel.root_dir%/config/users.json
+
+EOL
+)
             ->end()
             ->scalarNode('default_controller')->defaultValue(self::API_CONTROLLER)->end()
             ->scalarNode('fixturesPath')

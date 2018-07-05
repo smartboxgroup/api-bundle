@@ -7,6 +7,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Parameter;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
@@ -16,6 +17,9 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class SmartboxApiExtension extends Extension
 {
+    const SERVICE_ID_FILE_LIST = 'smartapi.user_list.file';
+    const SERVICE_ID_USER_PROVIDER = 'smartapi.security.user_provider';
+
     protected $config;
 
     protected $unResolvedApiServices = array();
@@ -90,6 +94,7 @@ class SmartboxApiExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
@@ -99,6 +104,14 @@ class SmartboxApiExtension extends Extension
 
         if ($config['throttling']) {
             $loader->load('services_throttling.yml');
+        }
+
+        if (isset($config['usersFile'])) {
+            $container->findDefinition(static::SERVICE_ID_FILE_LIST)
+                ->setArguments([$config['usersFile']]);
+
+            $container->findDefinition(static::SERVICE_ID_USER_PROVIDER)
+                ->setArguments([new Reference(static::SERVICE_ID_FILE_LIST)]);
         }
 
         $configurator->addArgument($this->resolvedApiServices);

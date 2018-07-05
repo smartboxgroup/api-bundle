@@ -13,6 +13,9 @@ parameters:
   smartapi.soap.server.builder.class: Smartbox\ApiBundle\Services\Soap\ServerBuilder
   smartapi.soap.server.builder.server_class: Smartbox\ApiBundle\Services\Soap\Server
   besimple.soap.converter.date_time.class: Smartbox\ApiBundle\Services\Soap\TypeConverters\DateTimeTypeConverter
+  smartapi.security.user_provider.class: Smartbox\ApiBundle\Security\User\ApiProvider
+  smartapi.event_listener.api_user.class: Smartbox\ApiBundle\EventListener\ApiUserListener
+  smartapi.user_list.file.class: Smartbox\ApiBundle\Security\UserList\FileList
 
   # OVERRIDING REST
   fos_rest.format_listener.class: Smartbox\ApiBundle\Services\Rest\FormatListener
@@ -117,3 +120,17 @@ services:
         arguments: ["@smartapi.configurator"]
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -255 }
+
+    smartapi.security.user_provider:
+        class: "%smartapi.security.user_provider.class%"
+        public: false
+
+    smartapi.user_list.file:
+        class: "%smartapi.user_list.file.class%"
+        public: false
+
+    smartapi.event_listener.api_user:
+        class: "%smartapi.event_listener.api_user.class%"
+        arguments: ["@security.token_storage"]
+        tags:
+          - { name: kernel.event_listener, event: kernel.request, priority: 1 }

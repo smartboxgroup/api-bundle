@@ -39,7 +39,7 @@ snc_redis:
         default:
             type: predis
             alias: default
-            dsn: redis://localhost
+            dsn: redis://redis
 
 be_simple_soap:
     services:
@@ -65,7 +65,8 @@ smartbox_core:
       service: ~
 
 smartbox_api:
-    userProvider: security.user.provider.concrete.in_memory
+    userProvider: smartapi.security.user_provider
+    usersFile: '%kernel.root_dir%/../Fixtures/UserProvider/valid_config.json'
     restEmptyBodyResponseCodes: []
     default_controller: "test.dummy.controller:handleCallAction"
 

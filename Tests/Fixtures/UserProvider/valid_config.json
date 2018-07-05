@@ -1,0 +1,27 @@
+{
+  "users": {
+    "regular": {
+      "password": "P4$$W0rd",
+      "is_admin": false,
+      "methods": [
+        "getRegisteredVouchersByEmail",
+        "fooBar"
+      ]
+    },
+    "box_picker": {
+      "password": "P4$$W0rd",
+      "methods": ["setBoxPicked"]
+    },
+    "useless": {
+      "password": "P4$$W0rd"
+    },
+    "admin": {
+      "password": "admin",
+      "is_admin": true
+    },
+    "test": {
+      "password": "test",
+      "is_admin": true
+    }
+  }
+}

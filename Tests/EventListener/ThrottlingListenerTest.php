@@ -67,8 +67,8 @@ class ThrottlingListenerTest extends WebTestCase
         $responseContentErrorMessage = $this->container->getParameter('smartapi.rate_response_message');
 
         $client = $this->getRestClient();
-        $rateLimitService = $client->getContainer()->get('noxlogic_rate_limit.rate_limit_service');
-        $rateLimitService->resetRate(static::REST_RATE_LIMIT_KEY);
+        $client->getContainer()->get('noxlogic_rate_limit.rate_limit_service')
+            ->resetRate(static::REST_RATE_LIMIT_KEY);
 
         $rateLimit = 2;
         for ($i = 0; $i <= $rateLimit; ++$i) {

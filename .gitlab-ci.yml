@@ -1,4 +1,3 @@
-
 services:
   - redis
 
@@ -15,9 +14,9 @@ cache:
 test:PHP56:
   image: docker-registry.production.smartbox.com/ci/php:56
   script:
-    -  bin/phpunit --debug --coverage-text
+    -  bin/phpunit --coverage-text
 
 test:PHP70:
   image: docker-registry.production.smartbox.com/ci/php:70
   script:
-    -  bin/phpunit --debug --coverage-text
+    -  bin/phpunit --coverage-text

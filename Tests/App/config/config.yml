@@ -20,6 +20,11 @@ framework:
 
 monolog:
     handlers:
+        main:
+            type: stream
+            path: '%kernel.logs_dir%/%kernel.environment%.log'
+            level: info
+            channels: ['!event']
         console:
             type:                console
             verbosity_levels:
@@ -146,7 +151,7 @@ smartbox_api:
         demo_v1:
             name: demo
             version: v1
-            soapHeadersNamespace: http://smartbox/soap
+            soapHeadersNamespace: http://smartbox.com/soap/headers
             methods:
 
             ## BOXES

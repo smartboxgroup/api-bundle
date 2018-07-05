@@ -12,7 +12,7 @@ framework:
     validation:      { enable_annotations: true }
 
     router:
-        resource: %kernel.root_dir%/config/routing.yml
+        resource: '%kernel.root_dir%/config/routing.yml'
         strict_requirements: ~
 
     templating:
@@ -36,7 +36,7 @@ monolog:
 noxlogic_rate_limit:
     storage_engine:             redis
     redis_client:               default_client
-    rate_response_message:      %smartapi.rate_response_message%
+    rate_response_message:      '%smartapi.rate_response_message%'
     display_headers:            true
 
 snc_redis:
@@ -107,7 +107,7 @@ smartbox_api:
                     description: Method to send an array of entity
                     successCode: 201
                     input:
-                        box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box[], group: update, mode: body }
+                        box: { type: 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box[]', group: update, mode: body }
                     rest:
                         route: "/test1/url"
                         httpMethod: POST
@@ -204,7 +204,7 @@ smartbox_api:
                     description: Creates boxes in a batch asynchronously
                     successCode: 202
                     input:
-                        boxes: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box[], group: update, mode: body }
+                        boxes: { type: 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box[]', group: update, mode: body }
                     rest:
                         route: "/box/batch"
                         httpMethod: POST

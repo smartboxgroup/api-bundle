@@ -34,17 +34,17 @@ parameters:
 
 services:
     smartapi.configurator:
-       class: %smartapi.configurator.class%
+       class: '%smartapi.configurator.class%'
        arguments: ["@jms_serializer.metadata_factory"]
 
     smartapi.rest.loader.routes:
-      class: %smartapi.rest.loader.routes.class%
+      class: '%smartapi.rest.loader.routes.class%'
       arguments: ["@smartapi.configurator"]
       tags:
           - { name: routing.loader }
 
     smartapi.soap.loader.soap_services:
-      class: %smartapi.soap.loader.soap_services.class%
+      class: '%smartapi.soap.loader.soap_services.class%'
       arguments:
         - "@smartapi.configurator"
         - "@besimple.soap.type.repository"
@@ -52,7 +52,7 @@ services:
         - { name: besimple.soap.definition.loader }
 
     smartapi.soap.exceptions_converter:
-        class: %smartapi.soap.exceptions_converter.class%
+        class: '%smartapi.soap.exceptions_converter.class%'
         arguments:
           - "@monolog.logger"
           - "@request_stack"
@@ -61,7 +61,7 @@ services:
 
 
     smartapi.rest.listener.input:
-      class: %smartapi.rest.listener.input.class%
+      class: '%smartapi.rest.listener.input.class%'
       arguments:
         - "@smartapi.configurator"
         - "@fos_rest.converter.request_body"
@@ -71,7 +71,7 @@ services:
         - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 0 }
 
     smartapi.doc.parser.jms_parser:
-      class: %smartapi.doc.parser.jms_parser.class%
+      class: '%smartapi.doc.parser.jms_parser.class%'
       arguments:
         - "@jms_serializer.metadata_factory"
         - "@jms_serializer.naming_strategy"
@@ -80,7 +80,7 @@ services:
         - { name: nelmio_api_doc.extractor.parser, priority: 50 }
 
     smartapi.doc.parser.validation_parser:
-      class: %smartapi.doc.parser.validation_parser.class%
+      class: '%smartapi.doc.parser.validation_parser.class%'
       arguments:
         - "@validator"
         - "@jms_serializer.metadata_factory"
@@ -88,35 +88,35 @@ services:
         - { name: nelmio_api_doc.extractor.parser, priority: 50 }
 
     smartapi.soap.security.authentication.provider:
-        class: %smartapi.soap.security.authentication.provider.class%
+        class: '%smartapi.soap.security.authentication.provider.class%'
 
     smartapi.soap.server.builder:
-        class: %smartapi.soap.server.builder.class%
+        class: '%smartapi.soap.server.builder.class%'
         calls:
-          - ['setServerClass', [%smartapi.soap.server.builder.server_class%]]
+          - ['setServerClass', ['%smartapi.soap.server.builder.server_class%']]
           - ['setContainer', ["@service_container"]]
 
     smartapi.soap.security.authentication_filter:
-        class: %smartapi.soap.security.authentication_filter.class%
+        class: '%smartapi.soap.security.authentication_filter.class%'
         arguments:
           - "@smartapi.soap.security.authentication.provider"
           - "@security.token_storage"
 
     smartapi.smoke_test.check_redis_connection:
-        class: %smartesb.smoke_test.check_redis_connection.class%
+        class: '%smartesb.smoke_test.check_redis_connection.class%'
         arguments: ["@snc_redis.default"]
         tags:
             - { name: smartcore.smoke_test, labels: "important" }
 
     smartapi.event_listener.redis_connection:
-        class: %smartapi.event_listener.redis_connection.class%
+        class: '%smartapi.event_listener.redis_connection.class%'
         arguments: ["@snc_redis.default"]
         tags:
             - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
             - { name: kernel.event_listener, event: console.terminate, method: onConsoleTerminate }
 
     smartapi.event_listener.propagate_http_headers:
-        class: %smartapi.event_listener.propagate_http_headers.class%
+        class: '%smartapi.event_listener.propagate_http_headers.class%'
         arguments: ["@smartapi.configurator"]
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -255 }

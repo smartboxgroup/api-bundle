@@ -1,4 +1,7 @@
 ## API bundle
+[![pipeline status](http://gitlab.production.smartbox.com/smartesb/api-bundle/badges/master/pipeline.svg)](http://gitlab.production.smartbox.com/smartesb/api-bundle/commits/master)
+[![coverage report](http://gitlab.production.smartbox.com/smartesb/api-bundle/badges/master/coverage.svg)](http://gitlab.production.smartbox.com/smartesb/api-bundle/commits/master)
+
 The API bundle allows you to create REST and SOAP APIs in a seamless way. It also auto generates documentation for both APIs
 
 ## Installation and usage

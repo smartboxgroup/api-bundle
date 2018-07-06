@@ -114,7 +114,7 @@ smartbox_api:
                 testWithRequirements:
                     description: Method using variable in the URI
                     input:
-                        id: { type: integer, format: "\d+" }
+                        id: { type: integer, format: \d+ }
                     output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: public }
                     rest:
                       route: "/test2/{id}"
@@ -124,9 +124,9 @@ smartbox_api:
                 testWithFilters:
                     description: Method using filters
                     input:
-                        size: { type: integer, format: "\d+", mode: filter }
-                        limit: { type: integer, format: "\d+", mode: filter }
-                        page: { type: integer, format: "\d+", mode: filter }
+                        size: { type: integer, format: \d+, mode: filter }
+                        limit: { type: integer, format: \d+, mode: filter }
+                        page: { type: integer, format: \d+, mode: filter }
                     output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: public }
                     rest:
                       route: "/test3/filters"
@@ -136,11 +136,11 @@ smartbox_api:
                 testWithHeadersAndFiltersAndBody:
                     description: Method using a body, filters, headers and dynamic url
                     input:
-                        size: { type: integer, format: "\d+", mode: filter }
-                        limit: { type: integer, format: "\d+", mode: filter }
-                        page: { type: integer, format: "\d+", mode: filter }
+                        size: { type: integer, format: \d+, mode: filter }
+                        limit: { type: integer, format: \d+, mode: filter }
+                        page: { type: integer, format: \d+, mode: filter }
                         box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: update, mode: body }
-                        id: { type: string, format: "\d+" }
+                        id: { type: string, format: \d+ }
                     output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: public }
                     rest:
                       route: "/test4/full/{id}"
@@ -167,7 +167,7 @@ smartbox_api:
                     description: Returns a box given its id
                     successCode: 200
                     input:
-                        id: { type: integer, description: Id of the box to be fetched, format: "\d+" }
+                        id: { type: integer, description: Id of the box to be fetched, format: \d+ }
                     output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: public }
                     rest:
                       route: "/box/{id}"
@@ -181,7 +181,7 @@ smartbox_api:
                         quantity:
                             type: integer
                             description: Quantity of boxes to be fetched
-                            format: "\d+"
+                            format: \d+
                     output:
                         type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box[]
                         group: public
@@ -196,7 +196,7 @@ smartbox_api:
                     successCode: 204
                     input:
                         box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: update, mode: body }
-                        id: { type: integer, description: Id of the box to be updated, format: "\d+" }
+                        id: { type: integer, description: Id of the box to be updated, format: \d+ }
                     rest:
                         route: "/box/{id}"
                         httpMethod: PUT
@@ -212,7 +212,7 @@ smartbox_api:
                     description: Confirms the pick up of a box to the system.
                     successCode: 204
                     input:
-                        id: { type: integer, description: Id of the picked box, format: "\d+" }
+                        id: { type: integer, description: Id of the picked box, format: \d+ }
                     rest:
                         route: "/box/{id}/picked"
                         httpMethod: PUT
@@ -220,7 +220,7 @@ smartbox_api:
                     description: "Deletes a box"
                     successCode: 204
                     input:
-                        id: { type: integer, description: Id of the box to be deleted, format: "\d+" }
+                        id: { type: integer, description: Id of the box to be deleted, format: \d+ }
                     rest:
                         route: "/box/{id}"
                         httpMethod: DELETE
@@ -246,7 +246,7 @@ smartbox_api:
                 getItem:
                     description: Returns an item for given id
                     input:
-                        id: { type: integer, description: Id of the item to be fetched, format: "\d+" }
+                        id: { type: integer, description: Id of the item to be fetched, format: \d+ }
                     output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Item, group: public }
                     rest:
                       route: "/item/{id}"
@@ -259,7 +259,7 @@ smartbox_api:
                     successCode: 204
                     input:
                         box: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Item, group: update, mode: body }
-                        id: { type: integer, description: Id of an item to be updated, format: "\d+" }
+                        id: { type: integer, description: Id of an item to be updated, format: \d+ }
                     rest:
                         route: "/item/{id}"
                         httpMethod: PUT
@@ -270,7 +270,7 @@ smartbox_api:
                     description: "Deletes an item"
                     successCode: 204
                     input:
-                        id: { type: integer, description: Id of an item to be deleted, format: "\d+" }
+                        id: { type: integer, description: Id of an item to be deleted, format: \d+ }
                     rest:
                         route: "/item/{id}"
                         httpMethod: DELETE

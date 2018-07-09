@@ -70,7 +70,7 @@ class FileListTest extends TestCase
     {
         return [
             'JSON' => ['json'],
-            'YAML' => ['yaml'],
+            'YAML' => ['yml'],
         ];
     }
 }

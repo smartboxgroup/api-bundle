@@ -25,4 +25,3 @@ test:PHP72:
   image: docker-registry.production.smartbox.com/ci/php:72
   script:
     -  bin/simple-phpunit --coverage-text --colors=never
-  allow_failure: true

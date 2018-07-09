@@ -3,10 +3,10 @@
 namespace Smartbox\ApiBundle\Tests\Services\Serializer\Exclusion;
 
 use JMS\Serializer\Metadata\PropertyMetadata;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Smartbox\ApiBundle\Services\Serializer\Exclusion\PreserveArrayTypeStrategy;
 
-class PreserveArrayTypeStrategyTest extends PHPUnit_Framework_TestCase
+class PreserveArrayTypeStrategyTest extends TestCase
 {
     /** @var PreserveArrayTypeStrategy $strategy */
     private $strategy;

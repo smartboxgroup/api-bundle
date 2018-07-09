@@ -9,7 +9,7 @@ use Smartbox\ApiRestClient\ApiRestResponse;
 use Smartbox\ApiRestClient\ApiRestResponseBuilder;
 use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
 
-class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
+class ApiRestResponseBuilderTest extends \PHPUnit\Framework\TestCase
 {
     public function testEmptyResponse()
     {

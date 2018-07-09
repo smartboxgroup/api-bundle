@@ -4,7 +4,7 @@ namespace Smartbox\ApiBundle\Tests\Services\Security;
 
 use Smartbox\ApiBundle\Services\Security\WSToken;
 
-class WSTokenTest extends \PHPUnit_Framework_TestCase
+class WSTokenTest extends \PHPUnit\Framework\TestCase
 {
     /** @var WSToken */
     private $token;

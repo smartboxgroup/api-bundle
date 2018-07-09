@@ -4,7 +4,7 @@ namespace Smartbox\ApiBundle\Test\Entity;
 
 use Smartbox\ApiBundle\Entity\BasicResponse;
 
-class BasicResponseTest extends \PHPUnit_Framework_TestCase
+class BasicResponseTest extends \PHPUnit\Framework\TestCase
 {
     /** @var BasicResponse */
     private $basicResponse;

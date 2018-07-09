@@ -4,7 +4,7 @@ namespace Smartbox\ApiBundle\Entity\Test;
 
 use Smartbox\ApiBundle\Entity\KeyValue;
 
-class KeyValueTest extends \PHPUnit_Framework_TestCase
+class KeyValueTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var KeyValue

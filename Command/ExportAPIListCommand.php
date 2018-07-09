@@ -17,6 +17,7 @@ class ExportAPIListCommand extends ContainerAwareCommand
     protected $async;
     protected $httpMethod;
     protected $filePrefix;
+    protected $role;
 
     /** {@inheritdoc} */
     protected function configure()
@@ -30,7 +31,8 @@ class ExportAPIListCommand extends ContainerAwareCommand
             ->addOption('export-dir', 'd', InputOption::VALUE_OPTIONAL, 'The folder where to export the files. Ex.: -d /tmp/api', '/tmp')
             ->addOption('file-prefix', 'f', InputOption::VALUE_OPTIONAL, 'The prefix that will be added at the beginning of the file name. By default will be related to the date / time. Ex.: -f check-list', '')
             ->addOption('http-method', 'm', InputOption::VALUE_OPTIONAL, 'If set, will only export the corresponding flows for this HTTP METHOD. Ex.: -m POST', '')
-            ->addOption('async', 'a', InputOption::VALUE_OPTIONAL, 'If set, will only export asynchronous flows if true, or synchronous flows if false. Ex.: -a true', '');
+            ->addOption('async', 'a', InputOption::VALUE_OPTIONAL, 'If set, will only export asynchronous flows if true, or synchronous flows if false. Ex.: -a true', '')
+            ->addOption('role', 'r', InputOption::VALUE_OPTIONAL, 'If set, will only export flows associated to that role. Ex.: -r ROLE_USER', '');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -42,6 +44,7 @@ class ExportAPIListCommand extends ContainerAwareCommand
         $this->async = ucfirst($input->getOption('async'));
         $this->httpMethod = strtoupper($input->getOption('http-method'));
         $this->filePrefix = $input->getOption('file-prefix');
+        $this->role = $input->getOption('role');
 
         $configurator = $this->getContainer()->get('smartapi.configurator');
         $this->apiConfig = $configurator->getConfig();
@@ -95,7 +98,10 @@ class ExportAPIListCommand extends ContainerAwareCommand
                 if ($this->async && $api['Asynchronous'] != $this->async) {
                     $export = false;
                 }
-                if ($api['REST HTTP Method'] && $this->httpMethod && $api['REST HTTP Method'] != $this->httpMethod) {
+                if ($this->httpMethod && $api['REST HTTP Method'] && $api['REST HTTP Method'] != $this->httpMethod) {
+                    $export = false;
+                }
+                if ($this->role && is_array($method['roles']) && count($method['roles']) > 0 && !in_array($this->role, $method['roles'])) {
                     $export = false;
                 }
 
@@ -115,6 +121,8 @@ class ExportAPIListCommand extends ContainerAwareCommand
                         }
                         $api['Flows'] = implode(' ', $flows);
                     }
+
+                    $api['Roles'] = implode(' ', $method['roles']);
 
                     // API Export
                     if (0 == $nbApi) { // Headers

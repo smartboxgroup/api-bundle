@@ -14,25 +14,28 @@ class ServerBuilderTest extends \PHPUnit\Framework\TestCase
         $this->serverBuilder = new ServerBuilder();
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testSetNotExistingServerClass()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
-
         $this->serverBuilder->setServerClass('\Set\Non\Existing\Class');
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testWhenWdslIsNotDefined()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
-
         $this->serverBuilder->build();
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testWhenHandlerIsNotConfigured()
     {
         $this->serverBuilder->withWsdl('wsdl_file.xml');
-
-        $this->setExpectedException(\InvalidArgumentException::class);
 
         $this->serverBuilder->build();
     }

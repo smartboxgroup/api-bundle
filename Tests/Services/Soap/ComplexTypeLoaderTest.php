@@ -64,21 +64,21 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
     }
 
     /**
-     * @dataProvider loadsResourceProvider
-     *
      * @param mixed $resource
+     *
+     * @expectedException \InvalidArgumentException
+     * @dataProvider loadsResourceProvider
      */
     public function testIfResoourceIsDefined($resource)
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
-
         $this->complexTypeLoader->load($resource);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testItShouldFailWhenVersionIsNull()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
-
         $this->complexTypeLoader->load([
             'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
             'group' => null,
@@ -86,10 +86,11 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
         ]);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testItShouldFailWhenLoadingDataForInvalidClass()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
-
         $this->complexTypeLoader->load([
             'phpType' => '\Invalid\Class\That\Does\Not\Even\Exists',
             'group' => null,

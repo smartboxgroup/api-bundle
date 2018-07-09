@@ -2,4 +2,4 @@ services:
     test.dummy.controller:
         class: Smartbox\ApiBundle\Tests\Fixtures\Controller\APIController
         calls:
-            - [setContainer, [@service_container]]
+            - [setContainer, ['@service_container']]

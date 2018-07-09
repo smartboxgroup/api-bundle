@@ -5,7 +5,7 @@ namespace Smartbox\ApiBundle\Tests\Services\Security;
 use Smartbox\ApiBundle\Services\Security\WSAuthProvider;
 use Smartbox\ApiBundle\Tests\Fixtures\Soap\FakeCallbackSecurityFilter;
 
-class WSAuthProviderTest extends \PHPUnit_Framework_TestCase
+class WSAuthProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Symfony\Component\Security\Core\User\UserProviderInterface|\PHPUnit_Framework_MockObject_MockObject

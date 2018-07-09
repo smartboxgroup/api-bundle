@@ -1,22 +1,18 @@
 _webservice_call:
-  pattern: "/soap/{webservice}"
+  methods: [POST]
+  path: "/soap/{webservice}"
   defaults:
     _controller: SmartboxApiBundle:Soap:Call
     _format: xml
     api: soap
 
-  requirements:
-    _method: POST
-
 _webservice_definition:
-  pattern: "/soap/{webservice}"
+  methods: [GET]
+  path: "/soap/{webservice}"
   defaults:
     _controller: SmartboxApiBundle:Soap:Definition
     _format: xml
     api: soap
-
-  requirements:
-    _method: GET
 
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"

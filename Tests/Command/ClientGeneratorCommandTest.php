@@ -6,6 +6,10 @@ use Smartbox\ApiBundle\Tests\Fixtures\Entity\Box;
 
 /**
  * Class ClientGeneratorCommandTest.
+ *
+ * 5 Deprecations notices tied to Symfony version (scope in request):
+ *
+ * @group legacy
  */
 class ClientGeneratorCommandTest extends CommandTestCase
 {

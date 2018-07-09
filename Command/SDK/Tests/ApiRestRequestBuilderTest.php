@@ -6,7 +6,7 @@ use Smartbox\ApiRestClient\ApiRestRequestBuilder;
 use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
 use Smartbox\ApiRestClient\Tests\Fixture\Entity\Universe;
 
-class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
+class ApiRestRequestBuilderTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_USERNAME = 'admin';
     const TEST_PASSWORD = 'admin';

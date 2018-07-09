@@ -1,4 +1,7 @@
 ## API bundle
+[![pipeline status](http://gitlab.production.smartbox.com/smartesb/api-bundle/badges/master/pipeline.svg)](http://gitlab.production.smartbox.com/smartesb/api-bundle/commits/master)
+[![coverage report](http://gitlab.production.smartbox.com/smartesb/api-bundle/badges/master/coverage.svg)](http://gitlab.production.smartbox.com/smartesb/api-bundle/commits/master)
+
 The API bundle allows you to create REST and SOAP APIs in a seamless way. It also auto generates documentation for both APIs
 
 ## Installation and usage
@@ -236,6 +239,36 @@ smartbox_api:
     }
   }
 ```
+
+## Tools
+
+### smartbox:api:generateSDK
+Generate SDK for a given API.
+
+**Usage:** ```php app/console smartbox:api:generateSDK --help```
+
+### smartbox:api:export-list
+Exports api and flows list into csv files. By default will be exported to /tmp
+
+**Usage:** ```php app/console smartbox:api:export-list --help"```
+
+**Examples:** 
+* ```php app/console smartbox:api:export-list --export-dir "/tmp"```
+* ```php app/console smartbox:api:export-list --async false --http-method GET```
+* ```php app/console smartbox:api:export-list --async false --role ROLE_USER```
+
+### smartbox:api:generate-soapui
+Generate a sample SoapUI project for a flow, using the api defined in a YAML test file.
+
+**Usage:** ```php app/console smartbox:api:generate-soapui --help```
+
+**Examples:** 
+* ```php app/console smartbox:api:generate-soapui -f \"Product/sendProductInformation\" -p ganesh-tt-one17.smartbox-test.local"```
+
+### smartbox:api:dumpPrintable 
+Dump the api documentation as a printable html file.
+
+**Usage:** ```php app/console smartbox:api:dumpPrintable```
 
 ## Contributing
 1. Fork it!

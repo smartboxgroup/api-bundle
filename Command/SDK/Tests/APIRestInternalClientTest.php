@@ -13,7 +13,7 @@ use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
 /**
  * Class ApiRestInternalClientTest.
  */
-class ApiRestInternalClientTest extends \PHPUnit_Framework_TestCase
+class ApiRestInternalClientTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_USERNAME = 'admin';
     const TEST_PASSWORD = 'admin';

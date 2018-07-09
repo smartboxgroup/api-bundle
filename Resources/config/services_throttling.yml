@@ -4,9 +4,9 @@ parameters:
 
 services:
     smartapi.event_listener.auth_key_generator:
-        class: %smartapi.event_listener.auth_key_generator.class%
-        arguments: [@?security.token_storage]
+        class: '%smartapi.event_listener.auth_key_generator.class%'
+        arguments: ['@?security.token_storage']
         calls:
-            - [setLogger, [@monolog.logger]]
+            - [setLogger, ['@monolog.logger']]
         tags:
             - { name: kernel.event_listener, event: ratelimit.generate.key, method: onGenerateKey }

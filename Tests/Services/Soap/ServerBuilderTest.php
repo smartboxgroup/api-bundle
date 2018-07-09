@@ -5,7 +5,7 @@ namespace Smartbox\ApiBundle\Tests\Services\Soap;
 use Smartbox\ApiBundle\Controller\SoapController;
 use Smartbox\ApiBundle\Services\Soap\ServerBuilder;
 
-class ServerBuilderTest extends \PHPUnit_Framework_TestCase
+class ServerBuilderTest extends \PHPUnit\Framework\TestCase
 {
     private $serverBuilder;
 
@@ -14,25 +14,28 @@ class ServerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->serverBuilder = new ServerBuilder();
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testSetNotExistingServerClass()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
-
         $this->serverBuilder->setServerClass('\Set\Non\Existing\Class');
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testWhenWdslIsNotDefined()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
-
         $this->serverBuilder->build();
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testWhenHandlerIsNotConfigured()
     {
         $this->serverBuilder->withWsdl('wsdl_file.xml');
-
-        $this->setExpectedException(\InvalidArgumentException::class);
 
         $this->serverBuilder->build();
     }

@@ -10,9 +10,13 @@ use Symfony\Bundle\FrameworkBundle\Client;
 
 /**
  * Class ThrottlingListenerTest.
+ *
+ * @group trotling
  */
 class ThrottlingListenerTest extends WebTestCase
 {
+    const REST_RATE_LIMIT_KEY = 'throttling_v1:getItem.test';
+
     /** @var Client */
     protected $client;
 
@@ -63,26 +67,34 @@ class ThrottlingListenerTest extends WebTestCase
         $responseContentErrorMessage = $this->container->getParameter('smartapi.rate_response_message');
 
         $client = $this->getRestClient();
+        $client->getContainer()->get('noxlogic_rate_limit.rate_limit_service')
+            ->resetRate(static::REST_RATE_LIMIT_KEY);
 
         $rateLimit = 2;
-        for ($i = $rateLimit; $i >= 0; --$i) {
+        for ($i = 0; $i <= $rateLimit; ++$i) {
             $client->request('GET', '/api/rest/throttling/v1/item/1');
             $response = $client->getResponse();
 
-            $remaining = $i - 1;
+            $remaining = $rateLimit - (1 + $i);
+            $expectedHeaders = [
+                'X-RateLimit-Limit' => $rateLimit,
+                'X-RateLimit-Remaining' => $remaining,
+            ];
+
             if ($remaining >= 0) {
                 $this->assertEquals(Codes::HTTP_OK, $response->getStatusCode(), 'Response code is not correct.');
-                $this->assertTrue($response->headers->contains('x-ratelimit-limit', $rateLimit), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
-                $this->assertTrue($response->headers->contains('x-ratelimit-remaining', $remaining), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', $remaining));
                 $this->assertEquals($responseContentItem, $response->getContent(), 'Response should contain proper content.');
             } else {
+                $expectedHeaders['X-RateLimit-Remaining'] = 0;
                 $this->assertEquals(Codes::HTTP_TOO_MANY_REQUESTS, $response->getStatusCode(), 'Response code is not correct.');
-                $this->assertTrue($response->headers->contains('x-ratelimit-limit', $rateLimit), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
-                $this->assertTrue($response->headers->contains('x-ratelimit-remaining', 0), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', 0));
                 $this->assertEquals($responseContentErrorMessage, $response->getContent(), 'Response should contain proper content.');
             }
+
+            foreach ($expectedHeaders as $header => $value) {
+                $this->assertTrue($response->headers->has($header), "Response should contain header \"$header\".");
+                $this->assertEquals($value, $response->headers->get($header), "Response header \"$header\" should be $value.");
+            }
         }
-        sleep(10);
     }
 
     public function testItShouldLimitRequestsAndRespondWithProperHeadersForSoap()
@@ -146,7 +158,5 @@ class ThrottlingListenerTest extends WebTestCase
                 $this->assertEquals($responseContentErrorMessage, $response->getContent(), 'Response should contain proper content.');
             }
         }
-
-        sleep(10);
     }
 }

@@ -122,15 +122,15 @@ services:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -255 }
 
     smartapi.security.user_provider:
-        class: "%smartapi.security.user_provider.class%"
+        class: '%smartapi.security.user_provider.class%'
         public: false
 
     smartapi.user_list.file:
-        class: "%smartapi.user_list.file.class%"
+        class: '%smartapi.user_list.file.class%'
         public: false
 
     smartapi.event_listener.api_user:
-        class: "%smartapi.event_listener.api_user.class%"
+        class: '%smartapi.event_listener.api_user.class%'
         arguments: ["@security.token_storage"]
         tags:
           - { name: kernel.event_listener, event: kernel.request, priority: 1 }

@@ -5,7 +5,7 @@ namespace Smartbox\ApiBundle\Tests\Services\Soap;
 use Smartbox\ApiBundle\Controller\SoapController;
 use Smartbox\ApiBundle\Services\Soap\ServerBuilder;
 
-class ServerBuilderTest extends \PHPUnit_Framework_TestCase
+class ServerBuilderTest extends \PHPUnit\Framework\TestCase
 {
     private $serverBuilder;
 

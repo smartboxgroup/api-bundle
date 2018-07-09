@@ -56,10 +56,10 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
     {
         $serviceConfig = [
             'eai_v0' => [
-                'name'       => 'eai',
-                'version'    => 'v0',
-                'methods'    => [],
-            ]
+                'name' => 'eai',
+                'version' => 'v0',
+                'methods' => [],
+            ],
         ];
 
         $this->apiConfigurator->setConfig($serviceConfig);
@@ -75,25 +75,25 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
 
         $serviceConfig = [
             'eai_v0' => [
-                'name'       => 'eai',
-                'version'    => 'v0',
-                'methods'    => [
+                'name' => 'eai',
+                'version' => 'v0',
+                'methods' => [
                     'sendBoxBrief' => [
                         'controller' => 'SmartboxIntegrationPlatformBundle:API:handleCall',
-                        'input'      => [
+                        'input' => [
                             'boxBrief' => [
-                                'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-                                'mode'  => 'body',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
+                                'mode' => 'body',
                                 'group' => 'box',
-                            ]
+                            ],
                         ],
-                        'output'     => [
-                            'type'  => false,
-                            'group' => 'public'
-                        ]
-                    ]
-                ]
-            ]
+                        'output' => [
+                            'type' => false,
+                            'group' => 'public',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->apiConfigurator->setConfig($serviceConfig);
@@ -106,21 +106,21 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
 
         $serviceConfig = [
             'eai_v0' => [
-                'name'       => 'eai',
-                'version'    => 'v0',
-                'methods'    => [
+                'name' => 'eai',
+                'version' => 'v0',
+                'methods' => [
                     'sendBoxBrief' => [
                         'controller' => 'SmartboxIntegrationPlatformBundle:API:handleCall',
-                        'input'      => [
+                        'input' => [
                             'boxBrief' => [
-                                'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\BoxBrief',
-                                'mode'  => 'body',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\BoxBrief',
+                                'mode' => 'body',
                                 'group' => 'public',
-                            ]
+                            ],
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $this->apiConfigurator->setConfig($serviceConfig);
@@ -134,235 +134,235 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
                 [
                     'sendBoxBrief' => [
                         'controller' => 'SmartboxIntegrationPlatformBundle:API:handleCall',
-                        'input'      => [],
-                    ]
+                        'input' => [],
+                    ],
                 ],
                 [
                     'sendBoxBrief' => [
-                        'input'  => $this->newMessage('sendBoxBriefRequest', []),
+                        'input' => $this->newMessage('sendBoxBriefRequest', []),
                         'output' => $this->newMessage('sendBoxBriefResponse', [
                             [
-                                'name'     => 'return',
-                                'type'     => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
+                                'name' => 'return',
+                                'type' => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
-                    ]
-                ]
+                    ],
+                ],
             ],
 
             'Test when method has input with body mode' => [
                 [
                     'sendBoxBrief' => [
                         'controller' => 'SmartboxIntegrationPlatformBundle:API:handleCall',
-                        'input'      => [
+                        'input' => [
                             'boxBrief' => [
-                                'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-                                'mode'  => 'body',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
+                                'mode' => 'body',
                                 'group' => 'box',
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'sendBoxBrief' => [
                         'input' => $this->newMessage('sendBoxBriefRequest', [
                             [
-                                'name'     => 'boxBrief',
-                                'type'     => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\BoxBox',
+                                'name' => 'boxBrief',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\BoxBox',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
                         'output' => $this->newMessage('sendBoxBriefResponse', [
                             [
-                                'name'     => 'return',
-                                'type'     => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
+                                'name' => 'return',
+                                'type' => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
-                    ]
-                ]
+                    ],
+                ],
             ],
 
             'Test when method has input with requirement mode' => [
                 [
                     'sendBoxBrief' => [
                         'controller' => 'SmartboxIntegrationPlatformBundle:API:handleCall',
-                        'input'      => [
+                        'input' => [
                             'boxBrief' => [
-                                'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-                                'mode'  => 'requirement',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
+                                'mode' => 'requirement',
                                 'group' => 'public',
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'sendBoxBrief' => [
                         'input' => $this->newMessage('sendBoxBriefRequest', [
                             [
-                                'name'     => 'boxBrief',
-                                'type'     => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
+                                'name' => 'boxBrief',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
                         'output' => $this->newMessage('sendBoxBriefResponse', [
                             [
-                                'name'     => 'return',
-                                'type'     => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
+                                'name' => 'return',
+                                'type' => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
-                    ]
-                ]
+                    ],
+                ],
             ],
 
             'Test when method has input with filter mode' => [
                 [
                     'sendBoxBrief' => [
                         'controller' => 'SmartboxIntegrationPlatformBundle:API:handleCall',
-                        'input'      => [
+                        'input' => [
                             'boxBrief' => [
-                                'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-                                'mode'  => 'filter',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
+                                'mode' => 'filter',
                                 'group' => 'public',
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'sendBoxBrief' => [
                         'input' => $this->newMessage('sendBoxBriefRequest', [
                             [
-                                'name'     => 'filters',
-                                'type'     => 'BeSimple\SoapCommon\Type\KeyValue\StringType[]',
+                                'name' => 'filters',
+                                'type' => 'BeSimple\SoapCommon\Type\KeyValue\StringType[]',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
                         'output' => $this->newMessage('sendBoxBriefResponse', [
                             [
-                                'name'     => 'return',
-                                'type'     => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
+                                'name' => 'return',
+                                'type' => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
-                    ]
-                ]
+                    ],
+                ],
             ],
 
             'Test when method has input and output defined' => [
                 [
                     'sendBoxBrief' => [
                         'controller' => 'SmartboxIntegrationPlatformBundle:API:handleCall',
-                        'input'      => [
+                        'input' => [
                             'boxBrief' => [
-                                'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-                                'mode'  => 'body',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
+                                'mode' => 'body',
                                 'group' => 'box',
-                            ]
+                            ],
                         ],
-                        'output'     => [
-                            'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Response',
-                            'group' => 'public'
-                        ]
-                    ]
+                        'output' => [
+                            'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Response',
+                            'group' => 'public',
+                        ],
+                    ],
                 ],
                 [
                     'sendBoxBrief' => [
                         'input' => $this->newMessage('sendBoxBriefRequest', [
                             [
-                                'name'     => 'boxBrief',
-                                'type'     => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\BoxBox',
+                                'name' => 'boxBrief',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\BoxBox',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
                         'output' => $this->newMessage('sendBoxBriefResponse', [
                             [
-                                'name'     => 'return',
-                                'type'     => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\ResponsePublic',
+                                'name' => 'return',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\ResponsePublic',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
-                    ]
-                ]
+                    ],
+                ],
             ],
 
             'Test when service has more than one method defined' => [
                 [
                     'sendBoxBrief' => [
                         'controller' => 'SmartboxIntegrationPlatformBundle:API:handleCall',
-                        'input'      => [
+                        'input' => [
                             'boxBrief' => [
-                                'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-                                'mode'  => 'body',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
+                                'mode' => 'body',
                                 'group' => 'box',
-                            ]
+                            ],
                         ],
                     ],
                     'sendItemBrief' => [
                         'controller' => 'SmartboxIntegrationPlatformBundle:API:handleCall',
-                        'input'      => [
+                        'input' => [
                             'itemBrief' => [
-                                'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Item',
-                                'mode'  => 'requirement',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Item',
+                                'mode' => 'requirement',
                                 'group' => 'public',
-                            ]
+                            ],
                         ],
-                        'output'     => [
-                            'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Response',
-                            'group' => 'public'
-                        ]
-                    ]
+                        'output' => [
+                            'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Response',
+                            'group' => 'public',
+                        ],
+                    ],
                 ],
                 [
                     'sendBoxBrief' => [
                         'input' => $this->newMessage('sendBoxBriefRequest', [
                             [
-                                'name'     => 'boxBrief',
-                                'type'     => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\BoxBox',
+                                'name' => 'boxBrief',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\BoxBox',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
                         'output' => $this->newMessage('sendBoxBriefResponse', [
                             [
-                                'name'     => 'return',
-                                'type'     => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
+                                'name' => 'return',
+                                'type' => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
                     ],
                     'sendItemBrief' => [
                         'input' => $this->newMessage('sendItemBriefRequest', [
                             [
-                                'name'     => 'itemBrief',
-                                'type'     => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Item',
+                                'name' => 'itemBrief',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Item',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
                         'output' => $this->newMessage('sendItemBriefResponse', [
                             [
-                                'name'     => 'return',
-                                'type'     => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\ResponsePublic',
+                                'name' => 'return',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\ResponsePublic',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
                     ],
-                ]
+                ],
             ],
 
             'Test when a method has more than one input defined' => [
                 [
                     'sendBoxBrief' => [
                         'controller' => 'SmartboxIntegrationPlatformBundle:API:handleCall',
-                        'input'      => [
+                        'input' => [
                             'boxBrief' => [
-                                'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-                                'mode'  => 'body',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
+                                'mode' => 'body',
                                 'group' => 'box',
                             ],
                             'itemBrief' => [
-                                'type'  => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Item',
-                                'mode'  => 'body',
+                                'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\Item',
+                                'mode' => 'body',
                                 'group' => 'public',
                             ],
                         ],
@@ -373,27 +373,27 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
                         'input' => $this->newMessage('sendBoxBriefRequest',
                             [
                                 [
-                                    'name'     => 'boxBrief',
-                                    'type'     => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\BoxBox',
+                                    'name' => 'boxBrief',
+                                    'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\BoxBox',
                                     'nillable' => false,
                                 ],
                                 [
-                                    'name'     => 'itemBrief',
-                                    'type'     => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\ItemPublic',
+                                    'name' => 'itemBrief',
+                                    'type' => 'Smartbox\ApiBundle\Tests\Fixtures\Entity\ItemPublic',
                                     'nillable' => false,
                                 ],
                             ]
                         ),
                         'output' => $this->newMessage('sendBoxBriefResponse', [
                             [
-                                'name'     => 'return',
-                                'type'     => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
+                                'name' => 'return',
+                                'type' => 'Smartbox\ApiBundle\Entity\BasicResponsePublic',
                                 'nillable' => false,
-                            ]
+                            ],
                         ]),
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -407,10 +407,10 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
     {
         $serviceConfig = [
             'eai_v0' => [
-                'name'       => 'eai',
-                'version'    => 'v0',
-                'methods'    => $methods
-            ]
+                'name' => 'eai',
+                'version' => 'v0',
+                'methods' => $methods,
+            ],
         ];
 
         $this->apiConfigurator->setConfig($serviceConfig);
@@ -427,7 +427,7 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
      */
     private function getTypeRepository()
     {
-        $typeRepository  = new TypeRepository(new Classmap());
+        $typeRepository = new TypeRepository(new Classmap());
         $typeRepository->addXmlNamespace('xsd', 'http://www.w3.org/2001/XMLSchema');
         $typeRepository->addType('int', 'xsd:int');
         $typeRepository->addType('string', 'xsd:string');
@@ -443,8 +443,8 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
     /**
      * Helper method to create a new message.
      *
-     * @param string $name Message name.
-     * @param array $parts Message parts.
+     * @param string $name  message name
+     * @param array  $parts message parts
      *
      * @return Message
      */
@@ -463,6 +463,7 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
      * Helper method to map the service definition response in an easily way to compare with the expected result.
      *
      * @param Definition $serviceDefinition
+     *
      * @return array
      */
     private function getDefinition(Definition $serviceDefinition)
@@ -472,7 +473,7 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
         foreach ($serviceDefinition->getMethods() as $method) {
             $name = $method->getName();
 
-            $definition[$name]['input']  = $method->getInput();
+            $definition[$name]['input'] = $method->getInput();
             $definition[$name]['output'] = $method->getOutput();
         }
 

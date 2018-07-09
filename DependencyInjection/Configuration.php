@@ -8,7 +8,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * This is the class that validates and merges configuration from your app/config files
+ * This is the class that validates and merges configuration from your app/config files.
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html#cookbook-bundles-extension-config-class}
  */
@@ -40,7 +40,7 @@ class Configuration implements ConfigurationInterface
         ApiConfigurator::SERVICE_NAME,
         ApiConfigurator::METHOD_NAME,
         ApiConfigurator::METHOD_CONFIG,
-        ApiConfigurator::INPUT
+        ApiConfigurator::INPUT,
     );
 
     /**
@@ -121,7 +121,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $node = $treeBuilder->root('tags');
         $node
-            ->info("List of tags associated to the method")
+            ->info('List of tags associated to the method')
             ->prototype('array')
                 ->children()
                     ->scalarNode('message')->isRequired()->end()
@@ -157,7 +157,7 @@ class Configuration implements ConfigurationInterface
         $builder = new TreeBuilder();
         $node = $builder->root('restEmptyBodyResponseCodes');
         $node->isRequired()
-            ->info("List of response codes were the APIBundle should enforce an empty body, e.g.: [301,202]")
+            ->info('List of response codes were the APIBundle should enforce an empty body, e.g.: [301,202]')
             ->defaultValue([])
             ->prototype('scalar')->end()
             ->end();
@@ -181,7 +181,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('name')->isRequired()->end()
             ->scalarNode('version')->isRequired()->end()
             ->scalarNode('soapHeadersNamespace')
-            ->info("The SOAP headers namespace need to be defined.")
+            ->info('The SOAP headers namespace need to be defined.')
             ->isRequired()->end()
             ->arrayNode('propagateHttpHeadersToSoap')
                 ->useAttributeAsKey('id')
@@ -209,7 +209,7 @@ class Configuration implements ConfigurationInterface
             ->requiresAtLeastOneElement()
             ->cannotBeEmpty()
             ->useAttributeAsKey('name')
-            ->info("Endpoint definitions.
+            ->info('Endpoint definitions.
     Example:
     services:
         demo_v1:
@@ -229,7 +229,7 @@ class Configuration implements ConfigurationInterface
                     throttling:
                         limit: 10
                         period: 60
-               ")
+               ')
             ->prototype('array')
             ->children()
             ->scalarNode('successCode')->info('Success code to be returned')->defaultValue(200)->end()
@@ -269,13 +269,13 @@ class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder();
         $node = $builder->root('input');
-        $node->info("Section where the input parameters are specified.");
+        $node->info('Section where the input parameters are specified.');
         $node->useAttributeAsKey('name')
             ->prototype('array')
             ->children()
             ->scalarNode('limitElements')->defaultValue(null)->info('Limits the number of elements that an array input can have')->end()
             ->scalarNode('description')->info('The description of the parameter, it will be used in the documentation.')
-                ->defaultValue("")->end()
+                ->defaultValue('')->end()
             ->scalarNode('type')
                 ->info('The type of the input, it accepts scalar types (integer, double, string), entities (e.g.: MyNamespace\\MyEntity) and arrays of them (integer[], MyNamespace\\MyEntity[])')
             ->isRequired()->end()
@@ -283,20 +283,20 @@ class Configuration implements ConfigurationInterface
                 ->info('The group of the entity to be used, acts as a view of the entity model, determines the set of attributes to be used.')
             ->defaultValue(EntityInterface::GROUP_PUBLIC)->end()
             ->scalarNode('mode')
-                ->info('Defines if the parameter is a requirement, filter or the body.\nBody: There can be only one input as the body,\n and it must be an Entity or array of entities.\nRequirement: Requirements are scalar parameters which are required.\nFilter: Filters are scalar parameters which are optional.')            ->defaultValue(Configuration::MODE_REQUIREMENT)
+                ->info('Defines if the parameter is a requirement, filter or the body.\nBody: There can be only one input as the body,\n and it must be an Entity or array of entities.\nRequirement: Requirements are scalar parameters which are required.\nFilter: Filters are scalar parameters which are optional.')->defaultValue(Configuration::MODE_REQUIREMENT)
             ->validate()
             ->ifNotInArray(self::$INPUT_MODES)
             ->thenInvalid('Invalid input mode "%s"')
             ->end()
             ->end()
-            ->scalarNode('format')->info('Regex with the format for the parameter, e.g.: d+')->defaultValue("[a-zA-Z0-9]+")->end()
+            ->scalarNode('format')->info('Regex with the format for the parameter, e.g.: d+')->defaultValue('[a-zA-Z0-9]+')->end()
             ->end()
             ->validate()
             ->ifTrue(
                 function ($input) {
-                    return ($input['mode'] == Configuration::MODE_BODY && !ApiConfigurator::isEntityOrArrayOfEntities(
+                    return Configuration::MODE_BODY == $input['mode'] && !ApiConfigurator::isEntityOrArrayOfEntities(
                             $input['type']
-                        ));
+                        );
                 }
             )
             ->thenInvalid('The body type must be a class implementing EntityInterface or an array of those')
@@ -306,7 +306,7 @@ class Configuration implements ConfigurationInterface
                 function ($input) {
                     $isBasic = in_array($input['type'], Configuration::$BASIC_TYPES);
 
-                    return ($input['mode'] != Configuration::MODE_BODY && !$isBasic);
+                    return Configuration::MODE_BODY != $input['mode'] && !$isBasic;
                 }
             )
             ->thenInvalid(
@@ -320,8 +320,8 @@ class Configuration implements ConfigurationInterface
                 function ($input) {
                     $bodyCount = 0;
                     foreach ($input as $name => $conf) {
-                        if ($conf['mode'] == Configuration::MODE_BODY) {
-                            $bodyCount++;
+                        if (Configuration::MODE_BODY == $conf['mode']) {
+                            ++$bodyCount;
                         }
                     }
 
@@ -353,7 +353,7 @@ class Configuration implements ConfigurationInterface
         $builder = new TreeBuilder();
         $node = $builder->root('output');
 
-        $node->info("Section where the output parameters are specified.");
+        $node->info('Section where the output parameters are specified.');
         $node->children()
             ->scalarNode('type')->info('The type of the output, it accepts only entities (e.g.: MyNamespace\\MyEntity) and arrays of them (MyNamespace\\MyEntity[])')->isRequired()->end()
             ->scalarNode('limitElements')->defaultValue(null)->info('Limits the number of elements that an array output can have')->end()
@@ -364,7 +364,7 @@ class Configuration implements ConfigurationInterface
             ->validate()
             ->ifTrue(
                 function ($output) {
-                    return (!ApiConfigurator::isEntityOrArrayOfEntities($output['type']));
+                    return !ApiConfigurator::isEntityOrArrayOfEntities($output['type']);
                 }
             )
             ->thenInvalid('The output type must be a class implementing EntityInterface or an array of those')

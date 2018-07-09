@@ -14,7 +14,7 @@ class BasicResponseTest extends \PHPUnit_Framework_TestCase
         return [
             ['invalid'],
             [new \stdClass()],
-            [[22]]
+            [[22]],
         ];
     }
 
@@ -22,7 +22,7 @@ class BasicResponseTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [new \stdClass()],
-            [['something']]
+            [['something']],
         ];
     }
 
@@ -47,6 +47,7 @@ class BasicResponseTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getInvalidCodes
      * @expectedException \InvalidArgumentException
+     *
      * @param mixed $code
      */
     public function testItShouldNotAcceptInvalidCodes($code)
@@ -63,6 +64,7 @@ class BasicResponseTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getInvalidMessages
      * @expectedException \InvalidArgumentException
+     *
      * @param mixed $message
      */
     public function testItShouldNotAcceptInvalidMessages($message)

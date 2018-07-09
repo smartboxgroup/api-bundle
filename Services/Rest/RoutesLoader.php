@@ -10,11 +10,10 @@ use Symfony\Component\Routing\RouteCollection;
 
 class RoutesLoader extends Loader
 {
-
-    /** @var  ApiConfigurator */
+    /** @var ApiConfigurator */
     protected $apiConfigurator;
 
-    function __construct($apiConfigurator)
+    public function __construct($apiConfigurator)
     {
         $this->apiConfigurator = $apiConfigurator;
     }
@@ -38,10 +37,11 @@ class RoutesLoader extends Loader
     /**
      * Loads a resource.
      *
-     * @param mixed $resource The resource
-     * @param string|null $type The resource type or null if unknown
+     * @param mixed       $resource The resource
+     * @param string|null $type     The resource type or null if unknown
      *
      * @return RouteCollection
+     *
      * @throws \Exception If something went wrong
      */
     public function load($resource, $type = null)
@@ -62,7 +62,7 @@ class RoutesLoader extends Loader
             $requirements = array();
 
             foreach ($methodConfig[ApiConfigurator::INPUT] as $input => $inputConfig) {
-                if ($inputConfig['mode'] == Configuration::MODE_REQUIREMENT && array_key_exists(
+                if (Configuration::MODE_REQUIREMENT == $inputConfig['mode'] && array_key_exists(
                         'format',
                         $inputConfig
                     )
@@ -80,7 +80,7 @@ class RoutesLoader extends Loader
                 ApiConfigurator::VERSION => $version,
                 ApiConfigurator::SERVICE_NAME => $name,
                 ApiConfigurator::METHOD_NAME => $method,
-                ApiConfigurator::METHOD_CONFIG => $methodConfig
+                ApiConfigurator::METHOD_CONFIG => $methodConfig,
             );
 
             $defaults = array_merge($defaults, $methodConfig['defaults']);
@@ -104,8 +104,8 @@ class RoutesLoader extends Loader
     /**
      * Returns whether this class supports the given resource.
      *
-     * @param mixed $resource A resource
-     * @param string|null $type The resource type or null if unknown
+     * @param mixed       $resource A resource
+     * @param string|null $type     The resource type or null if unknown
      *
      * @return bool True if this class supports the given resource, false otherwise
      */

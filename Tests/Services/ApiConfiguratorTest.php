@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApiConfiguratorTest extends BaseKernelTestCase
 {
-    /** @var  ApiConfigurator */
+    /** @var ApiConfigurator */
     protected $configurator;
 
     public function setUp()
@@ -51,7 +51,7 @@ class ApiConfiguratorTest extends BaseKernelTestCase
             array(array(45, 45)),
             array(array(null, null)),
             array(array('A' => null)),
-            array(array('A' => 12))
+            array(array('A' => 12)),
         );
     }
 
@@ -78,10 +78,10 @@ class ApiConfiguratorTest extends BaseKernelTestCase
                     'B' => 'XXX-1',
                     'C' => 'XXX-2',
                     'XXX' => 'XXX-3',
-                )
+                ),
             ),
             array(array()),
-            array(array(123213 => 'XXX'))
+            array(array(123213 => 'XXX')),
         );
 
         return $data;
@@ -90,9 +90,9 @@ class ApiConfiguratorTest extends BaseKernelTestCase
     public function notRegisteredAliasProvider()
     {
         return array(
-            array("INEXISTENT_XXXXX", false),
+            array('INEXISTENT_XXXXX', false),
             array(null, false),
-            array("", false),
+            array('', false),
             array(21, false),
             array(BasicResponse::class, false),
         );
@@ -100,6 +100,7 @@ class ApiConfiguratorTest extends BaseKernelTestCase
 
     /**
      * @dataProvider validTypesAndGroupsProvider
+     *
      * @param $type
      * @param $group
      */
@@ -107,7 +108,7 @@ class ApiConfiguratorTest extends BaseKernelTestCase
     {
         $this->configurator->registerEntityGroupAlias($type, $group);
 
-        $type = str_replace(ApiConfigurator::$arraySymbol, "", $type);
+        $type = str_replace(ApiConfigurator::$arraySymbol, '', $type);
         $alias = $type.ucfirst($group);
 
         $this->assertTrue($this->configurator->isRegisteredAlias($alias));
@@ -118,6 +119,7 @@ class ApiConfiguratorTest extends BaseKernelTestCase
 
     /**
      * @dataProvider invalidTypesAndGroupsProvider
+     *
      * @param $type
      * @param $group
      */
@@ -125,7 +127,7 @@ class ApiConfiguratorTest extends BaseKernelTestCase
     {
         try {
             $this->configurator->registerEntityGroupAlias($type, $group);
-            $this->fail("This function call should have failed");
+            $this->fail('This function call should have failed');
         } catch (\Exception $ex) {
             $this->assertInstanceOf('InvalidArgumentException', $ex);
         }
@@ -133,6 +135,7 @@ class ApiConfiguratorTest extends BaseKernelTestCase
 
     /**
      * @dataProvider notRegisteredAliasProvider
+     *
      * @param $class
      */
     public function testIsNotRegisteredAlias($class)
@@ -140,9 +143,9 @@ class ApiConfiguratorTest extends BaseKernelTestCase
         $this->assertFalse($this->configurator->isRegisteredAlias($class));
     }
 
-
     /**
      * @dataProvider validCodesArrayInputProvider
+     *
      * @param $codes
      */
     public function testSetGetSuccessCodesValid($codes)
@@ -157,13 +160,14 @@ class ApiConfiguratorTest extends BaseKernelTestCase
 
     /**
      * @dataProvider invalidCodesArrayInputProvider
+     *
      * @param $codes
      */
     public function testSetGetSuccessCodesInvalid($codes)
     {
         try {
             $this->configurator->setSuccessCodes($codes);
-            $this->fail("This function call should have failed");
+            $this->fail('This function call should have failed');
         } catch (\Exception $ex) {
             $this->assertInstanceOf('InvalidArgumentException', $ex);
         }
@@ -171,6 +175,7 @@ class ApiConfiguratorTest extends BaseKernelTestCase
 
     /**
      * @dataProvider validCodesArrayInputProvider
+     *
      * @param $codes
      */
     public function testSetGetErrorCodesValid($codes)
@@ -181,25 +186,27 @@ class ApiConfiguratorTest extends BaseKernelTestCase
 
     /**
      * @dataProvider invalidCodesArrayInputProvider
+     *
      * @param $codes
      */
     public function testSetGetErrorCodesInvalid($codes)
     {
         try {
             $this->configurator->setErrorCodes($codes);
-            $this->fail("This function call should have failed");
+            $this->fail('This function call should have failed');
         } catch (\Exception $ex) {
             $this->assertInstanceOf('InvalidArgumentException', $ex);
         }
     }
 
-    public function testGetSingleType(){
+    public function testGetSingleType()
+    {
         $type = $this->configurator->getSingleType('test'.ApiConfigurator::$arraySymbol);
-        $this->assertEquals($type,'test');
+        $this->assertEquals($type, 'test');
     }
 
-    public function testGetCleanParameterValidatesString(){
-
+    public function testGetCleanParameterValidatesString()
+    {
         //test a good case
         $inputName = 'id';
         $type = 'string';
@@ -210,7 +217,7 @@ class ApiConfiguratorTest extends BaseKernelTestCase
         //test it should throw and helpful bad request exception
         $inputName = 'id';
         $type = 'string';
-        $value = ['i'=>'am', 'not'=>'string'];
+        $value = ['i' => 'am', 'not' => 'string'];
         $this->expectException(BadRequestHttpException::class);
         $this->configurator->getCleanParameter($inputName, $type, $value);
     }

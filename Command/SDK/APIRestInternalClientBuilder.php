@@ -1,10 +1,9 @@
 <?php
+
 namespace Smartbox\ApiRestClient;
 
 /**
- * Class ApiRestInternalClientBuilder
- *
- * @package Smartbox\ApiRestClient
+ * Class ApiRestInternalClientBuilder.
  */
 class ApiRestInternalClientBuilder
 {
@@ -15,26 +14,27 @@ class ApiRestInternalClientBuilder
      * @param $username
      * @param $password
      * @param null $class
-     * @param boolean $mocks
+     * @param bool $mocks
      *
      * @return mixed
+     *
      * @throws \Exception
      */
     public static function createClient($class = null, $env, $username, $password, $mocks = false)
     {
-        if(!empty($class)){
-            if(!class_exists($class)){
+        if (!empty($class)) {
+            if (!class_exists($class)) {
                 throw new \LogicException("$class does not exists");
-            }elseif (!is_subclass_of($class, ApiRestInternalClient::$class, true) ){
+            } elseif (!is_subclass_of($class, ApiRestInternalClient::$class, true)) {
                 throw new \LogicException("$class is not an instance of ApiRestInternalClient");
             }
-        }else{
+        } else {
             $class = ApiRestInternalClient::$class;
         }
 
-        if($mocks){
+        if ($mocks) {
             $baseUrl = MocksEnvironments::getEnvironmentURI($env);
-        }else{
+        } else {
             $baseUrl = Environments::getEnvironmentURI($env);
         }
 

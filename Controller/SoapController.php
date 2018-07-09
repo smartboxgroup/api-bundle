@@ -2,7 +2,6 @@
 
 namespace Smartbox\ApiBundle\Controller;
 
-
 use BeSimple\SoapBundle\Controller\SoapWebServiceController;
 use BeSimple\SoapBundle\Soap\SoapRequest;
 use BeSimple\SoapServer\SoapServer;
@@ -11,10 +10,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SoapController extends SoapWebServiceController
 {
-
     /**
      * @param $webservice
+     *
      * @return \BeSimple\SoapBundle\Soap\SoapResponse
+     *
      * @throws \Exception
      */
     public function callAction($webservice)
@@ -23,8 +23,8 @@ class SoapController extends SoapWebServiceController
 
         $soapRequest = SoapRequest::createFromHttpRequest($this->container->get('request'));
 
-        if ($soapRequest == null) {
-            throw new \Exception("Soap request is empty");
+        if (null == $soapRequest) {
+            throw new \Exception('Soap request is empty');
         }
 
         $this->soapRequest = $soapRequest;
@@ -54,6 +54,7 @@ class SoapController extends SoapWebServiceController
 
     /**
      * @param $webservice
+     *
      * @return WebServiceContext
      */
     private function getWebServiceContext($webservice)

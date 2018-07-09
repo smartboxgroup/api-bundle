@@ -9,30 +9,30 @@ use BeSimple\SoapBundle\ServiceDefinition\Annotation as Soap;
 use Smartbox\ApiBundle\Entity\ApiEntity;
 
 /**
- * Class Box
- * @package Smartbox\ApiBundle\Tests\Fixtures\Entity
+ * Class Box.
+ *
  * @Soap\Alias("Box")
  */
 class Box extends ApiEntity implements LocatableEntity
 {
-
     const STATUS_TRANSIT = 'transit';
     const STATUS_STORED = 'stored';
 
     /**
-     * Numeric id of the box
+     * Numeric id of the box.
      *
      * @Assert\Type(type="integer")
      * @Assert\NotBlank(groups={"list", "public"})
      * @JMS\Type("integer")
      * @JMS\Expose
      * @JMS\Groups({"list", "public"})
+     *
      * @var int
      */
     protected $id;
 
     /**
-     * Description of the contents of the box
+     * Description of the contents of the box.
      *
      * @Assert\Type(type="string")
      * @Assert\NotBlank
@@ -41,12 +41,13 @@ class Box extends ApiEntity implements LocatableEntity
      * @JMS\Type("string")
      * @JMS\Expose
      * @JMS\Groups({"update","list", "public"})
+     *
      * @var string
      */
     protected $description;
 
     /**
-     * Status of the box regarding whether it is in transit or awaits stored in a warehouse
+     * Status of the box regarding whether it is in transit or awaits stored in a warehouse.
      *
      * @Assert\Type(type="string")
      * @Assert\NotBlank(groups={"list", "public"})
@@ -54,12 +55,13 @@ class Box extends ApiEntity implements LocatableEntity
      * @JMS\Type("string")
      * @JMS\Expose
      * @JMS\Groups({"update","list", "public"})
+     *
      * @var string
      */
     protected $status;
 
     /**
-     * Length of the box in cm
+     * Length of the box in cm.
      *
      * @Assert\Type(type="integer")
      * @Assert\NotBlank
@@ -67,12 +69,13 @@ class Box extends ApiEntity implements LocatableEntity
      * @JMS\Type("integer")
      * @JMS\Expose
      * @JMS\Groups({"update", "public"})
+     *
      * @var int
      */
     protected $length;
 
     /**
-     * Width of the box in cm
+     * Width of the box in cm.
      *
      * @Assert\Type(type="integer")
      * @Assert\NotBlank
@@ -80,12 +83,13 @@ class Box extends ApiEntity implements LocatableEntity
      * @JMS\Type("integer")
      * @JMS\Expose
      * @JMS\Groups({"update", "public"})
+     *
      * @var int
      */
     protected $width;
 
     /**
-     * Height of the box in cm
+     * Height of the box in cm.
      *
      * @Assert\Type(type="integer")
      * @Assert\NotBlank
@@ -94,17 +98,19 @@ class Box extends ApiEntity implements LocatableEntity
      * @JMS\Type("integer")
      * @JMS\Expose
      * @JMS\Groups({"update", "public"})
+     *
      * @var int
      */
     protected $height;
 
     /**
-     * Date and time of the latest update of the status of this box
+     * Date and time of the latest update of the status of this box.
      *
      * @Assert\NotBlank(groups={"list", "public"})
      * @JMS\Type("DateTime")
      * @JMS\Expose
      * @JMS\Groups({"list", "public"})
+     *
      * @var \DateTime
      */
     protected $last_updated;
@@ -124,7 +130,6 @@ class Box extends ApiEntity implements LocatableEntity
     {
         $this->id = $id;
     }
-
 
     /**
      * @return string
@@ -223,7 +228,8 @@ class Box extends ApiEntity implements LocatableEntity
     }
 
     /**
-     * Returns the name of the API method that gets this entity
+     * Returns the name of the API method that gets this entity.
+     *
      * @return string
      */
     public function getApiGetterMethod()
@@ -232,7 +238,8 @@ class Box extends ApiEntity implements LocatableEntity
     }
 
     /**
-     * Returns an array with the parameters that identify this entity
+     * Returns an array with the parameters that identify this entity.
+     *
      * @return array
      */
     public function getIdParameters()

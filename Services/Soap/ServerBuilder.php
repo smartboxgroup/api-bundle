@@ -7,9 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class ServerBuilder
- *
- * @package \Smartbox\ApiBundle\Services\Soap
+ * Class ServerBuilder.
  */
 class ServerBuilder extends SoapServerBuilder implements ContainerAwareInterface
 {
@@ -28,10 +26,11 @@ class ServerBuilder extends SoapServerBuilder implements ContainerAwareInterface
      */
     public function setServerClass($serverClass)
     {
-        if(!class_exists($serverClass)){
-            throw new \InvalidArgumentException("Class not found: ".$serverClass);
+        if (!class_exists($serverClass)) {
+            throw new \InvalidArgumentException('Class not found: '.$serverClass);
         }
         $this->serverClass = $serverClass;
+
         return $this;
     }
 
@@ -43,6 +42,7 @@ class ServerBuilder extends SoapServerBuilder implements ContainerAwareInterface
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
+
         return $this;
     }
 

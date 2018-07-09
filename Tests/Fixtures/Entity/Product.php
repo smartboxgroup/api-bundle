@@ -9,8 +9,7 @@ use Smartbox\ApiBundle\Entity\LocatableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class Product
- * @package Smartbox\ApiBundle\Tests\Fixtures\Entity
+ * Class Product.
  */
 class Product extends ApiEntity implements LocatableEntity
 {
@@ -23,7 +22,7 @@ class Product extends ApiEntity implements LocatableEntity
      * @JMS\Expose
      * @JMS\Groups({"public"})
      *
-     * @var integer
+     * @var int
      */
     protected $id;
 
@@ -41,7 +40,7 @@ class Product extends ApiEntity implements LocatableEntity
     protected $name;
 
     /**
-     * List of language codes based on the ISO 639-3
+     * List of language codes based on the ISO 639-3.
      *
      * @Assert\NotBlank
      * @JMS\Type("array<string>")
@@ -74,7 +73,8 @@ class Product extends ApiEntity implements LocatableEntity
     }
 
     /**
-     * Returns the name of the API method that gets this entity
+     * Returns the name of the API method that gets this entity.
+     *
      * @return string
      */
     public function getApiGetterMethod()
@@ -83,7 +83,8 @@ class Product extends ApiEntity implements LocatableEntity
     }
 
     /**
-     * Returns an array with the parameters that identify this entity
+     * Returns an array with the parameters that identify this entity.
+     *
      * @return array
      */
     public function getIdParameters()

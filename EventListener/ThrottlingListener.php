@@ -2,7 +2,6 @@
 
 namespace Smartbox\ApiBundle\EventListener;
 
-use BeSimple\SoapServer\Exception\SenderSoapFault;
 use Noxlogic\RateLimitBundle\Annotation\RateLimit;
 use Noxlogic\RateLimitBundle\EventListener\BaseListener;
 use Noxlogic\RateLimitBundle\Events\GenerateKeyEvent;
@@ -19,13 +18,11 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
- * Class ThrottlingListener
- *
- * @package Smartbox\ApiBundle\EventListener
+ * Class ThrottlingListener.
  */
 class ThrottlingListener extends BaseListener
 {
-    const RATE_LIMIT_INFO = "rate_limit_info";
+    const RATE_LIMIT_INFO = 'rate_limit_info';
 
     use LoggerAwareTrait;
 
@@ -46,8 +43,8 @@ class ThrottlingListener extends BaseListener
 
     /**
      * @param EventDispatcherInterface $eventDispatcher
-     * @param RateLimitService $rateLimitService
-     * @param PathLimitProcessor $pathLimitProcessor
+     * @param RateLimitService         $rateLimitService
+     * @param PathLimitProcessor       $pathLimitProcessor
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
@@ -61,6 +58,7 @@ class ThrottlingListener extends BaseListener
 
     /**
      * @param FilterControllerEvent $event
+     *
      * @throws \Exception
      */
     public function onKernelController(FilterControllerEvent $event)
@@ -74,9 +72,9 @@ class ThrottlingListener extends BaseListener
         $api = $request->get('api');
 
         if (
-            ! (
-                ($api === 'rest' && $event->getRequestType() == HttpKernelInterface::MASTER_REQUEST)
-                || ($api === 'soap' && $event->getRequestType() != HttpKernelInterface::MASTER_REQUEST)
+            !(
+                ('rest' === $api && HttpKernelInterface::MASTER_REQUEST == $event->getRequestType())
+                || ('soap' === $api && HttpKernelInterface::MASTER_REQUEST != $event->getRequestType())
             )
         ) {
             return;
@@ -95,14 +93,14 @@ class ThrottlingListener extends BaseListener
         try {
             // Ratelimit the call
             $rateLimitInfo = $this->rateLimitService->limitRate($key);
-            
-            if($rateLimitInfo){
-                if(time() > $rateLimitInfo->getResetTimestamp()){
+
+            if ($rateLimitInfo) {
+                if (time() > $rateLimitInfo->getResetTimestamp()) {
                     $this->rateLimitService->resetRate($key);
                     $rateLimitInfo = null;
                 }
             }
-            
+
             if (!$rateLimitInfo) {
                 // Create new rate limit entry for this call
                 $rateLimitInfo = $this->rateLimitService->createRate(
@@ -126,7 +124,7 @@ class ThrottlingListener extends BaseListener
                 $message = $this->getParameter('rate_response_message');
                 $code = $this->getParameter('rate_response_code');
 
-                if ($api === 'rest') {
+                if ('rest' === $api) {
                     // Throw an exception if configured.
                     if ($this->getParameter('rate_response_exception')) {
                         $class = $this->getParameter('rate_response_exception');
@@ -148,7 +146,7 @@ class ThrottlingListener extends BaseListener
                 }
             }
         } catch (ConnectionException $e) {
-            error_log("Error: Redis service is down: ".$e->getMessage());
+            error_log('Error: Redis service is down: '.$e->getMessage());
         }
     }
 
@@ -164,7 +162,7 @@ class ThrottlingListener extends BaseListener
         $serviceId = $request->get('serviceId');
         $methodName = $request->get('methodName');
 
-        $key = $serviceId . ':' . $methodName;
+        $key = $serviceId.':'.$methodName;
 
         // Let listeners manipulate the key
         $keyEvent = new GenerateKeyEvent($event->getRequest(), $key);

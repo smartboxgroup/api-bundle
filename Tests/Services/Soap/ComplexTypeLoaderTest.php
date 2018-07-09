@@ -11,14 +11,14 @@ use Smartbox\ApiBundle\Services\Soap\ComplexTypeLoader;
 use Smartbox\ApiBundle\Tests\BaseKernelTestCase;
 
 /**
- * Class ComplexTypeLoaderTest
+ * Class ComplexTypeLoaderTest.
  */
 class ComplexTypeLoaderTest extends BaseKernelTestCase
 {
-    /** @var  Reader */
+    /** @var Reader */
     protected $annotationReader;
 
-    /** @var  TypeRepository */
+    /** @var TypeRepository */
     protected $typeRepository;
 
     /** @var ComplexTypeLoader */
@@ -42,23 +42,23 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
 
             'Resource does not have "phpType" defined' => [
                 [
-                    'group'   => null,
+                    'group' => null,
                     'version' => 'v0',
-                ]
+                ],
             ],
 
             'Resource does not have "group" defined' => [
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
                     'version' => 'v0',
-                ]
+                ],
             ],
 
             'Resource does not have "version" defined' => [
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-                    'group'   => null,
-                ]
+                    'group' => null,
+                ],
             ],
         ];
     }
@@ -81,7 +81,7 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
 
         $this->complexTypeLoader->load([
             'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-            'group'   => null,
+            'group' => null,
             'version' => null,
         ]);
     }
@@ -92,7 +92,7 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
 
         $this->complexTypeLoader->load([
             'phpType' => '\Invalid\Class\That\Does\Not\Even\Exists',
-            'group'   => null,
+            'group' => null,
             'version' => 'v0',
         ]);
     }
@@ -101,8 +101,8 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
     {
         $data = [
             'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-            'group'   => null,
-            'version' => 'v0'
+            'group' => null,
+            'version' => 'v0',
         ];
 
         $annotations = $this->complexTypeLoader->load($data);
@@ -116,117 +116,117 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
             'Test notBlank validation when it is only defined for a specific group' => [
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Item',
-                    'group'   => null,
+                    'group' => null,
                     'version' => 'v0',
                 ],
                 null,
                 [
-                    'id'          => $this->newElement('id', 'int', true),
-                    'name'        => $this->newElement('name', 'string', false),
+                    'id' => $this->newElement('id', 'int', true),
+                    'name' => $this->newElement('name', 'string', false),
                     'description' => $this->newElement('description', 'string', false),
-                    'type'        => $this->newElement('type', 'string', false),
+                    'type' => $this->newElement('type', 'string', false),
                     'entityGroup' => $this->newElement('entityGroup', 'string', true),
-                    'version'     => $this->newElement('version', 'string', true),
-                ]
+                    'version' => $this->newElement('version', 'string', true),
+                ],
             ],
 
             'Test notNull validation when it is only defined for a specific group' => [
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Product',
-                    'group'   => null,
+                    'group' => null,
                     'version' => 'v0',
                 ],
                 null,
                 [
-                    'id'          => $this->newElement('id', 'int', true),
-                    'name'        => $this->newElement('name', 'string', false),
-                    'languages'   => $this->newElement('languages', 'string[]', false),
+                    'id' => $this->newElement('id', 'int', true),
+                    'name' => $this->newElement('name', 'string', false),
+                    'languages' => $this->newElement('languages', 'string[]', false),
                     'entityGroup' => $this->newElement('entityGroup', 'string', true),
-                    'version'     => $this->newElement('version', 'string', true),
-                ]
+                    'version' => $this->newElement('version', 'string', true),
+                ],
             ],
 
             'Test if some properties are defined for a specific group' => [
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-                    'group'   => 'list',
+                    'group' => 'list',
                     'version' => 'v0',
                 ],
                 null,
                 [
-                    'id'           => $this->newElement('id', 'int', false),
-                    'status'       => $this->newElement('status', 'string', false),
+                    'id' => $this->newElement('id', 'int', false),
+                    'status' => $this->newElement('status', 'string', false),
                     'last_updated' => $this->newElement('last_updated', 'dateTime', false),
-                ]
+                ],
             ],
 
             'Test the properties defined until a specific version' => [
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Item',
-                    'group'   => 'public',
+                    'group' => 'public',
                     'version' => 'v2',
                 ],
                 null,
                 [
-                    'id'          => $this->newElement('id', 'int', false),
-                    'name'        => $this->newElement('name', 'string', false),
+                    'id' => $this->newElement('id', 'int', false),
+                    'name' => $this->newElement('name', 'string', false),
                     'description' => $this->newElement('description', 'string', false),
-                ]
+                ],
             ],
 
             'Test the properties defined since a specific version' => [
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Box',
-                    'group'   => 'list',
+                    'group' => 'list',
                     'version' => 'v2',
                 ],
                 null,
                 [
-                    'id'           => $this->newElement('id', 'int', false),
-                    'description'  => $this->newElement('description', 'string', false),
-                    'status'       => $this->newElement('status', 'string', false),
+                    'id' => $this->newElement('id', 'int', false),
+                    'description' => $this->newElement('description', 'string', false),
+                    'status' => $this->newElement('status', 'string', false),
                     'last_updated' => $this->newElement('last_updated', 'dateTime', false),
-                ]
+                ],
             ],
 
             'Test a property defined as an array' => [
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Product',
-                    'group'   => 'list',
+                    'group' => 'list',
                     'version' => 'v0',
                 ],
                 null,
-                ['languages' => $this->newElement('languages', 'string[]', false)]
+                ['languages' => $this->newElement('languages', 'string[]', false)],
             ],
 
             'Test when JMS and BeSimpleSoap annotations are in the same property' => [
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Product',
-                    'group'   => 'product',
+                    'group' => 'product',
                     'version' => 'v0',
                 ],
                 null,
-                ['name' => $this->newElement('name', 'string', false)]
+                ['name' => $this->newElement('name', 'string', false)],
             ],
 
             'Test if group name it does not exist' => [
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Product',
-                    'group'   => 'nothing',
+                    'group' => 'nothing',
                     'version' => 'v0',
                 ],
                 null,
-                []
+                [],
             ],
 
             'Test if the entity exist but it does not have any property' => [
                 [
                     'phpType' => '\Smartbox\ApiBundle\Tests\Fixtures\Entity\Nothing',
-                    'group'   => null,
+                    'group' => null,
                     'version' => 'v0',
                 ],
                 null,
-                []
+                [],
             ],
         ];
     }
@@ -234,9 +234,9 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
     /**
      * @dataProvider loadsMetadataProvider
      *
-     * @param array $data
+     * @param array  $data
      * @param string $type
-     * @param array $expectedElements
+     * @param array  $expectedElements
      */
     public function testItLoadsMetadata(array $data, $type, array $expectedElements)
     {
@@ -252,7 +252,7 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
     }
 
     /**
-     * Helper function to create a new complex type for the data provider
+     * Helper function to create a new complex type for the data provider.
      *
      * @param string $name
      * @param mixed  $value
@@ -269,5 +269,4 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
 
         return $element;
     }
-
 }

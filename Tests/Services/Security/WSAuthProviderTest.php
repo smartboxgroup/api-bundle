@@ -8,14 +8,14 @@ use Smartbox\ApiBundle\Tests\Fixtures\Soap\FakeCallbackSecurityFilter;
 class WSAuthProviderTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Symfony\Component\Security\Core\User\UserProviderInterface|\PHPUnit_Framework_MockObject_MockObject $userProvider
+     * @var \Symfony\Component\Security\Core\User\UserProviderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $userProvider;
 
     /** @var FakeCallbackSecurityFilter */
     private $securityFilter;
 
-    /** @var  WSAuthProvider */
+    /** @var WSAuthProvider */
     private $authProvider;
 
     public function setup()

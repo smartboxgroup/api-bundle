@@ -1,4 +1,5 @@
 <?php
+
 namespace Smartbox\ApiBundle\Exception;
 
 use Noxlogic\RateLimitBundle\Service\RateLimitInfo;
@@ -9,7 +10,7 @@ class ThrottlingException extends \Exception
      * @var RateLimitInfo
      */
     protected $rateLimitInfo;
-    
+
     /**
      * @var string
      */
@@ -17,9 +18,9 @@ class ThrottlingException extends \Exception
 
     /**
      * ThrottlingException constructor.
-     * 
-     * @param string $message
-     * @param int $code
+     *
+     * @param string        $message
+     * @param int           $code
      * @param RateLimitInfo $rateLimitInfo
      * @param $serviceId
      * @param \Exception|null $previous

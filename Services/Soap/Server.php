@@ -6,15 +6,13 @@ use BeSimple\SoapServer\SoapRequest;
 use BeSimple\SoapServer\SoapServer;
 
 /**
- * Class Server
- *
- * @package \Smartbox\ApiBundle\Soap
+ * Class Server.
  */
 class Server extends SoapServer
 {
     /**
      * Overrides the default handle method to offer a better soap fault creation that also contains
-     * actor and details
+     * actor and details.
      *
      * @param null $request
      */
@@ -35,7 +33,8 @@ class Server extends SoapServer
     }
 
     /**
-     * Holds the knowledge about how to generate a fault
+     * Holds the knowledge about how to generate a fault.
+     *
      * @param \SoapFault $fault
      */
     protected function raiseFaultForException(\SoapFault $fault)

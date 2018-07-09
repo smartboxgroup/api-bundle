@@ -2,7 +2,6 @@
 
 namespace Smartbox\ApiBundle\Entity;
 
-
-class OK extends ApiEntity{
-
+class OK extends ApiEntity
+{
 }

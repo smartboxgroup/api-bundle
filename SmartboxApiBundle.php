@@ -3,7 +3,6 @@
 namespace Smartbox\ApiBundle;
 
 use Smartbox\ApiBundle\DependencyInjection\ConfiguratorCompilerPass;
-use Smartbox\ApiBundle\Services\Security\WSFactory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

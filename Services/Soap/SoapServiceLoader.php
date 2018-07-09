@@ -1,4 +1,5 @@
 <?php
+
 namespace Smartbox\ApiBundle\Services\Soap;
 
 use BeSimple\SoapBundle\ServiceDefinition as Definition;
@@ -15,30 +16,30 @@ class SoapServiceLoader extends Loader
 {
     const RESOURCE_TYPE = 'smartapi_soap';
 
-    /** @var  TypeRepository */
+    /** @var TypeRepository */
     protected $typeRepository;
 
-    /** @var  ApiConfigurator */
+    /** @var ApiConfigurator */
     protected $apiConfigurator;
 
     /**
      * @param ApiConfigurator $configurator
-     * @param TypeRepository $typeRepository
+     * @param TypeRepository  $typeRepository
      */
     public function __construct(ApiConfigurator $configurator, TypeRepository $typeRepository)
     {
         $this->apiConfigurator = $configurator;
-        $this->typeRepository  = $typeRepository;
+        $this->typeRepository = $typeRepository;
     }
 
     /**
-     *
-     * Load soap web services based on the APIs configuration
+     * Load soap web services based on the APIs configuration.
      *
      * @param mixed $resource
-     * @param null $type
+     * @param null  $type
      *
      * @return Definition\Definition
+     *
      * @throws \Exception
      */
     public function load($resource, $type = null)
@@ -46,21 +47,21 @@ class SoapServiceLoader extends Loader
         $serviceDefinition = new Definition\Definition($this->typeRepository);
         $serviceDefinition->setName($resource);
 
-        $serviceConfig  = $this->apiConfigurator->getConfig($resource);
+        $serviceConfig = $this->apiConfigurator->getConfig($resource);
         $serviceVersion = $serviceConfig['version'];
 
         foreach ($serviceConfig['methods'] as $methodName => $methodConfig) {
-            $methodArguments   = [];
-            $soapMethodName    = $methodName;
-            $methodReturnType  = null;
+            $methodArguments = [];
+            $soapMethodName = $methodName;
+            $methodReturnType = null;
             $methodReturnGroup = null;
 
             $filtersPresent = false;
 
             // Input
             foreach ($methodConfig[ApiConfigurator::INPUT] as $paramName => $paramConfig) {
-                $mode  = $paramConfig['mode'];
-                $type  = $paramConfig['type'];
+                $mode = $paramConfig['mode'];
+                $type = $paramConfig['type'];
                 $group = $paramConfig['group'];
 
                 switch ($mode) {
@@ -86,11 +87,11 @@ class SoapServiceLoader extends Loader
             }
 
             // Output
-            $methodReturnType  = BasicResponse::class;
+            $methodReturnType = BasicResponse::class;
             $methodReturnGroup = EntityInterface::GROUP_PUBLIC;
 
             if (array_key_exists('output', $methodConfig)) {
-                $methodReturnType  = $methodConfig['output']['type'];
+                $methodReturnType = $methodConfig['output']['type'];
                 $methodReturnGroup = $methodConfig['output']['group'];
             }
 
@@ -123,19 +124,16 @@ class SoapServiceLoader extends Loader
     /**
      * Returns true if this class supports the given resource.
      *
-     * @param mixed $resource A resource
-     * @param string $type The resource type
+     * @param mixed  $resource A resource
+     * @param string $type     The resource type
      *
-     * @return Boolean True if this class supports the given resource, false otherwise
+     * @return bool True if this class supports the given resource, false otherwise
      */
     public function supports($resource, $type = null)
     {
         return is_string($resource) && $this->apiConfigurator->hasService($resource) && self::RESOURCE_TYPE === $type;
     }
 
-    /**
-     * @return null
-     */
     public function getResolver()
     {
     }
@@ -155,26 +153,25 @@ class SoapServiceLoader extends Loader
         }
 
         if (ApiConfigurator::isEntity($phpTypeBasic) && $group) {
-            $suffix = ucfirst($group) . $suffix;
+            $suffix = ucfirst($group).$suffix;
         }
 
-        $phpType = $phpTypeBasic . $suffix;
+        $phpType = $phpTypeBasic.$suffix;
 
         if (!$this->typeRepository->hasType($phpType)) {
-
             if (!class_exists($phpType)) {
                 throw new \Exception("Class $phpType doesn't exist");
             }
 
             $data = [
                 'phpType' => $phpType,
-                'group'   => $group,
+                'group' => $group,
                 'version' => $version,
             ];
 
             $complexTypeResolver = $this->resolve($data, 'annotation_complextype');
             if (!$complexTypeResolver) {
-                throw new \Exception("Complex type loader not found");
+                throw new \Exception('Complex type loader not found');
             }
 
             $loaded = $complexTypeResolver->load($data);
@@ -182,7 +179,7 @@ class SoapServiceLoader extends Loader
             $complexType = new ComplexType($phpType, $phpType);
 
             /**
-             * @var string $name
+             * @var string
              * @var Annotation\ComplexType $property
              */
             foreach ($loaded['properties'] as $name => $property) {

@@ -7,9 +7,7 @@ use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 
 /**
- * Class RedisConnectionListener
- *
- * @package \Smartbox\ApiBundle\EventListener
+ * Class RedisConnectionListener.
  */
 class RedisConnectionListener
 {
@@ -27,7 +25,7 @@ class RedisConnectionListener
     }
 
     /**
-     * Closes the current connection with redis (if open)
+     * Closes the current connection with redis (if open).
      */
     private function doDestroy()
     {

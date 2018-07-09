@@ -2,20 +2,18 @@
 
 namespace Smartbox\ApiBundle\Tests\Fixtures\Soap;
 
-
 use BeSimple\SoapCommon\SoapRequest;
 use BeSimple\SoapServer\WsSecurityFilter;
 use BeSimple\SoapCommon\SoapResponse;
 
 /**
- * Fake class to simulate the behaviour of the real soap security filter based on a callback
+ * Fake class to simulate the behaviour of the real soap security filter based on a callback.
  *
  * Class CallbackSecurityFilter
- * @package Smartbox\ApiBundle\Tests\Fixtures\Soap
  */
 class FakeCallbackSecurityFilter extends WsSecurityFilter
 {
-    /** @var  callable */
+    /** @var callable */
     private $callback;
 
     /** @var array */
@@ -27,7 +25,8 @@ class FakeCallbackSecurityFilter extends WsSecurityFilter
     }
 
     /**
-     * To simulate the original behaviour
+     * To simulate the original behaviour.
+     *
      * @param callable $callback
      */
     public function setUsernamePasswordCallback($callback)
@@ -52,7 +51,7 @@ class FakeCallbackSecurityFilter extends WsSecurityFilter
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function filterRequest(SoapRequest $request)
     {
@@ -60,7 +59,7 @@ class FakeCallbackSecurityFilter extends WsSecurityFilter
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function filterResponse(SoapResponse $response)
     {

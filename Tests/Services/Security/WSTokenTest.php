@@ -6,7 +6,7 @@ use Smartbox\ApiBundle\Services\Security\WSToken;
 
 class WSTokenTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var  WSToken */
+    /** @var WSToken */
     private $token;
 
     public function setup()

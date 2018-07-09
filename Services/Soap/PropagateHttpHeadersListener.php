@@ -8,9 +8,7 @@ use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 /**
- * Class PropagateHttpHeadersListener
- *
- * @package \Smartbox\ApiBundle\Services\Soap
+ * Class PropagateHttpHeadersListener.
  */
 class PropagateHttpHeadersListener
 {
@@ -36,7 +34,7 @@ class PropagateHttpHeadersListener
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if($event->getResponse() instanceof SoapResponse){
+        if ($event->getResponse() instanceof SoapResponse) {
             /** @var SoapResponse $response */
             $response = $event->getResponse();
             $request = $event->getRequest();
@@ -46,7 +44,7 @@ class PropagateHttpHeadersListener
                 $config = $this->apiConfigurator->getConfig($serviceId);
                 $soapHeaderNamespace = $config['soapHeadersNamespace'];
                 if ($serviceId && isset($config['propagateHttpHeadersToSoap']) && !empty($config['propagateHttpHeadersToSoap'])) {
-                    foreach($config['propagateHttpHeadersToSoap'] as $headerName => $headerAlias) {
+                    foreach ($config['propagateHttpHeadersToSoap'] as $headerName => $headerAlias) {
                         if ($response->headers->has($headerName) && !$response->getSoapHeaders()->has($headerAlias)) {
                             $headerValue = $response->headers->get($headerName);
                             $response->addSoapHeader(new SoapHeader($soapHeaderNamespace, $headerAlias, $headerValue));

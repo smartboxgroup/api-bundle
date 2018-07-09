@@ -2,7 +2,6 @@
 
 namespace Smartbox\ApiBundle\Entity\Test;
 
-
 use Smartbox\ApiBundle\Entity\KeyValue;
 
 class KeyValueTest extends \PHPUnit_Framework_TestCase

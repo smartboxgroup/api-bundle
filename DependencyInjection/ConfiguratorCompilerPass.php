@@ -8,13 +8,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Class ConfiguratorCompilerPass
- *
- * @package Smartbox\ApiBundle\DependencyInjection
+ * Class ConfiguratorCompilerPass.
  */
 class ConfiguratorCompilerPass implements CompilerPassInterface
 {
-    /** @var  ContainerBuilder */
+    /** @var ContainerBuilder */
     protected $container;
 
     /**
@@ -43,7 +41,7 @@ class ConfiguratorCompilerPass implements CompilerPassInterface
         if ($config['throttling'] && $container->hasDefinition('noxlogic_rate_limit.rate_limit_annotation_listener')) {
             $throttlingListener = $container->getDefinition('noxlogic_rate_limit.rate_limit_annotation_listener');
             $throttlingListener->setClass($container->getParameter('smartapi.throttling_listener.class'));
-            $throttlingListener->addMethodCall('setLogger',[new Reference('monolog.logger')]);
+            $throttlingListener->addMethodCall('setLogger', [new Reference('monolog.logger')]);
         }
 
         $userProviderId = $config['userProvider'];

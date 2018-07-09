@@ -61,7 +61,7 @@ class FileList implements UserListInterface
      */
     public function has($username)
     {
-        return isset($this->config[$username]);
+        return isset($this->config['users'][$username]);
     }
 
     /**
@@ -69,17 +69,28 @@ class FileList implements UserListInterface
      */
     public function get($username)
     {
-        if (!isset($this->config[$username])) {
+        if (!isset($this->config['users'][$username])) {
             throw new \InvalidArgumentException("Unable to find \"$username\" user.");
         }
 
         if (!isset($this->users[$username])) {
-            $info = $this->config[$username];
+            $info = $this->config['users'][$username];
+            $methods = $info['methods'];
+
+            foreach ($info['groups'] as $group) {
+                if (!isset($this->config['groups'][$group])) {
+                    throw new \InvalidArgumentException("Undefined group \"$group\" for user \"$username\".");
+                }
+
+                $methods = array_unique(array_merge($methods, $this->config['groups'][$group]['methods']));
+            }
+            sort($methods);
+
             $this->users[$username] = new ApiUser(
                 $username,
                 $info['password'],
                 $info['is_admin'],
-                $info['methods']
+                $methods
             );
         }
 
@@ -104,12 +115,28 @@ class FileList implements UserListInterface
                             ->defaultValue([])
                             ->prototype('scalar')->end()
                         ->end()
+                        ->arrayNode('groups')
+                            ->defaultValue([])
+                            ->prototype('scalar')->end()
+                        ->end()
                     ->end()
                 ->end()
-            ->end()
+            ->end() //users
+            ->arrayNode('groups')
+                ->useAttributeAsKey('name')
+                ->prototype('array')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('methods')
+                            ->defaultValue([])
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end() // groups
         ->end()
         ;
 
-        $this->config = $treeBuilder->buildTree()->finalize($config)['users'];
+        $this->config = $treeBuilder->buildTree()->finalize($config);
     }
 }

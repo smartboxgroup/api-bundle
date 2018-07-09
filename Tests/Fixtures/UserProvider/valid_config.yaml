@@ -3,10 +3,17 @@ users:
         password: P4$$W0rd
         is_admin: false
         methods:
-            - getRegisteredVouchersByEmail
+            - getBoxes
             - fooBar
+        groups:
+          - BOX_PICKER
     useless:
         password: P4$$W0rd
     admin:
         password: P4$$W0rd
         is_admin: true
+groups:
+    BOX_PICKER:
+      methods:
+        - getBox
+        - fooBar

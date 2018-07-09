@@ -8,7 +8,7 @@ namespace Smartbox\ApiBundle\Security\User;
 interface ApiUserInterface
 {
     /**
-     * The list of flows that user can access (Ex: ['getRegisteredVouchersByEmail', 'fooBar']).
+     * The list of flows that user can access (Ex: ['getBoxes', 'fooBar']).
      *
      * @return array
      */

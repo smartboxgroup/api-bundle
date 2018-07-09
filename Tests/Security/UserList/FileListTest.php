@@ -44,7 +44,7 @@ class FileListTest extends TestCase
         $this->assertSame('regular', $user->getUsername());
         $this->assertSame('P4$$W0rd', $user->getPassword());
         $this->assertFalse($user->isAdmin(), 'User should not be admin');
-        $this->assertSame(['getRegisteredVouchersByEmail', 'fooBar'], $user->getFlows());
+        $this->assertEquals(['fooBar', 'getBox', 'getBoxes'], $user->getFlows());
 
         $this->assertTrue($this->list->get('admin')->isAdmin(), 'Admin should be admin');
         $this->assertEmpty($this->list->get('useless')->getFlows(), 'User should not have any flows');

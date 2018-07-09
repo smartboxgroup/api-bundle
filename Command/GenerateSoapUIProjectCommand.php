@@ -9,13 +9,13 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class GenerateFixturesCommand
+ * Class GenerateFixturesCommand.
  */
 class GenerateSoapUIProjectCommand extends ContainerAwareCommand
 {
 //    const ENDPOINT = "ganesh-tt-one17.smartbox-test.local";
-    const ENDPOINT = "real.ganesh.local";
-    const SOAPUI_PROJECTS_DIR = "app/Resources/SoapUIProjects";
+    const ENDPOINT = 'real.ganesh.local';
+    const SOAPUI_PROJECTS_DIR = 'app/Resources/SoapUIProjects';
 
     protected $apiConfig;
     protected $methodOption;
@@ -23,15 +23,14 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
     protected $endpointOption;
 //    protected $allOption;
 
-
     /** {@inheritdoc} */
     protected function configure()
     {
         // TODO: We should base the generation only on the YAML test file...
         $this
             ->setName('smartbox:api:generate-soapui')
-            ->setDescription('Generate a sample SoapUI project for a flow, using the api defined in a YAML test file. The generated XML file is saved in '. self::SOAPUI_PROJECTS_DIR)
-            ->setHelp("Ex.: app/console smartbox:api:generate-soapui -f \"Product/sendProductInformation\" -p ganesh-tt-one17.smartbox-test.local")
+            ->setDescription('Generate a sample SoapUI project for a flow, using the api defined in a YAML test file. The generated XML file is saved in '.self::SOAPUI_PROJECTS_DIR)
+            ->setHelp('Ex.: app/console smartbox:api:generate-soapui -f "Product/sendProductInformation" -p ganesh-tt-one17.smartbox-test.local')
             ->addOption('flow-test-file', 'f', InputOption::VALUE_OPTIONAL, 'The Flow test file to use for fixtures and headers. Ex.: Product/sendProductInformation')
             ->addOption('endpoint', 'p', InputOption::VALUE_REQUIRED, 'Endpoint of the API. Ex.: ganesh-tt-one17.smartbox-test.local', self::ENDPOINT)
             // ->addOption('force', 'f', InputOption::VALUE_REQUIRED, 'Force the generation of the SoapUI project, even if it already exists', "")
@@ -43,7 +42,6 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
     {
         $this->input = $input;
         $this->output = $output;
-
 
         $this->flowTestFileOption = $input->getOption('flow-test-file');
         $this->endpointOption = $input->getOption('endpoint');
@@ -57,9 +55,9 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
             mkdir($exportDir);
         }
 
-        $soapUIProjectFile = $exportDir."/".$this->endpointOption." ".str_replace("/","__",$this->flowTestFileOption).".SoapUIProject.xml";
+        $soapUIProjectFile = $exportDir.'/'.$this->endpointOption.' '.str_replace('/', '__', $this->flowTestFileOption).'.SoapUIProject.xml';
 
-        $apiConfig['projectName'] = $this->endpointOption." ". $this->flowTestFileOption;
+        $apiConfig['projectName'] = $this->endpointOption.' '.$this->flowTestFileOption;
         $apiConfig['endpoint'] = $this->endpointOption;
 
         // Find apis in yml flow test file
@@ -67,7 +65,7 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
 
         if (count($apis) > 0) {
             // Generate XML content
-            $soapUIProjectContent = $this->getContainer()->get('templating')->render('SmartboxApiBundle:Command:SoapUIProject.xml.twig',['apiConfig' => $apiConfig, 'apis' => $apis] ); // mainBundle:Email:default.html.twig
+            $soapUIProjectContent = $this->getContainer()->get('templating')->render('SmartboxApiBundle:Command:SoapUIProject.xml.twig', ['apiConfig' => $apiConfig, 'apis' => $apis]); // mainBundle:Email:default.html.twig
 
             // Save the SoapUI project
             if ($soapUIProjectContent) {
@@ -79,7 +77,6 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
         } else {
             echo "No API call was found in $this->flowTestFileOption\n";
         }
-
 
         // Todo: EXPORT ALL APIs
 //        foreach ($this->apiConfig as $keyConfig) {
@@ -100,19 +97,20 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
 //        }
     }
 
-    protected function generateAPIs($flowTestFileOption) {
+    protected function generateAPIs($flowTestFileOption)
+    {
         $apis = [];
-        $ymlFile = "app/config/flows/real/".$flowTestFileOption.".yml";
+        $ymlFile = 'app/config/flows/real/'.$flowTestFileOption.'.yml';
         $steps = $this->parseSteps($ymlFile); // Information gathered from the Flow Test File
         if (!$steps) {
-            die($this->flowTestFileOption. " not found or empty");
+            die($this->flowTestFileOption.' not found or empty');
         }
         $i = 0;
         foreach ($steps as $step) {
-            if ($step['type'] == 'api') { // && $step['method'] == $methodName && $step['service'] == $space."_".$version) {
+            if ('api' == $step['type']) { // && $step['method'] == $methodName && $step['service'] == $space."_".$version) {
                 $service = $step['service'];
                 $version = $this->apiConfig[$service]['version']; // vo
-                $space= $this->apiConfig[$service]['name']; // checks
+                $space = $this->apiConfig[$service]['name']; // checks
 
                 $methodName = $step['method'];
 
@@ -127,8 +125,8 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
                 $apis[$i]['version'] = $version;
 
                 // Fixture
-                $apis[$i]['fixtureContent'] = "";
-                $fixture = "";
+                $apis[$i]['fixtureContent'] = '';
+                $fixture = '';
                 if ($step['in']) {
                     $fixture = $step['in']; // @Product/productInformation
                 } elseif ($method['fixture']) {
@@ -136,10 +134,10 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
                 }
 
                 if ($fixture) {
-                    $fixture = str_replace("@","",$fixture); // We remove the leading @
+                    $fixture = str_replace('@', '', $fixture); // We remove the leading @
                     $apis[$i]['fixture'] = $fixture; // @Product/productInformation
-                    $fixtureFile = "app/Resources/Fixtures/".$apis[$i]['fixture'].".json";
-                    $apis[$i]['fixtureContent'] = "";
+                    $fixtureFile = 'app/Resources/Fixtures/'.$apis[$i]['fixture'].'.json';
+                    $apis[$i]['fixtureContent'] = '';
                     if (file_exists($fixtureFile)) {
                         $apis[$i]['fixtureContent'] = file_get_contents($fixtureFile);
                     }
@@ -147,20 +145,23 @@ class GenerateSoapUIProjectCommand extends ContainerAwareCommand
 
                 // Headers
                 $apis[$i]['headers'] = $step['headers'];
-                $apis[$i]['endpoint'] = "http://".$this->endpointOption;
-                $apis[$i]['projectName'] = $space."_".$version." ".$this->flowTestFileOption;
-                $apis[$i]['path'] = "/api/rest/".$space."/".$version.$method['rest']['route'];
+                $apis[$i]['endpoint'] = 'http://'.$this->endpointOption;
+                $apis[$i]['projectName'] = $space.'_'.$version.' '.$this->flowTestFileOption;
+                $apis[$i]['path'] = '/api/rest/'.$space.'/'.$version.$method['rest']['route'];
                 $apis[$i]['httpMethod'] = $method['rest']['httpMethod'];
                 $apis[$i]['params'] = $step['params'];
-                $i++;
+                ++$i;
             }
         }
+
         return $apis;
     }
 
-    protected function parseSteps($ymlFile) {
+    protected function parseSteps($ymlFile)
+    {
         if (file_exists($ymlFile)) {
             $steps = Yaml::parse(file_get_contents($ymlFile))['steps'];
+
             return $steps;
         } else {
             return false;

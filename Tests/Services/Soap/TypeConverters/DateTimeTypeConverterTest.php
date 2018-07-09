@@ -9,7 +9,9 @@ class DateTimeTypeConverterTest extends \BeSimple\SoapCommon\Tests\Converter\Dat
 {
     /**
      * @dataProvider dataProviderForInvalidDate
+     *
      * @param $invalidDate
+     *
      * @throws SenderSoapFault
      */
     public function testConvertXmlToPhpForInvalidDate($invalidDate)

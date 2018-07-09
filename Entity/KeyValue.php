@@ -2,10 +2,8 @@
 
 namespace Smartbox\ApiBundle\Entity;
 
-
 use JMS\Serializer\Annotation as JMS;
 use Smartbox\CoreBundle\Type\EntityInterface;
-use Smartbox\CoreBundle\Type\Traits\HasInternalType;
 
 class KeyValue extends ApiEntity implements EntityInterface
 {
@@ -13,6 +11,7 @@ class KeyValue extends ApiEntity implements EntityInterface
      * @JMS\Type("string")
      * @JMS\Expose
      * @JMS\Groups({"public"})
+     *
      * @var string
      */
     protected $key;
@@ -21,6 +20,7 @@ class KeyValue extends ApiEntity implements EntityInterface
      * @JMS\Type("string")
      * @JMS\Expose
      * @JMS\Groups({"public"})
+     *
      * @var string
      */
     protected $value;

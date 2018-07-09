@@ -1,4 +1,5 @@
 <?php
+
 namespace Smartbox\ApiBundle\Services\Soap;
 
 use BeSimple\SoapCommon\SoapRequest as CommonSoapRequest;
@@ -9,17 +10,14 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
- * Class WsAuthenticationFilter
- *
- * @package Smartbox\ApiBundle\Services\Soap
+ * Class WsAuthenticationFilter.
  */
 class WsAuthenticationFilter extends WsSecurityFilter
 {
-
-    /** @var  AuthenticationProviderInterface */
+    /** @var AuthenticationProviderInterface */
     protected $authProvider;
 
-    /** @var  TokenStorageInterface */
+    /** @var TokenStorageInterface */
     protected $tokenStorage;
 
     /**
@@ -31,7 +29,7 @@ class WsAuthenticationFilter extends WsSecurityFilter
     public function __construct(
         AuthenticationProviderInterface $authProvider,
         TokenStorageInterface $tokenStorage
-    ){
+    ) {
         $this->authProvider = $authProvider;
         $this->tokenStorage = $tokenStorage;
     }

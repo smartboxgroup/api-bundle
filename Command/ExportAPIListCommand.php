@@ -68,7 +68,7 @@ class ExportAPIListCommand extends ContainerAwareCommand
                 $api['Description'] = $method['description'];
                 $api['Success Code'] = $method['successCode'];
                 $api['REST HTTP Method'] = $method['rest']['httpMethod'];
-                $api['Asynchronous'] = ($method['defaults']['async'] == true) ? 'True' : 'False';
+                $api['Asynchronous'] = (true == $method['defaults']['async']) ? 'True' : 'False';
                 $api['Throttling'] = $method['throttling']['limit'].' / '.$method['throttling']['period'];
 
                 $api['Max Output Elements'] = 1;

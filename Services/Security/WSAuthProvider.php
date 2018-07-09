@@ -2,7 +2,6 @@
 
 namespace Smartbox\ApiBundle\Services\Security;
 
-
 use BeSimple\SoapServer\WsSecurityFilter;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -12,18 +11,17 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class WSAuthProvider implements AuthenticationProviderInterface
 {
-
-    /** @var  UserProviderInterface */
+    /** @var UserProviderInterface */
     private $userProvider;
 
-    /** @var  UserInterface */
+    /** @var UserInterface */
     private $user;
 
-    /** @var  WsSecurityFilter */
+    /** @var WsSecurityFilter */
     private $securityFilter;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param UserProviderInterface $userProvider
      * @param WsSecurityFilter|null $securityFilter
@@ -60,16 +58,16 @@ class WSAuthProvider implements AuthenticationProviderInterface
     public function authenticate(TokenInterface $token)
     {
         if (!$this->supports($token)) {
-            throw new AuthenticationException("Token not supported");
+            throw new AuthenticationException('Token not supported');
         }
 
         if ($token instanceof WSToken) {
-            $this->securityFilter->setUsernamePasswordCallback(array($this, "loadUserByUsername"));
+            $this->securityFilter->setUsernamePasswordCallback(array($this, 'loadUserByUsername'));
             $this->securityFilter->filterRequest($token->getSoapRequest());
         }
 
         if (!$this->user) {
-            throw new AuthenticationException("Authentication failed");
+            throw new AuthenticationException('Authentication failed');
         }
 
         $authToken = new WSToken($this->user->getRoles());

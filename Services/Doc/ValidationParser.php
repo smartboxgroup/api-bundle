@@ -51,7 +51,8 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
      * Recursively parse constraints.
      *
      * @param  $className
-     * @param  array $visited
+     * @param array $visited
+     *
      * @return array
      */
     protected function doParse($className, array $visited, $version = null, $groups = null)
@@ -73,7 +74,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
 
         $jmsMeta = $this->jmsFactory->getMetadataForClass($className);
         if (null === $jmsMeta) {
-            throw new \InvalidArgumentException(sprintf("No metadata found for class %s", $className));
+            throw new \InvalidArgumentException(sprintf('No metadata found for class %s', $className));
         }
 
         foreach ($properties as $index => $property) {
@@ -93,8 +94,8 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
         foreach ($properties as $property) {
             $validationParams = [
                 'default' => isset($defaults[$property]) && is_scalar($defaults[$property]) ? $defaults[$property] : null,
-                'groups'  => $groups,
-                'version' => $version
+                'groups' => $groups,
+                'version' => $version,
             ];
 
             $pds = $meta->getPropertyMetadata($property);
@@ -120,7 +121,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
             $typeKey = null;
 
             if (!empty($validationParams['class'])) {
-                $typeKey = $validationParams['class'] . $version;
+                $typeKey = $validationParams['class'].$version;
 
                 if (!empty($groups)) {
                     $typeKey .= join('', $groups);
@@ -147,7 +148,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function postParse(array $input, array $parameters)
     {
@@ -180,11 +181,12 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
      *  - Ip
      *  - Length (min and max)
      *  - Choice (single and multiple, min and max)
-     *  - Regex (match and non-match)
+     *  - Regex (match and non-match).
      *
-     * @param  Constraint $constraint The constraint metadata object.
-     * @param  array      $vparams    The existing validation parameters.
-     * @return mixed      The parsed list of validation parameters.
+     * @param Constraint $constraint the constraint metadata object
+     * @param array      $vparams    the existing validation parameters
+     *
+     * @return mixed the parsed list of validation parameters
      */
     protected function parseConstraint(Constraint $constraint, $vparams, $className, &$visited = array())
     {
@@ -196,6 +198,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
         switch ($class) {
             case 'NotBlank':
                 $vparams['format'][] = '{not blank}';
+                // no break
             case 'NotNull':
                 $vparams['required'] = true;
                 break;
@@ -234,11 +237,11 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
                 if (isset($constraint->max)) {
                     $messages[] = "max: {$constraint->max}";
                 }
-                $vparams['format'][] = '{length: ' . join(', ', $messages) . '}';
+                $vparams['format'][] = '{length: '.join(', ', $messages).'}';
                 break;
             case 'Choice':
                 $choices = $this->getChoices($constraint, $className);
-                $format = '[' . join(' | ', $choices) . ']';
+                $format = '['.join(' | ', $choices).']';
                 if ($constraint->multiple) {
                     $vparams['actualType'] = DataTypes::COLLECTION;
                     $vparams['subType'] = DataTypes::ENUM;
@@ -249,7 +252,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
                     if (isset($constraint->max)) {
                         $messages[] = "max: {$constraint->max} ";
                     }
-                    $vparams['format'][] = '{' . join ('', $messages) . 'choice of ' . $format . '}';
+                    $vparams['format'][] = '{'.join('', $messages).'choice of '.$format.'}';
                 } else {
                     $vparams['actualType'] = DataTypes::ENUM;
                     $vparams['format'][] = $format;
@@ -257,16 +260,16 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
                 break;
             case 'Regex':
                 if ($constraint->match) {
-                    $vparams['format'][] = '{match: ' . $constraint->pattern . '}';
+                    $vparams['format'][] = '{match: '.$constraint->pattern.'}';
                 } else {
-                    $vparams['format'][] = '{not match: ' . $constraint->pattern . '}';
+                    $vparams['format'][] = '{not match: '.$constraint->pattern.'}';
                 }
                 break;
             case 'All':
                 foreach ($constraint->constraints as $childConstraint) {
                     if ($childConstraint instanceof Type) {
                         $nestedType = $childConstraint->type;
-                        $exp = explode("\\", $nestedType);
+                        $exp = explode('\\', $nestedType);
                         if (!class_exists($nestedType)) {
                             $nestedType = substr($className, 0, strrpos($className, '\\') + 1).$nestedType;
 
@@ -275,10 +278,10 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
                             }
                         }
 
-                        $vparams['dataType']   = sprintf("array of objects (%s)", end($exp));
+                        $vparams['dataType'] = sprintf('array of objects (%s)', end($exp));
                         $vparams['actualType'] = DataTypes::COLLECTION;
-                        $vparams['subType']    = $nestedType;
-                        $vparams['class']      = $nestedType;
+                        $vparams['subType'] = $nestedType;
+                        $vparams['class'] = $nestedType;
 
                         if (!in_array($nestedType, $visited)) {
                             $visited[] = $nestedType;
@@ -303,8 +306,8 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
     /**
      * Method to parse if constraint is count type to add the information in validation parameters.
      *
-     * @param Constraint $constraint The constraint metadata object.
-     * @param array $validationParams The existing validation parameters.
+     * @param Constraint $constraint       the constraint metadata object
+     * @param array      $validationParams the existing validation parameters
      *
      * @return array
      */
@@ -321,7 +324,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
                 $messages[] = "max: {$constraint->max}";
             }
 
-            $validationParams['format'][] = '{count: ' . join(', ', $messages) . '}';
+            $validationParams['format'][] = '{count: '.join(', ', $messages).'}';
         }
 
         return $validationParams;
@@ -330,7 +333,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
     /**
      * Method to parse the dataType to see if it is a primitive type or it is a class.
      *
-     * @param array $validationParams The existing validation parameters.
+     * @param array $validationParams the existing validation parameters
      *
      * @return array
      */
@@ -346,7 +349,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
             class_exists($validationParams['dataType'])
         ) {
             $validationParams['actualType'] = DataTypes::MODEL;
-            $validationParams['class']      = $validationParams['dataType'];
+            $validationParams['class'] = $validationParams['dataType'];
         }
 
         return $validationParams;

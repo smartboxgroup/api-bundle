@@ -2,12 +2,10 @@
 
 namespace Smartbox\ApiBundle\Services\Security;
 
-
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class WSToken extends AbstractToken
 {
-
     protected $soapRequest;
 
     public function __construct(array $roles = array())

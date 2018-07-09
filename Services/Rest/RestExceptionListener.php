@@ -8,8 +8,10 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 class RestExceptionListener extends ExceptionListener
 {
     /**
-     * Prevent non rest calls from not being logged
+     * Prevent non rest calls from not being logged.
+     *
      * @param GetResponseForExceptionEvent $event
+     *
      * @throws \Exception
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
@@ -17,7 +19,7 @@ class RestExceptionListener extends ExceptionListener
         $request = $event->getRequest();
         $apiMode = $request->get('api');
 
-        if ($apiMode == 'rest' || empty($apiMode)) {
+        if ('rest' == $apiMode || empty($apiMode)) {
             parent::onKernelException($event);
         }
     }

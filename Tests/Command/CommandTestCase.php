@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Client;
 abstract class CommandTestCase extends WebTestCase
 {
     /**
-     * Runs a command and returns it output
+     * Runs a command and returns it output.
      *
      * @param Client $client
      * @param $command

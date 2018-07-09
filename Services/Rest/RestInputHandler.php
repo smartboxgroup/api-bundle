@@ -13,30 +13,27 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Class RestInputHandler
+ * Class RestInputHandler.
  *
  * Based on FOS\RestBundle\Request\AbstractRequestBodyParamConverter
- *
- * @package Smartbox\ApiBundle\Services\Rest
  */
 class RestInputHandler
 {
-
-    /** @var  ApiConfigurator */
+    /** @var ApiConfigurator */
     protected $apiConfigurator;
 
-    /** @var  RequestBodyParamConverter */
+    /** @var RequestBodyParamConverter */
     protected $paramConverter;
 
-    /** @var  Serializer */
+    /** @var Serializer */
     protected $serializer;
 
     protected $context = array();
 
-    /** @var  ValidatorInterface */
+    /** @var ValidatorInterface */
     protected $validator;
 
-    function __construct(
+    public function __construct(
         ApiConfigurator $apiConfigurator,
         RequestBodyParamConverter $paramConverter,
         Serializer $serializer,
@@ -56,7 +53,6 @@ class RestInputHandler
         return $this->apiConfigurator;
     }
 
-
     /**
      * @param GetResponseEvent $event
      *
@@ -70,7 +66,7 @@ class RestInputHandler
         $methodName = $request->get(ApiConfigurator::METHOD_NAME);
         $api = $request->get('api');
 
-        if (!$serviceId || !$methodName || $api != 'rest') {
+        if (!$serviceId || !$methodName || 'rest' != $api) {
             return;
         }
 
@@ -84,13 +80,13 @@ class RestInputHandler
             $mode = $inputConfig['mode'];
             $type = $inputConfig['type'];
 
-            if ($mode == Configuration::MODE_BODY) {
+            if (Configuration::MODE_BODY == $mode) {
                 $this->convertBody($request, $inputName, $inputConfig, $version);
             }
 
             $param = $request->get($inputName);
 
-            if (empty($param) && $mode != Configuration::MODE_FILTER) {
+            if (empty($param) && Configuration::MODE_FILTER != $mode) {
                 throw new BadRequestHttpException(
                     "Missing required input parameter: $inputName"
                 );
@@ -110,9 +106,9 @@ class RestInputHandler
         $group = $config['group'];
 
         $options = array(
-            "deserializationContext" => array(
-                'version' => $version
-            )
+            'deserializationContext' => array(
+                'version' => $version,
+            ),
         );
 
         $options['deserializationContext']['groups'] = array($group);
@@ -122,7 +118,7 @@ class RestInputHandler
                 'name' => $name,
                 'class' => ApiConfigurator::getJMSType($config['type']),
                 'options' => $options,
-                'converter' => 'fos_rest.request_body'
+                'converter' => 'fos_rest.request_body',
             )
         );
 
@@ -130,11 +126,11 @@ class RestInputHandler
         $this->paramConverter->apply($request, $configuration);
     }
 
-
     /**
-     * Check if we should try to decode the body
+     * Check if we should try to decode the body.
      *
      * @param Request $request
+     *
      * @return bool
      */
     protected function isDecodeable(Request $request)
@@ -147,9 +143,10 @@ class RestInputHandler
     }
 
     /**
-     * Check if the content type indicates a form submission
+     * Check if the content type indicates a form submission.
      *
      * @param Request $request
+     *
      * @return bool
      */
     protected function isFormRequest(Request $request)

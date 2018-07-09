@@ -8,13 +8,12 @@ use JMS\Serializer\Annotation as JMS;
 use Smartbox\ApiBundle\Entity\ApiEntity;
 
 /**
- * Class Item
- * @package Smartbox\ApiBundle\Tests\Fixtures\Entity
+ * Class Item.
  */
 class Item extends ApiEntity implements LocatableEntity
 {
     /**
-     * Numeric id of the item
+     * Numeric id of the item.
      *
      * @Assert\Type(type="integer")
      * @Assert\NotBlank(groups={"list", "public"})
@@ -22,12 +21,12 @@ class Item extends ApiEntity implements LocatableEntity
      * @JMS\Expose
      * @JMS\Groups({"list", "public"})
      *
-     * @var integer
+     * @var int
      */
     protected $id;
 
     /**
-     * Name of an item
+     * Name of an item.
      *
      * @Assert\Type(type="string")
      * @Assert\NotBlank
@@ -40,7 +39,7 @@ class Item extends ApiEntity implements LocatableEntity
     protected $name;
 
     /**
-     * Description of the contents of the box
+     * Description of the contents of the box.
      *
      * @Assert\Type(type="string")
      * @Assert\NotBlank
@@ -53,7 +52,7 @@ class Item extends ApiEntity implements LocatableEntity
     protected $description;
 
     /**
-     * Type of item
+     * Type of item.
      *
      * @Assert\Type(type="string")
      * @Assert\NotBlank
@@ -131,7 +130,8 @@ class Item extends ApiEntity implements LocatableEntity
     }
 
     /**
-     * Returns the name of the API method that gets this entity
+     * Returns the name of the API method that gets this entity.
+     *
      * @return string
      */
     public function getApiGetterMethod()
@@ -140,7 +140,8 @@ class Item extends ApiEntity implements LocatableEntity
     }
 
     /**
-     * Returns an array with the parameters that identify this entity
+     * Returns an array with the parameters that identify this entity.
+     *
      * @return array
      */
     public function getIdParameters()

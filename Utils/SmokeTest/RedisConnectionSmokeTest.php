@@ -8,7 +8,7 @@ use Smartbox\CoreBundle\Utils\SmokeTest\SmokeTestInterface;
 use Smartbox\CoreBundle\Utils\SmokeTest\Output\SmokeTestOutput;
 
 /**
- * Class RedisConnectionSmokeTest
+ * Class RedisConnectionSmokeTest.
  */
 class RedisConnectionSmokeTest implements SmokeTestInterface
 {
@@ -34,7 +34,7 @@ class RedisConnectionSmokeTest implements SmokeTestInterface
         try {
             /** @var \Predis\Response\Status $pingInfo */
             $pingInfo = $this->redis->ping();
-            if ($pingInfo->getPayload() === 'PONG') {
+            if ('PONG' === $pingInfo->getPayload()) {
                 $smokeTestOutput->setCode(SmokeTestOutput::OUTPUT_CODE_SUCCESS);
                 $smokeTestOutput->addSuccessMessage('Connection checked');
             } else {
@@ -43,7 +43,7 @@ class RedisConnectionSmokeTest implements SmokeTestInterface
             }
         } catch (PredisException $e) {
             $smokeTestOutput->setCode(SmokeTestOutput::OUTPUT_CODE_FAILURE);
-            $smokeTestOutput->addFailureMessage('Could not connect to redis server. Error: ' . $e->getMessage());
+            $smokeTestOutput->addFailureMessage('Could not connect to redis server. Error: '.$e->getMessage());
         }
 
         return $smokeTestOutput;

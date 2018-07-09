@@ -11,7 +11,7 @@ class ServerBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->serverBuilder = new ServerBuilder;
+        $this->serverBuilder = new ServerBuilder();
     }
 
     public function testSetNotExistingServerClass()
@@ -41,11 +41,11 @@ class ServerBuilderTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'Test using a handler class name' => [
-                'handler' => SoapController::class
+                'handler' => SoapController::class,
             ],
             'Test using a handler object' => [
-                'handler' => new SoapController
-            ]
+                'handler' => new SoapController(),
+            ],
         ];
     }
 

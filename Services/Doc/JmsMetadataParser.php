@@ -2,7 +2,6 @@
 
 namespace Smartbox\ApiBundle\Services\Doc;
 
-
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
@@ -11,15 +10,13 @@ use Metadata\MetadataFactoryInterface;
 use Nelmio\ApiDocBundle\Util\DocCommentExtractor;
 
 /**
- * Class JmsMetadataParser
+ * Class JmsMetadataParser.
  *
  * This class extends  \Nelmio\ApiDocBundle\Parser\JmsMetadataParser with the only purpose of excluding from the parsing
  * those fields which don't belong to the API version being documented.
  *
  * It was necessary to copy here some code (like the attributes and the constructor) because it was declared private on
  * the parent class.
- *
- * @package Smartbox\ApiBundle\Services\Doc
  */
 class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
 {
@@ -62,12 +59,14 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
     }
 
     /**
-     * Recursively parse all metadata for a class
+     * Recursively parse all metadata for a class.
      *
-     * @param  string $className Class to get all metadata for
-     * @param  array $visited Classes we've already visited to prevent infinite recursion.
-     * @param  array $groups Serialization groups to include.
-     * @return array                     metadata for given class
+     * @param string $className Class to get all metadata for
+     * @param array  $visited   classes we've already visited to prevent infinite recursion
+     * @param array  $groups    serialization groups to include
+     *
+     * @return array metadata for given class
+     *
      * @throws \InvalidArgumentException
      */
     protected function doParse($className, $visited = array(), array $groups = array(), $version = null)
@@ -75,7 +74,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
         $meta = $this->factory->getMetadataForClass($className);
 
         if (null === $meta) {
-            throw new \InvalidArgumentException(sprintf("No metadata found for class %s", $className));
+            throw new \InvalidArgumentException(sprintf('No metadata found for class %s', $className));
         }
 
         $exclusionStrategies = array();
@@ -92,7 +91,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
         $reflection = new \ReflectionClass($className);
         $defaultProperties = array_map(
             function ($default) {
-                if (is_array($default) && count($default) === 0) {
+                if (is_array($default) && 0 === count($default)) {
                     return null;
                 }
 
@@ -149,7 +148,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
                         $dataType['class']
                     )
                 ) {
-                    $visitedForNext = array_merge([$dataType['class']],$visited);
+                    $visitedForNext = array_merge([$dataType['class']], $visited);
 
                     $children = $this->doParse($dataType['class'], $visitedForNext, $groups);
 

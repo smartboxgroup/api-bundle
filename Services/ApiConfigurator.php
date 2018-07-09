@@ -10,8 +10,7 @@ use Smartbox\CoreBundle\Type\EntityInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Class ApiConfigurator
- * @package Smartbox\ApiBundle\Services
+ * Class ApiConfigurator.
  */
 class ApiConfigurator
 {
@@ -26,24 +25,24 @@ class ApiConfigurator
     const METHOD_CONFIG = 'methodConfig';
     const INPUT = 'input';
 
-    protected $cacheDir = "";
+    protected $cacheDir = '';
 
     /** @var MetadataFactoryInterface */
     protected $metadataFactory;
 
-    /** @var  array */
+    /** @var array */
     protected $config;
 
-    /** @var  array */
+    /** @var array */
     protected $successCodes;
 
-    /** @var  array */
+    /** @var array */
     protected $errorCodes;
 
-    /** @var  array */
+    /** @var array */
     protected $restEmptyBodyResponseCodes;
 
-    /** @var string  */
+    /** @var string */
     protected $fixturePath;
 
     public static $arraySymbol = '[]';
@@ -95,7 +94,7 @@ class ApiConfigurator
         'double' => 'float',
         'DateTime' => 'dateTime',
         'date' => 'dateTime',
-        'datetime' => 'dateTime'
+        'datetime' => 'dateTime',
     );
 
     protected static $jmsTypes = array(
@@ -123,15 +122,17 @@ class ApiConfigurator
     /**
      * @param null $serviceId
      * @param null $methodName
+     *
      * @return array
+     *
      * @throws \Exception
      */
     public function getConfig($serviceId = null, $methodName = null)
     {
-        if ($serviceId == null) {
+        if (null == $serviceId) {
             return $this->config;
         } else {
-            if ($methodName == null) {
+            if (null == $methodName) {
                 return $this->config[$serviceId];
             } else {
                 if (!array_key_exists($methodName, $this->config[$serviceId]['methods'])) {
@@ -147,6 +148,7 @@ class ApiConfigurator
      * @param string $serviceName
      * @param string $version
      * @param string $methodName
+     *
      * @return null|array
      */
     public function getConfigByServiceNameVersionAndMethod($serviceName, $version, $methodName)
@@ -167,6 +169,7 @@ class ApiConfigurator
     /**
      * @param string $serviceName
      * @param string $version
+     *
      * @return array
      */
     public function getConfigByServiceNameAndVersion($serviceName, $version)
@@ -183,7 +186,6 @@ class ApiConfigurator
         return $configuration;
     }
 
-
     public function getRestRouteNameFor($serviceId, $methodName)
     {
         return "smartapi.rest.$serviceId.$methodName";
@@ -191,7 +193,9 @@ class ApiConfigurator
 
     /**
      * Returns true if a service with $id is defined.
+     *
      * @param $id
+     *
      * @return bool
      */
     public function hasService($id)
@@ -209,7 +213,7 @@ class ApiConfigurator
     }
 
     /**
-     * Register class aliases for all combinations of entity/group that appear on the configuration
+     * Register class aliases for all combinations of entity/group that appear on the configuration.
      *
      * @throws \Exception
      */
@@ -232,7 +236,7 @@ class ApiConfigurator
                         $mode = $inputConfig['mode'];
                         $class = $inputConfig['type'];
                         $group = $inputConfig['group'];
-                        if ($mode == Configuration::MODE_BODY && $class && $group) {
+                        if (Configuration::MODE_BODY == $mode && $class && $group) {
                             $this->registerEntityGroupAlias($class, $group);
                         }
                     }
@@ -260,25 +264,26 @@ class ApiConfigurator
     }
 
     /**
-     * Creates and registers an alias for a given $type and $group
+     * Creates and registers an alias for a given $type and $group.
      *
      * The alias name will follow the convention typeGroup
      *
      * @param $class
      * @param $group
+     *
      * @throws \Exception
      */
     public function registerEntityGroupAlias($class, $group)
     {
         if (empty($class) || !is_string($class)) {
-            throw new \InvalidArgumentException("Invalid value for argument type");
+            throw new \InvalidArgumentException('Invalid value for argument type');
         }
 
         if (empty($group) || !is_string($group)) {
-            throw new \InvalidArgumentException("Invalid value for argument group");
+            throw new \InvalidArgumentException('Invalid value for argument group');
         }
 
-        $class = str_replace(self::$arraySymbol, "", $class);
+        $class = str_replace(self::$arraySymbol, '', $class);
         $alias = $class.ucfirst($group);
 
         if (!class_exists($class)) {
@@ -310,7 +315,7 @@ class ApiConfigurator
                     // if the sub-element is an entity register it using the parent group
                     if (self::isEntity($type['name'])) {
                         $this->registerEntityGroupAlias($type['name'], $group);
-                    } elseif ($type['name'] === 'array') {
+                    } elseif ('array' === $type['name']) {
                         // otherwise if the sub-element is an array (of entities) check the first two indexes in the params
                         // attribute to determine the type(s) of the array items and register them as well using the parent
                         // group
@@ -326,9 +331,10 @@ class ApiConfigurator
     }
 
     /**
-     * Returns true if the given $alias is registered
+     * Returns true if the given $alias is registered.
      *
      * @param $alias
+     *
      * @return bool
      */
     public function isRegisteredAlias($alias)
@@ -337,9 +343,10 @@ class ApiConfigurator
     }
 
     /**
-     * Return the original class name of a registered $alias
+     * Return the original class name of a registered $alias.
      *
      * @param string $alias
+     *
      * @return string
      */
     public function getAliasOriginalType($alias)
@@ -349,6 +356,7 @@ class ApiConfigurator
 
     /**
      * @param $key string
+     *
      * @return mixed
      */
     public function getSuccessCodeDescription($key)
@@ -357,18 +365,18 @@ class ApiConfigurator
     }
 
     /**
-     * Sets the possible success codes as an associative array of strings successCode => message
+     * Sets the possible success codes as an associative array of strings successCode => message.
      *
      * @param array $successCodes
      */
     public function setSuccessCodes($successCodes)
     {
         if (!is_array($successCodes)) {
-            throw new \InvalidArgumentException("Invalid argument successCodes");
+            throw new \InvalidArgumentException('Invalid argument successCodes');
         } else {
             foreach ($successCodes as $key => $value) {
                 if (empty($key) || empty($value) || !is_string($value)) {
-                    throw new \InvalidArgumentException("Invalid argument successCodes");
+                    throw new \InvalidArgumentException('Invalid argument successCodes');
                 }
             }
         }
@@ -377,7 +385,7 @@ class ApiConfigurator
     }
 
     /**
-     * Returns the possible error codes and their description messages as an associative array
+     * Returns the possible error codes and their description messages as an associative array.
      *
      * @return array
      */
@@ -387,18 +395,18 @@ class ApiConfigurator
     }
 
     /**
-     * Sets the possible error codes as an associative array of strings errorCode => errorMessage
+     * Sets the possible error codes as an associative array of strings errorCode => errorMessage.
      *
      * @param array $errorCodes
      */
     public function setErrorCodes($errorCodes)
     {
         if (!is_array($errorCodes)) {
-            throw new \InvalidArgumentException("Invalid argument errorCodes");
+            throw new \InvalidArgumentException('Invalid argument errorCodes');
         } else {
             foreach ($errorCodes as $key => $value) {
                 if (empty($key) || empty($value) || !is_string($value)) {
-                    throw new \InvalidArgumentException("Invalid argument errorCodes");
+                    throw new \InvalidArgumentException('Invalid argument errorCodes');
                 }
             }
         }
@@ -407,44 +415,46 @@ class ApiConfigurator
     }
 
     /**
-     * Returns the equivalent BeSimpleSoap type to the given configuration or jms type
+     * Returns the equivalent BeSimpleSoap type to the given configuration or jms type.
      *
      * @param string $type
+     *
      * @return string
      */
     public static function getSoapTypeFor($type)
     {
-        if(empty($type)) {
+        if (empty($type)) {
             return null;
         }
 
-        if(!is_string($type)){
-            throw new \InvalidArgumentException("Expected string as an argument");
+        if (!is_string($type)) {
+            throw new \InvalidArgumentException('Expected string as an argument');
         }
 
-        if (strpos($type, self::$arraySymbol) === false) {
+        if (false === strpos($type, self::$arraySymbol)) {
             if (array_key_exists($type, self::$typeToSoap)) {
                 return self::$typeToSoap[$type];
             } else {
                 return $type;
             }
         } else {
-            $typeSingle = str_replace(self::$arraySymbol, "", $type);
+            $typeSingle = str_replace(self::$arraySymbol, '', $type);
 
             return self::getSoapTypeFor($typeSingle).self::$arraySymbolSoap;
         }
     }
 
     /**
-     * Returns true if the given $elementType is the name of a class implementing the EntityInterface
+     * Returns true if the given $elementType is the name of a class implementing the EntityInterface.
      *
      * @param string $elementType
+     *
      * @return bool
      */
     public static function isEntity($elementType)
     {
-        if(!is_string($elementType)){
-            throw new \InvalidArgumentException("Expected string as an argument");
+        if (!is_string($elementType)) {
+            throw new \InvalidArgumentException('Expected string as an argument');
         }
 
         $isEntityClass =
@@ -456,18 +466,19 @@ class ApiConfigurator
     }
 
     /**
-     * Returns the single type if an array type is passed
+     * Returns the single type if an array type is passed.
      *
      * @param $confType
+     *
      * @return mixed
      */
     public static function getSingleType($confType)
     {
-        if(!is_string($confType)){
-            throw new \InvalidArgumentException("Expected string as an argument");
+        if (!is_string($confType)) {
+            throw new \InvalidArgumentException('Expected string as an argument');
         }
 
-        $elementType = str_replace(self::$arraySymbol, "", $confType);
+        $elementType = str_replace(self::$arraySymbol, '', $confType);
 
         return $elementType;
     }
@@ -477,16 +488,18 @@ class ApiConfigurator
      * is returned and not the array.
      *
      * @param string $confType
+     *
      * @return string
+     *
      * @throws \Exception
      */
     public static function getJMSSingleType($confType)
     {
-        if(!is_string($confType)){
-            throw new \InvalidArgumentException("Expected string as an argument");
+        if (!is_string($confType)) {
+            throw new \InvalidArgumentException('Expected string as an argument');
         }
 
-        $elementType = str_replace(self::$arraySymbol, "", $confType);
+        $elementType = str_replace(self::$arraySymbol, '', $confType);
 
         if (array_key_exists($elementType, self::$jmsTypes)) {
             $elementType = self::$jmsTypes[$elementType];
@@ -501,38 +514,42 @@ class ApiConfigurator
      * This function returns true if the given $type is a class implementing EntityInterface or is an array of those.
      *
      * @param string $type
+     *
      * @return bool
+     *
      * @throws \InvalidArgumentException
      */
     public static function isEntityOrArrayOfEntities($type)
     {
-        if(!is_string($type)){
-            throw new \InvalidArgumentException("Expected string as an argument");
+        if (!is_string($type)) {
+            throw new \InvalidArgumentException('Expected string as an argument');
         }
 
-        $elementType = str_replace(self::$arraySymbol, "", $type);
+        $elementType = str_replace(self::$arraySymbol, '', $type);
 
         return self::isEntity($elementType);
     }
 
     /**
-     * This function returns the JMS equivalent type to the given $confType
+     * This function returns the JMS equivalent type to the given $confType.
      *
      * If $confType is not 'string', 'integer', 'float', 'datetime' or 'bool' and is not an instance of EntityInterface,
      * it throws an \InvalidArgumentException
      *
      * @param string $confType
+     *
      * @return string
+     *
      * @throws \InvalidArgumentException
      */
     public static function getJMSType($confType)
     {
-        if(!is_string($confType)){
-            throw new \InvalidArgumentException("Expected string as an argument");
+        if (!is_string($confType)) {
+            throw new \InvalidArgumentException('Expected string as an argument');
         }
 
-        $isArray = strpos($confType, self::$arraySymbol) !== false;
-        $elementType = str_replace(self::$arraySymbol, "", $confType);
+        $isArray = false !== strpos($confType, self::$arraySymbol);
+        $elementType = str_replace(self::$arraySymbol, '', $confType);
 
         if (array_key_exists($elementType, self::$jmsTypes)) {
             $elementType = self::$jmsTypes[$elementType];
@@ -551,26 +568,28 @@ class ApiConfigurator
 
     /**
      * This function casts the given $value to the expected $type if is possible.
-     * Otherwise it throws an exception
+     * Otherwise it throws an exception.
      *
      * If $type is not 'integer', 'float', 'datetime' or 'bool' it is ignored and $value is returned
      *
      * @param $inputName
      * @param string $type
      * @param $value
+     *
      * @return bool|\DateTime|float|int
+     *
      * @throws \Exception
      */
     public function getCleanParameter($inputName, $type, $value)
     {
-        if(!is_string($type)){
-            throw new \InvalidArgumentException("Expected string as an argument");
+        if (!is_string($type)) {
+            throw new \InvalidArgumentException('Expected string as an argument');
         }
 
         switch ($type) {
             case Configuration::STRING:
                 if (!is_string($value)) {
-                    $actualType = gettype( $value );
+                    $actualType = gettype($value);
                     throw new BadRequestHttpException("Parameter $inputName is not string. $actualType given.");
                 }
                 $param = $value;

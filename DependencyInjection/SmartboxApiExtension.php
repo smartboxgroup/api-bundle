@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
- * This is the class that loads and manages your bundle configuration
+ * This is the class that loads and manages your bundle configuration.
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
@@ -29,14 +29,13 @@ class SmartboxApiExtension extends Extension
         return $this->config;
     }
 
-
     public function resolveServiceConfig($service, $parent)
     {
         $parentConfig = $this->resolvedApiServices[$parent];
         $serviceConfig = $this->unResolvedApiServices[$service];
         $mergedMethods = array_merge($parentConfig['methods'], $serviceConfig['methods']);
 
-        $serviceConfig['methods'] = array();;
+        $serviceConfig['methods'] = array();
 
         $removedMethods = $serviceConfig['removed'];
         foreach ($mergedMethods as $methodName => $methodConfig) {
@@ -59,7 +58,7 @@ class SmartboxApiExtension extends Extension
         // Add default controller
         foreach ($this->unResolvedApiServices as $apiService => $serviceConfig) {
             foreach ($serviceConfig['methods'] as $method => $methodConfig) {
-                if (!empty($methodConfig) && $methodConfig['controller'] === 'default') {
+                if (!empty($methodConfig) && 'default' === $methodConfig['controller']) {
                     $this->unResolvedApiServices[$apiService]['methods'][$method]['controller'] = $defaultController;
                 }
             }

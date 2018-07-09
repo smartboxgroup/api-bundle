@@ -5,8 +5,7 @@ namespace Smartbox\ApiBundle\Tests;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Class BaseKernelTestCase
- * @package Smartbox\ApiBundle\Tests
+ * Class BaseKernelTestCase.
  */
 class BaseKernelTestCase extends KernelTestCase
 {

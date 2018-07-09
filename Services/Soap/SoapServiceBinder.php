@@ -1,4 +1,5 @@
 <?php
+
 namespace Smartbox\ApiBundle\Services\Soap;
 
 use BeSimple\SoapBundle\ServiceBinding\MessageBinderInterface;
@@ -9,7 +10,6 @@ use Smartbox\ApiBundle\Services\ApiConfigurator;
 
 class SoapServiceBinder
 {
-
     /**
      * @var Definition
      */
@@ -30,12 +30,12 @@ class SoapServiceBinder
      */
     private $responseMessageBinder;
 
-    /** @var  ApiConfigurator */
+    /** @var ApiConfigurator */
     protected $apiConfigurator;
 
     /**
-     * @param ApiConfigurator $configurator
-     * @param Definition $definition
+     * @param ApiConfigurator        $configurator
+     * @param Definition             $definition
      * @param MessageBinderInterface $requestHeaderMessageBinder
      * @param MessageBinderInterface $requestMessageBinder
      * @param MessageBinderInterface $responseMessageBinder
@@ -55,7 +55,6 @@ class SoapServiceBinder
 
         $this->responseMessageBinder = $responseMessageBinder;
     }
-
 
     /**
      * @return mixed
@@ -77,7 +76,7 @@ class SoapServiceBinder
      * @param string $method
      * @param string $header
      *
-     * @return boolean
+     * @return bool
      */
     public function isServiceHeader($method, $header)
     {
@@ -87,7 +86,7 @@ class SoapServiceBinder
     /**
      * @param $string
      *
-     * @return boolean
+     * @return bool
      */
     public function isServiceMethod($method)
     {
@@ -97,7 +96,7 @@ class SoapServiceBinder
     /**
      * @param string $method
      * @param string $header
-     * @param mixed $data
+     * @param mixed  $data
      *
      * @return SoapHeader
      */
@@ -135,7 +134,7 @@ class SoapServiceBinder
 
     /**
      * @param string $method
-     * @param array $arguments
+     * @param array  $arguments
      *
      * @return array
      */
@@ -159,9 +158,8 @@ class SoapServiceBinder
 
         // Extract filters
         if (array_key_exists('filters', $input)) {
-
             foreach ($methodConfig[ApiConfigurator::INPUT] as $inputName => $inputConfig) {
-                if ($inputConfig['mode'] == Configuration::MODE_FILTER) {
+                if (Configuration::MODE_FILTER == $inputConfig['mode']) {
                     $value = null;
 
                     if (array_key_exists($inputName, $input['filters'])) {
@@ -190,11 +188,10 @@ class SoapServiceBinder
                 ApiConfigurator::SERVICE_ID => $serviceId,
                 ApiConfigurator::SERVICE_NAME => $serviceConfig['name'],
                 ApiConfigurator::VERSION => $serviceConfig['version'],
-                ApiConfigurator::INPUT => $input
+                ApiConfigurator::INPUT => $input,
             )
         );
 
         return $arguments;
     }
-
 }

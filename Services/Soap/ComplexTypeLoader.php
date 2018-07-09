@@ -11,22 +11,21 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
 use Smartbox\CoreBundle\Type\Entity;
-use Symfony\Component\Validator\Validator;
 
 /**
- * Class ComplexTypeLoader
+ * Class ComplexTypeLoader.
  */
 class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
 {
     const RESOURCE_TYPE = 'annotation_complextype';
 
-    protected $aliasClass                = 'BeSimple\SoapBundle\ServiceDefinition\Annotation\Alias';
-    protected $complexTypeClass          = 'BeSimple\SoapBundle\ServiceDefinition\Annotation\ComplexType';
-    protected $jmsTypeClass              = 'JMS\Serializer\Annotation\Type';
+    protected $aliasClass = 'BeSimple\SoapBundle\ServiceDefinition\Annotation\Alias';
+    protected $complexTypeClass = 'BeSimple\SoapBundle\ServiceDefinition\Annotation\ComplexType';
+    protected $jmsTypeClass = 'JMS\Serializer\Annotation\Type';
     protected $symfonyValidationNotBlank = 'Symfony\Component\Validator\Constraints\NotBlank';
-    protected $symfonyValidationNotNull  = 'Symfony\Component\Validator\Constraints\NotNull';
+    protected $symfonyValidationNotNull = 'Symfony\Component\Validator\Constraints\NotNull';
 
-    /** @var  Serializer */
+    /** @var Serializer */
     protected $serializer;
 
     /**
@@ -52,8 +51,8 @@ class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
         }
 
         $className = $data['phpType'];
-        $group     = $data['group'];
-        $version   = $data['version'];
+        $group = $data['group'];
+        $version = $data['version'];
 
         if (null === $version) {
             throw new \InvalidArgumentException('Version can not be "null"');
@@ -86,9 +85,9 @@ class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
             }
 
             $isNullable = !$notBlank && !$notNull;
-            $soapType   = null;
-            $inGroup    = true;
-            $inVersion  = true;
+            $soapType = null;
+            $inGroup = true;
+            $inVersion = true;
 
             // JMS Metadata
             if (array_key_exists($property->name, $jmsClassMeta->propertyMetadata)) {
@@ -101,12 +100,12 @@ class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
                 // TODO: Make this more robust/general
                 $confTypeName = $jmsType['name'];
 
-                if ($jmsType['name'] == 'array') {
+                if ('array' == $jmsType['name']) {
                     $confTypeName = $jmsType['params'][0]['name'].ApiConfigurator::$arraySymbol;
                 }
 
-                $soapType  = ApiConfigurator::getSoapTypeFor($confTypeName);
-                $inGroup   = $this->isPropertyInGroup($jmsPropertyMeta, $group);
+                $soapType = ApiConfigurator::getSoapTypeFor($confTypeName);
+                $inGroup = $this->isPropertyInGroup($jmsPropertyMeta, $group);
                 $inVersion = $this->isPropertyInVersion($jmsPropertyMeta, $version);
             }
 
@@ -134,10 +133,10 @@ class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
     /**
      * Returns true if this class supports the given resource.
      *
-     * @param mixed $resource A resource
-     * @param string $type The resource type
+     * @param mixed  $resource A resource
+     * @param string $type     The resource type
      *
-     * @return Boolean True if this class supports the given resource, false otherwise
+     * @return bool True if this class supports the given resource, false otherwise
      */
     public function supports($resource, $type = null)
     {
@@ -147,9 +146,9 @@ class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
     /**
      * Check if the resource is defined correctly.
      *
-     * @param mixed $resource A resource.
+     * @param mixed $resource a resource
      *
-     * @return boolean True if the resource is defined correctly, false otherwise.
+     * @return bool true if the resource is defined correctly, false otherwise
      */
     private function isResourceDefined($resource)
     {
@@ -162,10 +161,10 @@ class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
     /**
      * Check if the property is defined for a specific group.
      *
-     * @param PropertyMetadata $propertyMetadata Property metadata.
-     * @param string $group Group name.
+     * @param PropertyMetadata $propertyMetadata property metadata
+     * @param string           $group            group name
      *
-     * @return boolean True if the property is defined for the group, false otherwise.
+     * @return bool true if the property is defined for the group, false otherwise
      */
     private function isPropertyInGroup(PropertyMetadata $propertyMetadata, $group)
     {
@@ -177,14 +176,14 @@ class ComplexTypeLoader extends Definition\Loader\AnnotationClassLoader
     /**
      * Check if property is available for a specific version.
      *
-     * @param PropertyMetadata $propertyMetadata Property metadata.
-     * @param string $version Version number.
+     * @param PropertyMetadata $propertyMetadata property metadata
+     * @param string           $version          version number
      *
-     * @return boolean True if the property is available for the version, false otherwise.
+     * @return bool true if the property is available for the version, false otherwise
      */
     private function isPropertyInVersion(PropertyMetadata $propertyMetadata, $version)
     {
-        $context           = SerializationContext::create()->setVersion($version);
+        $context = SerializationContext::create()->setVersion($version);
         $exclusionStrategy = new VersionExclusionStrategy($version);
 
         return !$exclusionStrategy->shouldSkipProperty($propertyMetadata, $context);

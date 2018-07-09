@@ -9,36 +9,34 @@ use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 /**
- * Class WebServiceContext
- *
- * @package Smartbox\ApiBundle\Services\Soap
+ * Class WebServiceContext.
  */
 class WebServiceContext extends \BeSimple\SoapBundle\WebServiceContext
 {
-    /** @var  SoapServiceBinder */
+    /** @var SoapServiceBinder */
     protected $serviceBinder;
 
-    /** @var  ApiConfigurator */
+    /** @var ApiConfigurator */
     protected $apiConfigurator;
 
     /** @var array */
     protected $options;
 
-    /** @var SoapServerBuilder  */
+    /** @var SoapServerBuilder */
     protected $serverBuilder;
 
     /**
      * WebServiceContext constructor.
      *
-     * @param LoaderInterface           $loader
-     * @param TypeConverterCollection   $converters
-     * @param array                     $options
+     * @param LoaderInterface         $loader
+     * @param TypeConverterCollection $converters
+     * @param array                   $options
      */
     public function __construct(
         LoaderInterface $loader,
         TypeConverterCollection $converters,
         array $options
-    ){
+    ) {
         $this->options = $options;
         parent::__construct($loader, $converters, $options);
     }
@@ -75,16 +73,18 @@ class WebServiceContext extends \BeSimple\SoapBundle\WebServiceContext
     }
 
     /**
-     * Gets the WSDL file from the extended Dumper class
-     * @param  mixed $endpoint
+     * Gets the WSDL file from the extended Dumper class.
+     *
+     * @param mixed $endpoint
+     *
      * @return string
      */
     public function getWsdlFile($endpoint = null)
     {
-        $file      = sprintf ('%s/%s.%s.wsdl', $this->options['cache_dir'], $this->options['name'], md5($endpoint));
+        $file = sprintf('%s/%s.%s.wsdl', $this->options['cache_dir'], $this->options['name'], md5($endpoint));
         $cache = new ConfigCache($file, $this->options['debug']);
 
-        if(!$cache->isFresh()) {
+        if (!$cache->isFresh()) {
             $definition = $this->getServiceDefinition();
 
             if ($endpoint) {

@@ -3,19 +3,17 @@
 namespace Smartbox\ApiBundle\Tests\EventListener;
 
 use FOS\RestBundle\Util\Codes;
-use phpDocumentor\Reflection\DocBlock;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Client;
 
 /**
- * Class ThrottlingListenerTest
- * @package Smartbox\ApiBundle\Tests\EventListener
+ * Class ThrottlingListenerTest.
  */
 class ThrottlingListenerTest extends WebTestCase
 {
-    /** @var  Client */
+    /** @var Client */
     protected $client;
 
     /**
@@ -59,7 +57,6 @@ class ThrottlingListenerTest extends WebTestCase
         return $this->client;
     }
 
-
     public function testItShouldLimitRequestsAndRespondWithProperHeadersForRest()
     {
         $responseContentItem = '{"id":1,"name":"Item name 1","description":"Item description 1","type":"Item type 1"}';
@@ -68,7 +65,7 @@ class ThrottlingListenerTest extends WebTestCase
         $client = $this->getRestClient();
 
         $rateLimit = 2;
-        for ($i = $rateLimit; $i >= 0; $i--) {
+        for ($i = $rateLimit; $i >= 0; --$i) {
             $client->request('GET', '/api/rest/throttling/v1/item/1');
             $response = $client->getResponse();
 
@@ -88,7 +85,6 @@ class ThrottlingListenerTest extends WebTestCase
         sleep(10);
     }
 
-
     public function testItShouldLimitRequestsAndRespondWithProperHeadersForSoap()
     {
         $this->markTestSkipped('Cannot modify header information - headers already sent by (output started at /vagrant/bundles/api-bundle/vendor/phpunit/phpunit/src/Util/Printer.php:134)');
@@ -96,8 +92,7 @@ class ThrottlingListenerTest extends WebTestCase
             sprintf(
 '<?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><SOAP-ENV:Body><SOAP-ENV:Fault><faultcode>Sender</faultcode><faultstring>%s</faultstring><detail/></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
-'
-,
+',
                 $this->container->getParameter('smartapi.rate_response_message')
         );
 
@@ -125,9 +120,9 @@ class ThrottlingListenerTest extends WebTestCase
                    </soapenv:Body>
             </soapenv:Envelope>';
 
-        for ($i = $rateLimit; $i >= 0; $i--) {
+        for ($i = $rateLimit; $i >= 0; --$i) {
             $prefix = gethostname();
-            $nonce = base64_encode( substr( md5( uniqid( $prefix.'_', true)), 0, 16));
+            $nonce = base64_encode(substr(md5(uniqid($prefix.'_', true)), 0, 16));
 
             $client->request(
                 'POST',
@@ -135,7 +130,7 @@ class ThrottlingListenerTest extends WebTestCase
                 array(),
                 array(),
                 array('CONTENT_TYPE' => 'application/xml'),
-                sprintf ($payload, $nonce)
+                sprintf($payload, $nonce)
             );
             $response = $client->getResponse();
 
@@ -154,7 +149,4 @@ class ThrottlingListenerTest extends WebTestCase
 
         sleep(10);
     }
-
-
-
 }

@@ -12,12 +12,11 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  * Symfony array validator which doesn't recognize subtypes.
  *
  * Class PreserveArrayTypeStrategy
- * @package Smartbox\ApiBundle\Services\Serializer\Exclusion
  */
 class PreserveArrayTypeStrategy implements ExclusionStrategyInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function shouldSkipClass(ClassMetadata $metadata, Context $context)
     {
@@ -25,13 +24,13 @@ class PreserveArrayTypeStrategy implements ExclusionStrategyInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function shouldSkipProperty(PropertyMetadata $property, Context $context)
     {
-        return (
+        return
             isset($property->type['name']) &&
-            $property->type['name'] === 'array'
-        );
+            'array' === $property->type['name']
+        ;
     }
 }

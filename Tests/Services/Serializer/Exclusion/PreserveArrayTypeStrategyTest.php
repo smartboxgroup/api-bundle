@@ -11,7 +11,7 @@ class PreserveArrayTypeStrategyTest extends PHPUnit_Framework_TestCase
     /** @var PreserveArrayTypeStrategy $strategy */
     private $strategy;
 
-    /** @var  string $class */
+    /** @var string $class */
     private $class;
 
     /** @var string $sampleProperty used to test some metadata */

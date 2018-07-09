@@ -27,4 +27,3 @@ class DateTimeTypeConverter extends \BeSimple\SoapCommon\Converter\DateTimeTypeC
         }
     }
 }
-

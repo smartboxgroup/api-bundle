@@ -22,6 +22,8 @@ class FileList implements UserListInterface
      */
     private $config = [];
 
+    private $passwords = [];
+
     /**
      * @var CacheItemPoolInterface
      */
@@ -30,34 +32,14 @@ class FileList implements UserListInterface
     /**
      * FileList constructor.
      *
-     * @param string                 $filename
+     * @param string                 $usersFile
+     * @param string                 $passwordsFile
      * @param CacheItemPoolInterface $cache
      */
-    public function __construct($filename, CacheItemPoolInterface $cache)
+    public function __construct($usersFile, $passwordsFile, CacheItemPoolInterface $cache)
     {
-        if (!\is_file($filename)) {
-            throw new \InvalidArgumentException("Invalid config file provided: \"$filename\".", 404);
-        }
-
-        $file = new \SplFileInfo($filename);
-
-        switch (strtolower($file->getExtension())) {
-            case 'yml':
-            case 'yaml':
-                $config = Yaml::parse(file_get_contents($file->getRealPath()));
-                break;
-
-            case 'json':
-                $config = json_decode(file_get_contents($file->getRealPath()), true);
-                break;
-
-            default:
-                throw new \InvalidArgumentException(
-                    "Unsupported config file format: \"{$file->getExtension()}\".", 400
-                );
-        }
-
-        $this->validate($config);
+        $this->validate($this->getContent($usersFile));
+        $this->passwords = $this->getContent($passwordsFile);
         $this->cache = $cache;
     }
 
@@ -76,6 +58,10 @@ class FileList implements UserListInterface
     {
         if (!isset($this->config['users'][$username])) {
             throw new \InvalidArgumentException("Unable to find \"$username\" user.");
+        }
+
+        if (!key_exists($username, $this->passwords)) {
+            throw new \InvalidArgumentException("Password is missing for user \"$username\".");
         }
 
         try {
@@ -97,7 +83,7 @@ class FileList implements UserListInterface
             }
             sort($methods);
 
-            $item->set(new ApiUser($username, $info['password'], $info['is_admin'], $methods));
+            $item->set(new ApiUser($username, $this->passwords[$username], $info['is_admin'], $methods));
             $this->cache->save($item);
         }
 
@@ -123,7 +109,6 @@ class FileList implements UserListInterface
                 ->prototype('array')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->scalarNode('password')->isRequired()->end()
                         ->booleanNode('is_admin')->defaultFalse()->end()
                         ->arrayNode('methods')
                             ->defaultValue([])
@@ -152,5 +137,33 @@ class FileList implements UserListInterface
         ;
 
         $this->config = $treeBuilder->buildTree()->finalize($config);
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return array
+     */
+    private function getContent($filename)
+    {
+        if (!\is_file($filename)) {
+            throw new \InvalidArgumentException("Invalid config file provided: \"$filename\".", 404);
+        }
+
+        $file = new \SplFileInfo($filename);
+
+        switch (\strtolower($file->getExtension())) {
+            case 'yml':
+            case 'yaml':
+                return Yaml::parse(file_get_contents($file->getRealPath()));
+
+            case 'json':
+                return json_decode(file_get_contents($file->getRealPath()), true);
+
+            default:
+                throw new \InvalidArgumentException(
+                    "Unsupported config file format: \"{$file->getExtension()}\".", 400
+                );
+        }
     }
 }

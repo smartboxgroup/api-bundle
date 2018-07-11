@@ -43,7 +43,11 @@ class FileListTest extends TestCase
      */
     public function testGet($ext)
     {
-        $this->list = new FileList("{$this->fixtureDir}/valid_config.$ext", $this->cache);
+        $this->list = new FileList(
+            "{$this->fixtureDir}/valid_config.$ext",
+            "{$this->fixtureDir}/passwords.$ext",
+            $this->cache
+        );
 
         /** @var ApiUser $user */
         $user = $this->list->get('regular');
@@ -64,7 +68,11 @@ class FileListTest extends TestCase
      */
     public function testHas($ext)
     {
-        $this->list = new FileList("{$this->fixtureDir}/valid_config.$ext", $this->cache);
+        $this->list = new FileList(
+            "{$this->fixtureDir}/valid_config.$ext",
+            "{$this->fixtureDir}/passwords.$ext",
+            $this->cache
+        );
 
         $this->assertTrue($this->list->has('admin'), 'Admin should be here.');
         $this->assertFalse($this->list->has('zboob'), 'Zboob should not be here.');
@@ -77,7 +85,9 @@ class FileListTest extends TestCase
     {
         $key = sprintf('%s.admin', FileList::CACHE_PREFIX);
         $this->assertFalse($this->cache->hasItem($key), "Key \"$key\" should not exists before cache building.");
-        (new FileList("{$this->fixtureDir}/valid_config.json", $this->cache))->buildCache();
+        (new FileList(
+            "{$this->fixtureDir}/valid_config.json", "{$this->fixtureDir}/passwords.json", $this->cache
+        ))->buildCache();
         $this->assertTrue($this->cache->hasItem($key), "Key \"$key\" should exists after cache building.");
     }
 

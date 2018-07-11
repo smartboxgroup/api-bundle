@@ -106,8 +106,12 @@ class SmartboxApiExtension extends Extension
         }
 
         if (isset($config['usersFile'])) {
+            if (!$container->has('cache.app')) {
+                $loader->load('services_cache.yml');
+            }
+
             $container->findDefinition(static::SERVICE_ID_FILE_LIST)
-                ->setArguments([$config['usersFile']]);
+                ->setArguments([$config['usersFile'], new Reference('cache.app')]);
 
             $container->findDefinition(static::SERVICE_ID_USER_PROVIDER)
                 ->setArguments([new Reference(static::SERVICE_ID_FILE_LIST)]);

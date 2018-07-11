@@ -5,6 +5,7 @@ namespace Smartbox\ApiBundle\Tests\Security\UserList;
 use PHPUnit\Framework\TestCase;
 use Smartbox\ApiBundle\Security\User\ApiUser;
 use Smartbox\ApiBundle\Security\UserList\FileList;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * @group user-provider
@@ -22,11 +23,17 @@ class FileListTest extends TestCase
     private $list;
 
     /**
+     * @var ArrayAdapter
+     */
+    private $cache;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp()
     {
         $this->fixtureDir = realpath(dirname(__DIR__).'/../Fixtures/UserProvider');
+        $this->cache = new ArrayAdapter();
     }
 
     /**
@@ -36,7 +43,7 @@ class FileListTest extends TestCase
      */
     public function testGet($ext)
     {
-        $this->list = new FileList("{$this->fixtureDir}/valid_config.$ext");
+        $this->list = new FileList("{$this->fixtureDir}/valid_config.$ext", $this->cache);
 
         /** @var ApiUser $user */
         $user = $this->list->get('regular');
@@ -57,10 +64,21 @@ class FileListTest extends TestCase
      */
     public function testHas($ext)
     {
-        $this->list = new FileList("{$this->fixtureDir}/valid_config.$ext");
+        $this->list = new FileList("{$this->fixtureDir}/valid_config.$ext", $this->cache);
 
         $this->assertTrue($this->list->has('admin'), 'Admin should be here.');
         $this->assertFalse($this->list->has('zboob'), 'Zboob should not be here.');
+    }
+
+    /**
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function testBuildCache()
+    {
+        $key = sprintf('%s.admin', FileList::CACHE_PREFIX);
+        $this->assertFalse($this->cache->hasItem($key), "Key \"$key\" should not exists before cache building.");
+        (new FileList("{$this->fixtureDir}/valid_config.json", $this->cache))->buildCache();
+        $this->assertTrue($this->cache->hasItem($key), "Key \"$key\" should exists after cache building.");
     }
 
     /**

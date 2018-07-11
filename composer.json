@@ -29,14 +29,16 @@
         "predis/predis": "^1.0",
         "nikic/php-parser": "^2.0@dev",
         "smartbox/core-bundle": "~1.0",
-        "smartbox/besimple-soap": "^1.0"
+        "smartbox/besimple-soap": "^1.0",
+        "psr/cache": "^1.0"
     },
     "require-dev": {
         "digitalnature/php-ref": "dev-master",
         "guzzlehttp/guzzle": "~3.8",
         "sensio/generator-bundle": "~2.3",
         "symfony/phpunit-bridge": "*",
-        "phpspec/prophecy": "^1.7"
+        "phpspec/prophecy": "^1.7",
+        "symfony/cache": "~3.0 || ~4.0"
     },
     "config": {
          "bin-dir": "bin"

@@ -3,9 +3,11 @@
 namespace Smartbox\ApiBundle\Tests\Security\UserList;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Cache\CacheItemPoolInterface;
 use Smartbox\ApiBundle\Security\User\ApiUser;
 use Smartbox\ApiBundle\Security\UserList\FileList;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Exception\InvalidArgumentException;
 
 /**
  * @group user-provider
@@ -89,6 +91,59 @@ class FileListTest extends TestCase
             "{$this->fixtureDir}/valid_config.json", "{$this->fixtureDir}/passwords.json", $this->cache
         ))->buildCache();
         $this->assertTrue($this->cache->hasItem($key), "Key \"$key\" should exists after cache building.");
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Password is missing for user "box_picker".
+     */
+    public function testMissingPassword()
+    {
+        (new FileList(
+            "{$this->fixtureDir}/valid_config.json", "{$this->fixtureDir}/passwords.yml", $this->cache
+        ))->buildCache();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid config file provided: "I'm super dumb".
+     */
+    public function testInvalidFilename()
+    {
+        (new FileList(
+            'I\'m super dumb', 'And I know it', $this->cache
+        ))->buildCache();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unsupported config file format: "xml".
+     */
+    public function testInvalidExtension()
+    {
+        (new FileList(
+            "{$this->fixtureDir}/invalid.xml", "{$this->fixtureDir}/passwords.json", $this->cache
+        ));
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Unable to fetch "admin" user: "Something happen".
+     */
+    public function testCacheFailure()
+    {
+        $this->cache = $this->createMock(CacheItemPoolInterface::class);
+
+        $this->cache->expects($this->once())
+            ->method('getItem')
+            ->willThrowException(new InvalidArgumentException('Something happen'));
+
+        $list = new FileList(
+            "{$this->fixtureDir}/valid_config.json",
+            "{$this->fixtureDir}/passwords.json",
+            $this->cache
+        );
+        $list->get('admin');
     }
 
     /**

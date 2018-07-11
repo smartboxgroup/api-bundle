@@ -56,7 +56,7 @@ class FileList implements UserListInterface
      */
     public function get($username)
     {
-        if (!isset($this->config['users'][$username])) {
+        if (!$this->has($username)) {
             throw new \InvalidArgumentException("Unable to find \"$username\" user.");
         }
 

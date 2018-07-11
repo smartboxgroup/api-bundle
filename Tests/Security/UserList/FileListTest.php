@@ -17,12 +17,7 @@ class FileListTest extends TestCase
     /**
      * @var string
      */
-    private $fixtureDir;
-
-    /**
-     * @var FileList
-     */
-    private $list;
+    private static $fixtureDir;
 
     /**
      * @var ArrayAdapter
@@ -34,7 +29,6 @@ class FileListTest extends TestCase
      */
     protected function setUp()
     {
-        $this->fixtureDir = realpath(dirname(__DIR__).'/../Fixtures/UserProvider');
         $this->cache = new ArrayAdapter();
     }
 
@@ -45,22 +39,18 @@ class FileListTest extends TestCase
      */
     public function testGet($ext)
     {
-        $this->list = new FileList(
-            "{$this->fixtureDir}/valid_config.$ext",
-            "{$this->fixtureDir}/passwords.$ext",
-            $this->cache
-        );
+        $list = $this->getFileList("valid_config.$ext", "passwords.$ext");
 
         /** @var ApiUser $user */
-        $user = $this->list->get('regular');
+        $user = $list->get('regular');
         $this->assertInstanceOf(ApiUser::class, $user);
         $this->assertSame('regular', $user->getUsername());
         $this->assertSame('P4$$W0rd', $user->getPassword());
         $this->assertFalse($user->isAdmin(), 'User should not be admin');
         $this->assertEquals(['fooBar', 'getBox', 'getBoxes'], $user->getFlows());
 
-        $this->assertTrue($this->list->get('admin')->isAdmin(), 'Admin should be admin');
-        $this->assertEmpty($this->list->get('useless')->getFlows(), 'User should not have any flows');
+        $this->assertTrue($list->get('admin')->isAdmin(), 'Admin should be admin');
+        $this->assertEmpty($list->get('useless')->getFlows(), 'User should not have any flows');
     }
 
     /**
@@ -70,14 +60,10 @@ class FileListTest extends TestCase
      */
     public function testHas($ext)
     {
-        $this->list = new FileList(
-            "{$this->fixtureDir}/valid_config.$ext",
-            "{$this->fixtureDir}/passwords.$ext",
-            $this->cache
-        );
+        $list = $this->getFileList("valid_config.$ext", "passwords.$ext");
 
-        $this->assertTrue($this->list->has('admin'), 'Admin should be here.');
-        $this->assertFalse($this->list->has('zboob'), 'Zboob should not be here.');
+        $this->assertTrue($list->has('admin'), 'Admin should be here.');
+        $this->assertFalse($list->has('zboob'), 'Zboob should not be here.');
     }
 
     /**
@@ -86,10 +72,9 @@ class FileListTest extends TestCase
     public function testBuildCache()
     {
         $key = sprintf('%s.admin', FileList::CACHE_PREFIX);
+
         $this->assertFalse($this->cache->hasItem($key), "Key \"$key\" should not exists before cache building.");
-        (new FileList(
-            "{$this->fixtureDir}/valid_config.json", "{$this->fixtureDir}/passwords.json", $this->cache
-        ))->buildCache();
+        $this->getFileList('valid_config.json', 'passwords.json')->buildCache();
         $this->assertTrue($this->cache->hasItem($key), "Key \"$key\" should exists after cache building.");
     }
 
@@ -99,20 +84,17 @@ class FileListTest extends TestCase
      */
     public function testMissingPassword()
     {
-        (new FileList(
-            "{$this->fixtureDir}/valid_config.json", "{$this->fixtureDir}/passwords.yml", $this->cache
-        ))->buildCache();
+        $this->getFileList('valid_config.json', 'passwords.yml')->buildCache();
     }
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid config file provided: "I'm super dumb".
      */
     public function testInvalidFilename()
     {
-        (new FileList(
-            'I\'m super dumb', 'And I know it', $this->cache
-        ))->buildCache();
+        $this->expectExceptionMessage("Invalid config file provided: \"{$this->getFixtureDir()}/I'm invalid\".");
+
+        $this->getFileList('I\'m invalid', 'And I know it')->buildCache();
     }
 
     /**
@@ -121,9 +103,7 @@ class FileListTest extends TestCase
      */
     public function testInvalidExtension()
     {
-        (new FileList(
-            "{$this->fixtureDir}/invalid.xml", "{$this->fixtureDir}/passwords.json", $this->cache
-        ));
+        $this->getFileList('invalid.xml', 'passwords.json');
     }
 
     /**
@@ -138,12 +118,16 @@ class FileListTest extends TestCase
             ->method('getItem')
             ->willThrowException(new InvalidArgumentException('Something happen'));
 
-        $list = new FileList(
-            "{$this->fixtureDir}/valid_config.json",
-            "{$this->fixtureDir}/passwords.json",
-            $this->cache
-        );
-        $list->get('admin');
+        $this->getFileList('valid_config.json', 'passwords.json')->get('admin');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unable to find "foo_404" user.
+     */
+    public function testUnknownUser()
+    {
+        $this->getFileList('valid_config.json', 'passwords.json')->get('foo_404');
     }
 
     /**
@@ -155,5 +139,28 @@ class FileListTest extends TestCase
             'JSON' => ['json'],
             'YAML' => ['yml'],
         ];
+    }
+
+    /**
+     * @param string $users
+     * @param string $password
+     *
+     * @return FileList
+     */
+    private function getFileList($users, $password)
+    {
+        return new FileList("{$this->getFixtureDir()}/$users", "{$this->getFixtureDir()}/$password", $this->cache);
+    }
+
+    /**
+     * @return string
+     */
+    private function getFixtureDir()
+    {
+        if (!static::$fixtureDir) {
+            static::$fixtureDir = realpath(dirname(__DIR__).'/../Fixtures/UserProvider');
+        }
+
+        return static::$fixtureDir;
     }
 }

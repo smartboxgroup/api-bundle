@@ -8,7 +8,8 @@ use Noxlogic\RateLimitBundle\Events\GenerateKeyEvent;
 use Noxlogic\RateLimitBundle\Events\RateLimitEvents;
 use Noxlogic\RateLimitBundle\Service\RateLimitService;
 use Noxlogic\RateLimitBundle\Util\PathLimitProcessor;
-use Predis\Connection\ConnectionException;
+use Predis\PredisException;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Smartbox\ApiBundle\Exception\ThrottlingException;
 use Smartbox\ApiBundle\Services\ApiConfigurator;
@@ -20,7 +21,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 /**
  * Class ThrottlingListener.
  */
-class ThrottlingListener extends BaseListener
+class ThrottlingListener extends BaseListener implements LoggerAwareInterface
 {
     const RATE_LIMIT_INFO = 'rate_limit_info';
 
@@ -66,6 +67,11 @@ class ThrottlingListener extends BaseListener
         $this->handleOnKernelController($event);
     }
 
+    /**
+     * @param FilterControllerEvent $event
+     *
+     * @throws ThrottlingException
+     */
     protected function handleOnKernelController(FilterControllerEvent $event)
     {
         $request = $event->getRequest();
@@ -146,8 +152,8 @@ class ThrottlingListener extends BaseListener
                     throw new ThrottlingException($message, $code, $rateLimitInfo, $request->get(ApiConfigurator::SERVICE_ID));
                 }
             }
-        } catch (ConnectionException $e) {
-            error_log('Error: Redis service is down: '.$e->getMessage());
+        } catch (PredisException $e) {
+            $this->logger->error('Error: Redis service is down: "{message}"', ['message' => $e->getMessage()]);
         }
     }
 

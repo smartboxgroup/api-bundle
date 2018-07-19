@@ -2,16 +2,19 @@
 
 namespace Smartbox\ApiBundle\Security\UserList;
 
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Cache\InvalidArgumentException;
 use Smartbox\ApiBundle\Security\User\ApiUser;
-use Smartbox\ApiBundle\Security\User\ApiUserInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Description of Class FileList.
+ * File based user list.
  */
 class FileList implements UserListInterface
 {
+    const CACHE_PREFIX = 'smartapi.user_cache';
+
     /**
      * Users configuration.
      *
@@ -19,41 +22,25 @@ class FileList implements UserListInterface
      */
     private $config = [];
 
+    private $passwords = [];
+
     /**
-     * User list.
-     *
-     * @var ApiUserInterface[]
+     * @var CacheItemPoolInterface
      */
-    private $users = [];
+    private $cache;
 
     /**
      * FileList constructor.
      *
-     * @param string $filename
+     * @param string                 $usersFile
+     * @param string                 $passwordsFile
+     * @param CacheItemPoolInterface $cache
      */
-    public function __construct($filename)
+    public function __construct($usersFile, $passwordsFile, CacheItemPoolInterface $cache)
     {
-        if (!\is_file($filename)) {
-            throw new \InvalidArgumentException("Invalid config file provided: \"$filename\".", 404);
-        }
-
-        $file = new \SplFileInfo($filename);
-
-        switch (strtolower($file->getExtension())) {
-            case 'yml':
-            case 'yaml':
-                $config = Yaml::parse(file_get_contents($file->getRealPath()));
-                break;
-
-            case 'json':
-                $config = json_decode(file_get_contents($file->getRealPath()), true);
-                break;
-
-            default:
-                throw new \InvalidArgumentException("Unsupported config file format: \"{$file->getExtension()}\".", 400);
-        }
-
-        $this->validate($config);
+        $this->validate($this->getContent($usersFile));
+        $this->passwords = $this->getContent($passwordsFile);
+        $this->cache = $cache;
     }
 
     /**
@@ -69,11 +56,21 @@ class FileList implements UserListInterface
      */
     public function get($username)
     {
-        if (!isset($this->config['users'][$username])) {
+        if (!$this->has($username)) {
             throw new \InvalidArgumentException("Unable to find \"$username\" user.");
         }
 
-        if (!isset($this->users[$username])) {
+        if (!key_exists($username, $this->passwords)) {
+            throw new \InvalidArgumentException("Password is missing for user \"$username\".");
+        }
+
+        try {
+            $item = $this->cache->getItem(sprintf('%s.%s', static::CACHE_PREFIX, preg_replace('/\W/', '_', $username)));
+        } catch (InvalidArgumentException $e) {
+            throw new \RuntimeException("Unable to fetch \"$username\" user: \"{$e->getMessage()}\".");
+        }
+
+        if (!$item->isHit()) {
             $info = $this->config['users'][$username];
             $methods = $info['methods'];
 
@@ -86,15 +83,18 @@ class FileList implements UserListInterface
             }
             sort($methods);
 
-            $this->users[$username] = new ApiUser(
-                $username,
-                $info['password'],
-                $info['is_admin'],
-                $methods
-            );
+            $item->set(new ApiUser($username, $this->passwords[$username], $info['is_admin'], $methods));
+            $this->cache->save($item);
         }
 
-        return $this->users[$username];
+        return $item->get();
+    }
+
+    public function buildCache()
+    {
+        foreach (\array_keys($this->config['users']) as $username) {
+            $this->get($username);
+        }
     }
 
     private function validate(array $config)
@@ -109,7 +109,6 @@ class FileList implements UserListInterface
                 ->prototype('array')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->scalarNode('password')->isRequired()->end()
                         ->booleanNode('is_admin')->defaultFalse()->end()
                         ->arrayNode('methods')
                             ->defaultValue([])
@@ -138,5 +137,33 @@ class FileList implements UserListInterface
         ;
 
         $this->config = $treeBuilder->buildTree()->finalize($config);
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return array
+     */
+    private function getContent($filename)
+    {
+        if (!\is_file($filename)) {
+            throw new \InvalidArgumentException("Invalid config file provided: \"$filename\".", 404);
+        }
+
+        $file = new \SplFileInfo($filename);
+
+        switch (\strtolower($file->getExtension())) {
+            case 'yml':
+            case 'yaml':
+                return Yaml::parse(file_get_contents($file->getRealPath()));
+
+            case 'json':
+                return json_decode(file_get_contents($file->getRealPath()), true);
+
+            default:
+                throw new \InvalidArgumentException(
+                    "Unsupported config file format: \"{$file->getExtension()}\".", 400
+                );
+        }
     }
 }

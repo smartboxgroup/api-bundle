@@ -5,6 +5,7 @@ imports:
 
 parameters:
     smartapi.rate_response_message: 'You exceeded the rate limit'
+    user_list.file.dir: '%kernel.root_dir%/../Fixtures/UserProvider'
 
 framework:
     test: ~
@@ -71,7 +72,8 @@ smartbox_core:
 
 smartbox_api:
     userProvider: smartapi.security.user_provider
-    usersFile: '%kernel.root_dir%/../Fixtures/UserProvider/valid_config.json'
+    usersFile: '%user_list.file.dir%/valid_config.json'
+    passwordsFile: '%user_list.file.dir%/passwords.json'
     restEmptyBodyResponseCodes: []
     default_controller: "test.dummy.controller:handleCallAction"
 

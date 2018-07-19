@@ -2,6 +2,7 @@
 
 namespace Smartbox\ApiBundle\DependencyInjection;
 
+use Smartbox\ApiBundle\HttpKernel\CacheWarmer\UserFileListCacheWarmer;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,6 +20,7 @@ class SmartboxApiExtension extends Extension
 {
     const SERVICE_ID_FILE_LIST = 'smartapi.user_list.file';
     const SERVICE_ID_USER_PROVIDER = 'smartapi.security.user_provider';
+    const SERVICE_ID_FILE_LIST_CW = 'smartapi.cache_warmer.user_file_list';
 
     protected $config;
 
@@ -105,12 +107,20 @@ class SmartboxApiExtension extends Extension
             $loader->load('services_throttling.yml');
         }
 
-        if (isset($config['usersFile'])) {
+        if (isset($config['usersFile']) && isset($config['passwordsFile'])) {
+            if (!$container->has('cache.app')) {
+                $loader->load('services_cache.yml');
+            }
+
             $container->findDefinition(static::SERVICE_ID_FILE_LIST)
-                ->setArguments([$config['usersFile']]);
+                ->setArguments([$config['usersFile'], $config['passwordsFile'], new Reference('cache.app')]);
 
             $container->findDefinition(static::SERVICE_ID_USER_PROVIDER)
                 ->setArguments([new Reference(static::SERVICE_ID_FILE_LIST)]);
+
+            $container->register(static::SERVICE_ID_FILE_LIST_CW, UserFileListCacheWarmer::class)
+                ->setArguments([new Reference(static::SERVICE_ID_FILE_LIST)])
+                ->addTag('kernel.cache_warmer');
         }
 
         $configurator->addArgument($this->resolvedApiServices);

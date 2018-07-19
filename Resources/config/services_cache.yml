@@ -1,0 +1,10 @@
+# Use only if cache.app is not defined
+services:
+    cache.app:
+        class: Symfony\Component\Cache\Adapter\FilesystemAdapter
+        arguments: [~, 0, '%kernel.cache_dir%/pools']
+        calls:
+            - [setLogger, ['@logger']]
+        tags:
+            - { name: cache.pool, clearer: cache.default_clearer }
+            - { name: monolog.logger, channel: cache }

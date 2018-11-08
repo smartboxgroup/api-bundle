@@ -105,6 +105,13 @@ class SoapServiceLoader extends Loader
                 }
             }
 
+            //OptionalHeaders
+            if (array_key_exists('optionalHeaders', $methodConfig)) {
+                foreach ($methodConfig['optionalHeaders'] as $header) {
+                    $soapMethod->addHeader($header, 'string', true);
+                }
+            }
+
             foreach ($methodArguments as $name => $type) {
                 $soapMethod->addInput($name, $type);
             }

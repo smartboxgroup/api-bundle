@@ -3,6 +3,7 @@ services:
 
 variables:
   GIT_STRATEGY: clone
+  CS_FIXER_VERSION: "v2.13.1"
 
 before_script:
   - composer-install
@@ -25,3 +26,8 @@ test:PHP72:
   image: docker-registry.production.smartbox.com/ci/php:72
   script:
     -  bin/simple-phpunit --coverage-text --colors=never
+
+coding-standards:
+  script:
+  - wget --no-verbose https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/${CS_FIXER_VERSION}/php-cs-fixer.phar -O ./php-cs-fixer
+  - php php-cs-fixer fix src/ --verbose --rules=@Symfony --dry-run --using-cache=no

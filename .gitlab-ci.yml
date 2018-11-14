@@ -5,29 +5,38 @@ variables:
   GIT_STRATEGY: clone
   CS_FIXER_VERSION: "v2.13.1"
 
-before_script:
-  - composer-install
+stages:
+  - test
 
 cache:
   paths:
   - vendor/
+  - bin/
 
-test:PHP56:
+before_script:
+  - composer-install
+
+PHP56:
+  stage: test
   image: docker-registry.production.smartbox.com/ci/php:56
   script:
     -  bin/simple-phpunit --coverage-text --colors=never
 
-test:PHP70:
+PHP70:
+  stage: test
   image: docker-registry.production.smartbox.com/ci/php:70
   script:
     -  bin/simple-phpunit --coverage-text --colors=never
 
-test:PHP72:
+PHP72:
+  stage: test
   image: docker-registry.production.smartbox.com/ci/php:72
   script:
     -  bin/simple-phpunit --coverage-text --colors=never
 
 coding-standards:
+  stage: test
+  image: docker-registry.production.smartbox.com/eai/bifrostqa
   script:
   - wget --no-verbose https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/${CS_FIXER_VERSION}/php-cs-fixer.phar -O ./php-cs-fixer
-  - php php-cs-fixer fix src/ --verbose --rules=@Symfony --dry-run --using-cache=no
+  - php php-cs-fixer fix --verbose --rules=@Symfony --dry-run --using-cache=no

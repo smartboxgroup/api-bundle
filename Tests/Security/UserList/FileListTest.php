@@ -92,9 +92,8 @@ class FileListTest extends TestCase
      */
     public function testInvalidFilename()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
-        // Mel to fix
-        //        $this->expectExceptionMessage("Invalid config file provided: \"{$this->getFixtureDir()}/I'm invalid\".");
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Invalid config file provided: \"{$this->getFixtureDir()}/I'm invalid\".");
         $this->getFileList('I\'m invalid', 'And I know it')->buildCache();
     }
 

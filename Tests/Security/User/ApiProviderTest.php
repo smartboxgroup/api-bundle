@@ -62,9 +62,8 @@ class ApiProviderTest extends TestCase
         $user = $this->getMockBuilder(UserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->setExpectedException(UnsupportedUserException::class);
-        //Mel to fix
-//        $this->expectExceptionMessage(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+        $this->expectException(UnsupportedUserException::class);
+        $this->expectExceptionMessage(sprintf('Instances of "%s" are not supported.', \get_class($user)));
 
         $this->provider->refreshUser($user);
     }
@@ -91,7 +90,6 @@ class ApiProviderTest extends TestCase
 
     public function testLoadUserByUsername()
     {
-//        $user = $this->createMock(ApiUserInterface::class);
         $user = $this->getMockBuilder(ApiUserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();

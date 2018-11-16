@@ -1,9 +1,10 @@
 <?php
-
 namespace Smartbox\ApiRestClient;
 
 /**
- * Class ApiRestException.
+ * Class ApiRestException
+ *
+ * @package Smartbox\ApiRestClient
  */
 class ApiRestException extends \Exception
 {
@@ -15,8 +16,8 @@ class ApiRestException extends \Exception
     /**
      * ApiRestException constructor.
      *
-     * @param ApiRestResponse $apiRestResponse
-     * @param \Exception|null $previous
+     * @param ApiRestResponse   $apiRestResponse
+     * @param \Exception|null   $previous
      */
     public function __construct(ApiRestResponse $apiRestResponse, \Exception $previous = null)
     {

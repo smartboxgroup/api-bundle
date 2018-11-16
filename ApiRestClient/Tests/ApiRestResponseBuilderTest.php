@@ -2,14 +2,14 @@
 
 namespace Smartbox\ApiBundle\Tests\SDK;
 
-use Guzzle\Http\Message\Response;
+use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
 use Smartbox\ApiRestClient\ApiRestResponse;
 use Smartbox\ApiRestClient\ApiRestResponseBuilder;
 use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
 
-class ApiRestResponseBuilderTest extends \PHPUnit\Framework\TestCase
+class ApiRestResponseBuilderTest extends \PHPUnit_Framework_TestCase
 {
     public function testEmptyResponse()
     {

@@ -2,7 +2,7 @@
 
 namespace Smartbox\ApiBundle\Tests\SDK;
 
-use Guzzle\Http\Message\Response;
+use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Smartbox\ApiRestClient\ApiRestException;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
@@ -13,7 +13,7 @@ use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
 /**
  * Class ApiRestInternalClientTest.
  */
-class ApiRestInternalClientTest extends \PHPUnit\Framework\TestCase
+class ApiRestInternalClientTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_USERNAME = 'admin';
     const TEST_PASSWORD = 'admin';

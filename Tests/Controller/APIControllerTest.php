@@ -84,7 +84,7 @@ class APIControllerTest extends BaseKernelTestCase
     public function testHandleCallAction($version, $methodName, $methodConfig, array $inputValues, $exceptionClass)
     {
         if (!is_null($exceptionClass)) {
-            $this->expectException($exceptionClass);
+            $this->setExpectedException($exceptionClass);
         }
 
         // Prepare the request

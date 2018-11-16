@@ -2,7 +2,9 @@
 
 namespace Smartbox\ApiRestClient;
 
-use Guzzle\Http\Message\RequestFactory;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\UriResolver;
 
 /**
  * Class ApiRestRequestBuilder.
@@ -22,7 +24,7 @@ class ApiRestRequestBuilder
      * @param array $headers
      * @param array $filters
      *
-     * @return \Guzzle\Http\Message\RequestInterface|mixed
+     * @return \GuzzleHttp\Psr7\Request|mixed
      */
     public static function buildRequest($method, $url, $username = null, $password = null, $object = null, $headers = array(), $filters = array())
     {
@@ -33,19 +35,15 @@ class ApiRestRequestBuilder
         }
 
         $headers = array_merge($headers, self::getOptions($username, $password));
-
-        $factory = new RequestFactory();
-
-        $request = $factory->create($method, $url, $headers, $jsonContent, self::getOptions($username, $password));
-
-        $query = $request->getQuery();
-
+        $uri = UriResolver::resolve(new Uri($url), new Uri(''));
         foreach ($filters as  $key => $value) {
             if (is_bool($value)) {
-                $value = ($value) ? 'true' : 'false';
+                $uri = Uri::withQueryValue($uri, $key, $value ? 'true' : 'false');
+            } else {
+                $uri = Uri::withQueryValue($uri, $key, $value);
             }
-            $query->add($key, $value);
         }
+        $request = new Request($method, $uri, $headers, $jsonContent);
 
         return $request;
     }
@@ -61,10 +59,7 @@ class ApiRestRequestBuilder
     protected static function getOptions($username, $password)
     {
         return array(
-            'auth' => array(
-                $username,
-                $password,
-            ),
+            'Authorization' => 'Basic '.base64_encode($username.':'.$password),
             'Content-Type' => 'application/json',
         );
     }

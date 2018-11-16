@@ -1,5 +1,4 @@
 <?php
-
 namespace Smartbox\ApiRestClient;
 
 use JMS\Serializer\Handler\ArrayCollectionHandler;
@@ -10,18 +9,21 @@ use JMS\Serializer\Handler\PropelCollectionHandler;
 use JMS\Serializer\SerializerBuilder;
 
 /**
- * Class JMSSerializerBuilder.
+ * Class JMSSerializerBuilder
+ *
+ * @package Smartbox\ApiRestClient
  */
 class JMSSerializerBuilder
 {
     /**
-     * Build instance of JMS serializer wih correct date format.
+     * Build instance of JMS serializer wih correct date format
      *
      * @return \JMS\Serializer\Serializer
      */
     public static function buildSerializer()
     {
-        $jmsConfigurator = function (HandlerRegistry $handlerRegistry) {
+        $jmsConfigurator = function(HandlerRegistry $handlerRegistry)
+        {
             $handlerRegistry->registerSubscribingHandler(new DateHandler('Y-m-d\TH:i:s.uP'));
             $handlerRegistry->registerSubscribingHandler(new PhpCollectionHandler());
             $handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());

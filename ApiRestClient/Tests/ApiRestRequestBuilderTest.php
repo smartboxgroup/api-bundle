@@ -2,11 +2,15 @@
 
 namespace Smartbox\ApiRestClient\Tests;
 
+use GuzzleHttp\Client;
 use Smartbox\ApiRestClient\ApiRestRequestBuilder;
 use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
 use Smartbox\ApiRestClient\Tests\Fixture\Entity\Universe;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 
-class ApiRestRequestBuilderTest extends \PHPUnit\Framework\TestCase
+class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_USERNAME = 'admin';
     const TEST_PASSWORD = 'admin';
@@ -14,43 +18,62 @@ class ApiRestRequestBuilderTest extends \PHPUnit\Framework\TestCase
     public function testNullBodyRequest()
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest('GET', '/', self::TEST_USERNAME, self::TEST_PASSWORD);
-
-        $this->assertEquals(null, $actualRequest->getResponse());
-        $this->assertInstanceOf('Guzzle\Http\Message\Request', $actualRequest);
+        $response = new Response(200, [], null);
+        $responses = [$response];
+        $mockHandler = new MockHandler($responses);
+        $handler = HandlerStack::create($mockHandler);
+        $httpClient = new Client([
+            'handler' => $handler,
+        ]);
+        $httpResponse = $httpClient->send($actualRequest);
+        $bodyStream = $httpResponse->getBody();
+        $this->assertEquals('', $bodyStream->getContents());
+        $this->assertInstanceOf('GuzzleHttp\Psr7\Request', $actualRequest);
     }
 
     public function testUrlRequest()
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest('GET', 'http://example.com', self::TEST_USERNAME, self::TEST_PASSWORD, null, array('header1' => 'h1', 'header2' => 'h2'));
-
-        $this->assertEquals('http://example.com', $actualRequest->getUrl());
+        $this->assertEquals('http://example.com', (string) $actualRequest->getUri());
     }
 
     public function testHeaderRequest()
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest('GET', '/', self::TEST_USERNAME, self::TEST_PASSWORD, null, array('header1' => 'h1', 'header2' => 'h2'));
 
-        $this->assertEquals(array(self::TEST_USERNAME, self::TEST_PASSWORD), $actualRequest->getHeader('auth')->toArray());
-        $this->assertEquals(array('application/json'), $actualRequest->getHeader('Content-Type')->toArray());
-        $this->assertEquals(array('h1'), $actualRequest->getHeader('header1')->toArray());
-        $this->assertEquals(array('h2'), $actualRequest->getHeader('header2')->toArray());
+        $this->assertEquals(array('Basic '.base64_encode(self::TEST_USERNAME.':'.self::TEST_PASSWORD)), $actualRequest->getHeader('Authorization'));
+        $this->assertEquals(array('application/json'), $actualRequest->getHeader('Content-Type'));
+        $this->assertEquals(array('h1'), $actualRequest->getHeader('header1'));
+        $this->assertEquals(array('h2'), $actualRequest->getHeader('header2'));
     }
 
     public function testFilterRequest()
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest('GET', '/', self::TEST_USERNAME, self::TEST_PASSWORD, null, array('header1' => 'h1', 'header2' => 'h2'), array('page' => '12', ';limit' => '12'));
 
-        $this->assertEquals(array('h1'), $actualRequest->getHeader('header1')->toArray());
-        $this->assertEquals(array('h2'), $actualRequest->getHeader('header2')->toArray());
-
-        $this->assertEquals(array('page' => '12', ';limit' => '12'), $actualRequest->getQuery()->getAll());
+        $this->assertEquals(array('h1'), $actualRequest->getHeader('header1'));
+        $this->assertEquals(array('h2'), $actualRequest->getHeader('header2'));
+        $query = $actualRequest->getUri()->getQuery();
+        $result = [];
+        parse_str($query, $result);
+        $this->assertEquals(array('page' => '12', ';limit' => '12'), $result);
     }
 
     public function testEmptyStringRequest()
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest('POST', '/', self::TEST_USERNAME, self::TEST_PASSWORD, '');
-
-        $this->assertEquals(null, $actualRequest->getResponse());
+        $this->assertInstanceOf('GuzzleHttp\Psr7\Request', $actualRequest);
+        $response = new Response(200, [], '');
+        $responses = array();
+        $responses[] = $response;
+        $mockHandler = new MockHandler($responses);
+        $handler = HandlerStack::create($mockHandler);
+        $httpClient = new Client([
+            'handler' => $handler,
+        ]);
+        $httpResponse = $httpClient->send($actualRequest);
+        $bodyStream = $httpResponse->getBody();
+        $this->assertEquals('', $bodyStream->getContents());
     }
 
     public function testStringRequest()
@@ -63,8 +86,10 @@ class ApiRestRequestBuilderTest extends \PHPUnit\Framework\TestCase
     public function testBooleanRequest()
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest('PUT', '/', self::TEST_USERNAME, self::TEST_PASSWORD, null, array(), array('myBool' => true));
-
-        $this->assertEquals(array('myBool' => 'true'), $actualRequest->getQuery()->getAll());
+        $query = $actualRequest->getUri()->getQuery();
+        $result = [];
+        parse_str($query, $result);
+        $this->assertEquals(array('myBool' => 'true'), $result);
     }
 
     public function testObjectRequest()

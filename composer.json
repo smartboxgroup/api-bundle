@@ -10,7 +10,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Smartbox\\ApiRestClient\\": "Command/SDK/"
+            "Smartbox\\ApiRestClient\\": "ApiRestClient"
         }
     },
     "require": {
@@ -34,8 +34,10 @@
     },
     "require-dev": {
         "digitalnature/php-ref": "dev-master",
-        "guzzlehttp/guzzle": "~3.8",
+        "guzzlehttp/guzzle": "^6.3",
         "sensio/generator-bundle": "~2.3",
+        "phpunit/php-code-coverage": "^2.2.4",
+        "phpunit/phpunit": "^4.8",
         "symfony/phpunit-bridge": "*",
         "phpspec/prophecy": "^1.7",
         "symfony/cache": "~3.0 || ~4.0"

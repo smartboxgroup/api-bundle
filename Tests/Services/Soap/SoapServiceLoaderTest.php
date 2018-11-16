@@ -29,7 +29,10 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
         $complexTypeLoader = new ComplexTypeLoader($this->getContainer()->get('annotation_reader'), $typeRepository);
         $complexTypeLoader->setSerializer($this->getContainer()->get('serializer'));
 
-        $resolver = $this->createMock('Symfony\Component\Config\Loader\LoaderResolverInterface');
+//        $resolver = $this->createMock('Symfony\Component\Config\Loader\LoaderResolverInterface');
+        $resolver = $this->getMockBuilder('Symfony\Component\Config\Loader\LoaderResolverInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
         $resolver
             ->method('resolve')
             ->will($this->returnValue($complexTypeLoader));
@@ -71,7 +74,7 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
 
     public function testWhenMethodHasOutputButIsNotDefinedCorrectly()
     {
-        $this->expectException(\LogicException::class);
+        $this->setExpectedException(\LogicException::class);
 
         $serviceConfig = [
             'eai_v0' => [
@@ -102,7 +105,7 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
 
     public function testWhenInputTypeHasPropertyWithNotValidType()
     {
-        $this->expectException(\Exception::class);
+        $this->setExpectedException(\Exception::class);
 
         $serviceConfig = [
             'eai_v0' => [

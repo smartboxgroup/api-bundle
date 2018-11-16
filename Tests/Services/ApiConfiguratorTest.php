@@ -218,7 +218,7 @@ class ApiConfiguratorTest extends BaseKernelTestCase
         $inputName = 'id';
         $type = 'string';
         $value = ['i' => 'am', 'not' => 'string'];
-        $this->setExpectedException(BadRequestHttpException::class);
+        $this->expectException(BadRequestHttpException::class);
         $this->configurator->getCleanParameter($inputName, $type, $value);
     }
 

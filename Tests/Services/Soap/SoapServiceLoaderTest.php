@@ -72,7 +72,7 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
 
     public function testWhenMethodHasOutputButIsNotDefinedCorrectly()
     {
-        $this->setExpectedException(\LogicException::class);
+        $this->expectException(\LogicException::class);
 
         $serviceConfig = [
             'eai_v0' => [
@@ -103,7 +103,7 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
 
     public function testWhenInputTypeHasPropertyWithNotValidType()
     {
-        $this->setExpectedException(\Exception::class);
+        $this->expectException(\Exception::class);
 
         $serviceConfig = [
             'eai_v0' => [

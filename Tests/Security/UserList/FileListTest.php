@@ -109,17 +109,16 @@ class FileListTest extends TestCase
 
     /**
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Unable to fetch "admin" user: "Something happened".
+     * @expectedExceptionMessage Unable to fetch "admin" user: "Something happen".
      */
     public function testCacheFailure()
     {
         $this->cache = $this->getMockBuilder(CacheItemPoolInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->setExpectedException(\InvalidArgumentException::class);
         $this->cache->expects($this->once())
             ->method('getItem')
-            ->willThrowException(new \InvalidArgumentException('Something happened'));
+            ->willThrowException(new InvalidArgumentException('Something happen'));
 
         $this->getFileList('valid_config.json', 'passwords.json')->get('admin');
     }

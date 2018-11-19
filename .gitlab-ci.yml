@@ -39,4 +39,4 @@ coding-standards:
   before_script: []
   script:
   - php-cs-fixer --version
-  - php php-cs-fixer fix --verbose --rules=@Symfony --dry-run --using-cache=no
+  - php-cs-fixer fix --verbose --rules=@Symfony --dry-run --using-cache=no

@@ -71,7 +71,7 @@ class FileListTest extends TestCase
      */
     public function testBuildCache()
     {
-        $key = sprintf('%s.admin', FileList::CACHE_PREFIX);
+        $key = \sprintf('%s.admin', FileList::CACHE_PREFIX);
 
         $this->assertFalse($this->cache->hasItem($key), "Key \"$key\" should not exists before cache building.");
         $this->getFileList('valid_config.json', 'passwords.json')->buildCache();
@@ -159,7 +159,7 @@ class FileListTest extends TestCase
     private function getFixtureDir()
     {
         if (!static::$fixtureDir) {
-            static::$fixtureDir = realpath(dirname(__DIR__).'/../Fixtures/UserProvider');
+            static::$fixtureDir = \realpath(\dirname(__DIR__).'/../Fixtures/UserProvider');
         }
 
         return static::$fixtureDir;

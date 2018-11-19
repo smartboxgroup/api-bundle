@@ -47,7 +47,7 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
         );
 
         // To avoid to have cached the soap aliases file for each test case
-        unlink($cacheDir.DIRECTORY_SEPARATOR.ApiConfigurator::SOAP_ALIASES_FILENAME);
+        \unlink($cacheDir.DIRECTORY_SEPARATOR.ApiConfigurator::SOAP_ALIASES_FILENAME);
 
         $this->soapServiceLoader = new SoapServiceLoader($this->apiConfigurator, $typeRepository);
         $this->soapServiceLoader->setResolver($resolver);

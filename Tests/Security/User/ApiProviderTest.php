@@ -9,7 +9,6 @@ use Smartbox\ApiBundle\Security\UserList\UserListInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
-
 /**
  * @group user-provider
  */
@@ -63,7 +62,7 @@ class ApiProviderTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->expectException(UnsupportedUserException::class);
-        $this->expectExceptionMessage(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+        $this->expectExceptionMessage(\sprintf('Instances of "%s" are not supported.', \get_class($user)));
 
         $this->provider->refreshUser($user);
     }

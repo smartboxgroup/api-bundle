@@ -10,11 +10,18 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 
-class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
+class ApiRestRequestBuilderTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_USERNAME = 'admin';
     const TEST_PASSWORD = 'admin';
 
+    /**
+     * The outcome of this function has changed since we update Guzzle to ^6.
+     * We do not get a null response as before but instead get an empty string.
+     * This test is still valid as it tests what happens when we send null.
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function testNullBodyRequest()
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest('GET', '/', self::TEST_USERNAME, self::TEST_PASSWORD);
@@ -27,7 +34,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
         ]);
         $httpResponse = $httpClient->send($actualRequest);
         $bodyStream = $httpResponse->getBody();
-        $this->assertEquals('', $bodyStream->getContents());
+        $this->assertSame('', $bodyStream->getContents());
         $this->assertInstanceOf('GuzzleHttp\Psr7\Request', $actualRequest);
     }
 
@@ -73,7 +80,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
         ]);
         $httpResponse = $httpClient->send($actualRequest);
         $bodyStream = $httpResponse->getBody();
-        $this->assertEquals('', $bodyStream->getContents());
+        $this->assertSame('', $bodyStream->getContents());
     }
 
     public function testStringRequest()

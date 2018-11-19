@@ -7,7 +7,7 @@ use Smartbox\ApiRestClient\ApiRestInternalClientBuilder;
 use Smartbox\ApiRestClient\Environments;
 use Smartbox\ApiRestClient\Tests\Fixture\MockApiRestInternalClient;
 
-class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
+class ApiRestInternalClientBuilderTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_ENV = 'test';
     const TEST_USERNAME = 'test';

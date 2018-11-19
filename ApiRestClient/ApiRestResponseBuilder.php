@@ -35,7 +35,7 @@ class ApiRestResponseBuilder
         //Flatten headers array
         $headers = array();
         foreach ($guzzleResponse->getHeaders() as $name => $value) {
-            $headers[$name] = \is_array($value) ? $value[0] : \strval($value);
+            $headers[$name] = \is_array($value) ? (string) $value[0] : (string) $value;
         }
         $apiRestResponse->setHeaders($headers);
 

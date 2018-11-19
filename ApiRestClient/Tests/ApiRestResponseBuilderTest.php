@@ -2,7 +2,7 @@
 
 namespace Smartbox\ApiBundle\Tests\SDK;
 
-use Guzzle\Http\Message\Response;
+use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
 use Smartbox\ApiRestClient\ApiRestResponse;

@@ -2,9 +2,10 @@
 
 namespace Smartbox\ApiRestClient\Tests\Fixture;
 
-use Guzzle\Http\Client;
-use Guzzle\Plugin\Mock\MockPlugin;
-use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use Smartbox\ApiBundle\Tests\SDK\Fixture\Entity\Product;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
 use Smartbox\ApiRestClient\ApiRestResponse;
 
@@ -27,18 +28,12 @@ class MockApiRestInternalClient extends ApiRestInternalClient
      */
     public function __construct($username, $password, $baseUrl, $responses = array(), $exceptions = array())
     {
-        $mock = new MockPlugin();
-        foreach ($responses as $response) {
-            $mock->addResponse($response);
-        }
-
-        foreach ($exceptions as $exception) {
-            $mock->addException($exception);
-        }
-
-        $this->subscribers = array($mock);
-        $this->client = new Client();
-
+        $mockHandler = new MockHandler($responses);
+        $handler = HandlerStack::create($mockHandler);
+        $httpClient = new Client([
+            'handler' => $handler,
+        ]);
+        $this->client = $httpClient;
         $this->password = $password;
         $this->username = $username;
         $this->baseUrl = $baseUrl;

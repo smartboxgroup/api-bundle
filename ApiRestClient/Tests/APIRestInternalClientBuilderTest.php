@@ -4,6 +4,7 @@ namespace Smartbox\ApiRestClient\Tests;
 
 use Smartbox\ApiRestClient\ApiRestInternalClient;
 use Smartbox\ApiRestClient\ApiRestInternalClientBuilder;
+use Smartbox\ApiRestClient\Environments;
 use Smartbox\ApiRestClient\Tests\Fixture\MockApiRestInternalClient;
 
 class ApiRestInternalClientBuilderTest extends \PHPUnit\Framework\TestCase
@@ -20,12 +21,21 @@ class ApiRestInternalClientBuilderTest extends \PHPUnit\Framework\TestCase
         ApiRestInternalClientBuilder::createClient(MockApiRestInternalClient::$class, 'DUMMY_ENV', self::TEST_USERNAME, self::TEST_PASSWORD);
     }
 
+    public function testValidBaseUrl()
+    {
+        $baseUrl = Environments::ENV_TEST;
+        $client = ApiRestInternalClientBuilder::createClientWithUrl(null, $baseUrl, self::TEST_USERNAME, self::TEST_PASSWORD);
+
+        $this->assertNotNull($client);
+        $this->assertEquals(ApiRestInternalClient::$class, \get_class($client));
+    }
+
     public function testDefaultClient()
     {
         $client = ApiRestInternalClientBuilder::createClient(null, self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
 
         $this->assertNotNull($client);
-        $this->assertEquals(ApiRestInternalClient::$class, get_class($client));
+        $this->assertEquals(ApiRestInternalClient::$class, \get_class($client));
     }
 
     /**
@@ -39,7 +49,7 @@ class ApiRestInternalClientBuilderTest extends \PHPUnit\Framework\TestCase
     public function testSpecificClient()
     {
         $client = ApiRestInternalClientBuilder::createClient(MockApiRestInternalClient::$class, self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
-        $this->assertEquals(MockApiRestInternalClient::$class, get_class($client));
+        $this->assertEquals(MockApiRestInternalClient::$class, \get_class($client));
     }
 
     /**
@@ -47,6 +57,6 @@ class ApiRestInternalClientBuilderTest extends \PHPUnit\Framework\TestCase
      */
     public function testInvalidClient()
     {
-        ApiRestInternalClientBuilder::createClient(get_class(new \DateTime()), self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
+        ApiRestInternalClientBuilder::createClient(\get_class(new \DateTime()), self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
     }
 }

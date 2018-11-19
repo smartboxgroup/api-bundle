@@ -28,8 +28,9 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
 
         $complexTypeLoader = new ComplexTypeLoader($this->getContainer()->get('annotation_reader'), $typeRepository);
         $complexTypeLoader->setSerializer($this->getContainer()->get('serializer'));
-
-        $resolver = $this->createMock('Symfony\Component\Config\Loader\LoaderResolverInterface');
+        $resolver = $this->getMockBuilder('Symfony\Component\Config\Loader\LoaderResolverInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
         $resolver
             ->method('resolve')
             ->will($this->returnValue($complexTypeLoader));
@@ -46,7 +47,7 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
         );
 
         // To avoid to have cached the soap aliases file for each test case
-        unlink($cacheDir.DIRECTORY_SEPARATOR.ApiConfigurator::SOAP_ALIASES_FILENAME);
+        \unlink($cacheDir.DIRECTORY_SEPARATOR.ApiConfigurator::SOAP_ALIASES_FILENAME);
 
         $this->soapServiceLoader = new SoapServiceLoader($this->apiConfigurator, $typeRepository);
         $this->soapServiceLoader->setResolver($resolver);

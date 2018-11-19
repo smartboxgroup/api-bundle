@@ -2,9 +2,9 @@
 
 namespace Smartbox\ApiRestClient;
 
-use Guzzle\Http\Client;
-use Guzzle\Http\Exception\RequestException;
-use Guzzle\Http\Message\Response;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -85,7 +85,7 @@ class ApiRestInternalClient
      */
     public function request($method, $path, $object = null, array $filters = array(), array $headers = array(), $deserializationType = null)
     {
-        if (!in_array($method, self::getAvailableHttpMethod())) {
+        if (!\in_array($method, self::getAvailableHttpMethod())) {
             throw new \Exception("Unknown HTTP method $method");
         }
 
@@ -103,7 +103,7 @@ class ApiRestInternalClient
             /* @var Response*/
             $response = $this->client->send($request);
         } catch (RequestException $e) {
-            $errorResponse = $e->getRequest()->getResponse();
+            $errorResponse = $e->getResponse();
             if (!empty($errorResponse)) {
                 $response = ApiRestResponseBuilder::buildResponse($errorResponse);
                 throw new ApiRestException($response, $e);

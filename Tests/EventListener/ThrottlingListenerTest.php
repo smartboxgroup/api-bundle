@@ -101,7 +101,7 @@ class ThrottlingListenerTest extends WebTestCase
     {
         $this->markTestSkipped('Cannot modify header information - headers already sent by (output started at /vagrant/bundles/api-bundle/vendor/phpunit/phpunit/src/Util/Printer.php:134)');
         $responseContentErrorMessage =
-            sprintf(
+            \sprintf(
 '<?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><SOAP-ENV:Body><SOAP-ENV:Fault><faultcode>Sender</faultcode><faultstring>%s</faultstring><detail/></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
 ',
@@ -133,8 +133,8 @@ class ThrottlingListenerTest extends WebTestCase
             </soapenv:Envelope>';
 
         for ($i = $rateLimit; $i >= 0; --$i) {
-            $prefix = gethostname();
-            $nonce = base64_encode(substr(md5(uniqid($prefix.'_', true)), 0, 16));
+            $prefix = \gethostname();
+            $nonce = \base64_encode(\substr(\md5(\uniqid($prefix.'_', true)), 0, 16));
 
             $client->request(
                 'POST',
@@ -142,19 +142,19 @@ class ThrottlingListenerTest extends WebTestCase
                 array(),
                 array(),
                 array('CONTENT_TYPE' => 'application/xml'),
-                sprintf($payload, $nonce)
+                \sprintf($payload, $nonce)
             );
             $response = $client->getResponse();
 
             $remaining = $i - 1;
             if ($remaining >= 0) {
                 $this->assertEquals(Codes::HTTP_OK, $response->getStatusCode(), 'Response code is not correct.');
-                $this->assertTrue($response->headers->contains('x-ratelimit-limit', $rateLimit), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
-                $this->assertTrue($response->headers->contains('x-ratelimit-remaining', $remaining), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', $remaining));
+                $this->assertTrue($response->headers->contains('x-ratelimit-limit', $rateLimit), \sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
+                $this->assertTrue($response->headers->contains('x-ratelimit-remaining', $remaining), \sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', $remaining));
             } else {
                 $this->assertEquals(Codes::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode(), 'Response code is not correct.');
-                $this->assertTrue($response->headers->contains('x-ratelimit-limit', $rateLimit), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
-                $this->assertTrue($response->headers->contains('x-ratelimit-remaining', 0), sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', 0));
+                $this->assertTrue($response->headers->contains('x-ratelimit-limit', $rateLimit), \sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Limit', $rateLimit));
+                $this->assertTrue($response->headers->contains('x-ratelimit-remaining', 0), \sprintf('Response should contain header "%s" with value "%s".', 'X-RateLimit-Remaining', 0));
                 $this->assertEquals($responseContentErrorMessage, $response->getContent(), 'Response should contain proper content.');
             }
         }

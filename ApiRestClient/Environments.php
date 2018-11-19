@@ -3,15 +3,15 @@
 namespace Smartbox\ApiRestClient;
 
 /**
- *  AUTO-GENERATED
- *  Place here your environment entry point URIs.
+ * Class Environments.
  */
 class Environments
 {
-    public static $environments = [
-        'test' => 'www.example.com/api/test/example',       // Replace this with real data
-        'production' => 'www.example.com/api/example',      // Replace this with real data
-    ];
+    const ENV_TEST = 'test';
+
+    protected static $environments = array(
+        self::ENV_TEST => 'http://real.smartesb.local',
+    );
 
     /**
      * Return the entry point of the given environment.

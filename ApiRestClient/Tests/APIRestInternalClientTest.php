@@ -2,7 +2,7 @@
 
 namespace Smartbox\ApiBundle\Tests\SDK;
 
-use Guzzle\Http\Message\Response;
+use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Smartbox\ApiRestClient\ApiRestException;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
@@ -75,7 +75,7 @@ class ApiRestInternalClientTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(ApiRestResponse::$class, $response);
 
-        $this->assertEquals(2, count($response->getBody()));
+        $this->assertEquals(2, \count($response->getBody()));
         $body = $response->getBody();
         $this->assertEquals('id1', $body[0]->getId());
         $this->assertEquals('id2', $body[1]->getId());

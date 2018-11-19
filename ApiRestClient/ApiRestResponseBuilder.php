@@ -2,7 +2,7 @@
 
 namespace Smartbox\ApiRestClient;
 
-use Guzzle\Http\Message\Response;
+use GuzzleHttp\Psr7\Response;
 
 /**
  * Class ApiRestResponseBuilder.
@@ -35,7 +35,7 @@ class ApiRestResponseBuilder
         //Flatten headers array
         $headers = array();
         foreach ($guzzleResponse->getHeaders() as $name => $value) {
-            $headers[$name] = $guzzleResponse->getHeader($name)->__toString();
+            $headers[$name] = \is_array($value) ? (string) $value[0] : (string) $value;
         }
         $apiRestResponse->setHeaders($headers);
 

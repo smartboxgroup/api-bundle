@@ -36,8 +36,8 @@ PHP72:
 
 coding-standards:
   stage: test
-  image: docker-registry.production.smartbox.com/eai/bifrostqa
+  image: docker-registry.production.smartbox.com/mint/php:7.2-cli
   before_script: []
   script:
-  - wget --no-verbose https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/${CS_FIXER_VERSION}/php-cs-fixer.phar -O ./php-cs-fixer
+  - php-cs-fixer --version
   - php php-cs-fixer fix --verbose --rules=@Symfony --dry-run --using-cache=no

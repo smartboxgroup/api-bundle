@@ -1,0 +1,11 @@
+<?php
+
+$finder = PhpCsFixer\Finder::create()
+    ->exclude('Tests/App/cache')
+    ->exclude('vendor')
+    ->exclude('bin')
+    ->exclude('ci')
+    ->in(__DIR__);
+
+return PhpCsFixer\Config::create()
+    ->setFinder($finder);

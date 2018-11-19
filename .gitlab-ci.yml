@@ -4,24 +4,39 @@ services:
 variables:
   GIT_STRATEGY: clone
 
-before_script:
-  - composer-install
+stages:
+  - test
 
 cache:
   paths:
   - vendor/
+  - bin/
 
-test:PHP56:
+before_script:
+  - composer-install
+
+PHP56:
+  stage: test
   image: docker-registry.production.smartbox.com/ci/php:56
   script:
     -  bin/simple-phpunit --coverage-text --colors=never
 
-test:PHP70:
+PHP70:
+  stage: test
   image: docker-registry.production.smartbox.com/ci/php:70
   script:
     -  bin/simple-phpunit --coverage-text --colors=never
 
-test:PHP72:
+PHP72:
+  stage: test
   image: docker-registry.production.smartbox.com/ci/php:72
   script:
     -  bin/simple-phpunit --coverage-text --colors=never
+
+coding-standards:
+  stage: test
+  image: docker-registry.production.smartbox.com/mint/php:7.2-cli
+  before_script: []
+  script:
+  - php-cs-fixer --version
+  - php-cs-fixer fix --verbose --rules=@Symfony --dry-run --using-cache=no

@@ -3,7 +3,6 @@ services:
 
 variables:
   GIT_STRATEGY: clone
-  CS_FIXER_VERSION: "v2.13.1"
 
 stages:
   - test

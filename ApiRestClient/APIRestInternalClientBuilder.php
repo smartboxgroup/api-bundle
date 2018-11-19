@@ -1,10 +1,9 @@
 <?php
+
 namespace Smartbox\ApiRestClient;
 
 /**
- * Class ApiRestInternalClientBuilder
- *
- * @package Smartbox\ApiRestClient
+ * Class ApiRestInternalClientBuilder.
  */
 class ApiRestInternalClientBuilder
 {
@@ -17,14 +16,15 @@ class ApiRestInternalClientBuilder
      * @param $password
      *
      * @return mixed
+     *
      * @throws \Exception
      */
     public static function createClientWithUrl($class = null, $baseUrl, $username, $password)
     {
         if (!empty($class)) {
-            if (!class_exists($class)) {
+            if (!\class_exists($class)) {
                 throw new \LogicException("$class does not exists");
-            } elseif (!is_subclass_of($class, ApiRestInternalClient::$class, true) ) {
+            } elseif (!\is_subclass_of($class, ApiRestInternalClient::$class, true)) {
                 throw new \LogicException("$class is not an instance of ApiRestInternalClient");
             }
         } else {
@@ -43,9 +43,10 @@ class ApiRestInternalClientBuilder
      * @param $env
      * @param $username
      * @param $password
-     * @param boolean $mocks
+     * @param bool $mocks
      *
      * @return mixed
+     *
      * @throws \Exception
      */
     public static function createClient($class = null, $env, $username, $password, $mocks = false)

@@ -1,4 +1,5 @@
 <?php
+
 namespace Smartbox\ApiRestClient\Tests;
 
 use Smartbox\ApiRestClient\ApiRestInternalClient;
@@ -8,9 +9,9 @@ use Smartbox\ApiRestClient\Tests\Fixture\MockApiRestInternalClient;
 
 class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
 {
-    const TEST_ENV           = "test";
-    const TEST_USERNAME      = "test";
-    const TEST_PASSWORD      = "test";
+    const TEST_ENV = 'test';
+    const TEST_USERNAME = 'test';
+    const TEST_PASSWORD = 'test';
 
     /**
      * @expectedException \Exception
@@ -26,7 +27,7 @@ class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
         $client = ApiRestInternalClientBuilder::createClientWithUrl(null, $baseUrl, self::TEST_USERNAME, self::TEST_PASSWORD);
 
         $this->assertNotNull($client);
-        $this->assertEquals(ApiRestInternalClient::$class, get_class($client));
+        $this->assertEquals(ApiRestInternalClient::$class, \get_class($client));
     }
 
     public function testDefaultClient()
@@ -34,7 +35,7 @@ class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
         $client = ApiRestInternalClientBuilder::createClient(null, self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
 
         $this->assertNotNull($client);
-        $this->assertEquals(ApiRestInternalClient::$class, get_class($client));
+        $this->assertEquals(ApiRestInternalClient::$class, \get_class($client));
     }
 
     /**
@@ -42,13 +43,13 @@ class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testUnknownClientClass()
     {
-        ApiRestInternalClientBuilder::createClient("Dummy_Client", self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
+        ApiRestInternalClientBuilder::createClient('Dummy_Client', self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
     }
 
     public function testSpecificClient()
     {
         $client = ApiRestInternalClientBuilder::createClient(MockApiRestInternalClient::$class, self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
-        $this->assertEquals(MockApiRestInternalClient::$class, get_class($client));
+        $this->assertEquals(MockApiRestInternalClient::$class, \get_class($client));
     }
 
     /**
@@ -56,6 +57,6 @@ class ApiRestInternalClientBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidClient()
     {
-        ApiRestInternalClientBuilder::createClient(get_class(new \DateTime()), self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
+        ApiRestInternalClientBuilder::createClient(\get_class(new \DateTime()), self::TEST_ENV, self::TEST_USERNAME, self::TEST_PASSWORD);
     }
 }

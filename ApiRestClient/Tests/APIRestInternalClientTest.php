@@ -75,7 +75,7 @@ class ApiRestInternalClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(ApiRestResponse::$class, $response);
 
-        $this->assertEquals(2, count($response->getBody()));
+        $this->assertEquals(2, \count($response->getBody()));
         $body = $response->getBody();
         $this->assertEquals('id1', $body[0]->getId());
         $this->assertEquals('id2', $body[1]->getId());

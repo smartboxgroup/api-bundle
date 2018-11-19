@@ -85,7 +85,7 @@ class ApiRestInternalClient
      */
     public function request($method, $path, $object = null, array $filters = array(), array $headers = array(), $deserializationType = null)
     {
-        if (!in_array($method, self::getAvailableHttpMethod())) {
+        if (!\in_array($method, self::getAvailableHttpMethod())) {
             throw new \Exception("Unknown HTTP method $method");
         }
 

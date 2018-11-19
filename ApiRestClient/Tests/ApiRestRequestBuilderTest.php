@@ -41,7 +41,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest('GET', '/', self::TEST_USERNAME, self::TEST_PASSWORD, null, array('header1' => 'h1', 'header2' => 'h2'));
 
-        $this->assertEquals(array('Basic '.base64_encode(self::TEST_USERNAME.':'.self::TEST_PASSWORD)), $actualRequest->getHeader('Authorization'));
+        $this->assertEquals(array('Basic '.\base64_encode(self::TEST_USERNAME.':'.self::TEST_PASSWORD)), $actualRequest->getHeader('Authorization'));
         $this->assertEquals(array('application/json'), $actualRequest->getHeader('Content-Type'));
         $this->assertEquals(array('h1'), $actualRequest->getHeader('header1'));
         $this->assertEquals(array('h2'), $actualRequest->getHeader('header2'));
@@ -55,7 +55,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('h2'), $actualRequest->getHeader('header2'));
         $query = $actualRequest->getUri()->getQuery();
         $result = [];
-        parse_str($query, $result);
+        \parse_str($query, $result);
         $this->assertEquals(array('page' => '12', ';limit' => '12'), $result);
     }
 
@@ -80,7 +80,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest('PUT', '/', self::TEST_USERNAME, self::TEST_PASSWORD, 'TEST');
 
-        $this->assertEquals(json_encode('TEST'), (string) $actualRequest->getBody());
+        $this->assertEquals(\json_encode('TEST'), (string) $actualRequest->getBody());
     }
 
     public function testBooleanRequest()
@@ -88,7 +88,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
         $actualRequest = ApiRestRequestBuilder::buildRequest('PUT', '/', self::TEST_USERNAME, self::TEST_PASSWORD, null, array(), array('myBool' => true));
         $query = $actualRequest->getUri()->getQuery();
         $result = [];
-        parse_str($query, $result);
+        \parse_str($query, $result);
         $this->assertEquals(array('myBool' => 'true'), $result);
     }
 
@@ -96,7 +96,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest('POST', '/', self::TEST_USERNAME, self::TEST_PASSWORD, $this->buildProduct('productName', 'universeId'));
 
-        $this->assertEquals(json_encode(array('name' => 'productName', 'universe' => array('id' => 'universeId'))), (string) $actualRequest->getBody());
+        $this->assertEquals(\json_encode(array('name' => 'productName', 'universe' => array('id' => 'universeId'))), (string) $actualRequest->getBody());
     }
 
     public function testArrayObjectRequest()
@@ -109,7 +109,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit_Framework_TestCase
 
         $actualRequest = ApiRestRequestBuilder::buildRequest('POST', '/', self::TEST_USERNAME, self::TEST_PASSWORD, $products);
 
-        $this->assertEquals(json_encode(array(
+        $this->assertEquals(\json_encode(array(
             array('name' => 'productName1', 'universe' => array('id' => 'universeId1')),
             array('name' => 'productName2', 'universe' => array('id' => 'universeId2')),
             array('name' => 'productName3', 'universe' => array('id' => 'universeId3')),

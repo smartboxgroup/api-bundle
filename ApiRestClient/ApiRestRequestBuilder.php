@@ -34,10 +34,10 @@ class ApiRestRequestBuilder
             $jsonContent = $serializer->serialize($object, ApiRestInternalClient::FORMAT_JSON);
         }
 
-        $headers = array_merge($headers, self::getOptions($username, $password));
+        $headers = \array_merge($headers, self::getOptions($username, $password));
         $uri = UriResolver::resolve(new Uri($url), new Uri(''));
         foreach ($filters as  $key => $value) {
-            if (is_bool($value)) {
+            if (\is_bool($value)) {
                 $uri = Uri::withQueryValue($uri, $key, $value ? 'true' : 'false');
             } else {
                 $uri = Uri::withQueryValue($uri, $key, $value);
@@ -59,7 +59,7 @@ class ApiRestRequestBuilder
     protected static function getOptions($username, $password)
     {
         return array(
-            'Authorization' => 'Basic '.base64_encode($username.':'.$password),
+            'Authorization' => 'Basic '.\base64_encode($username.':'.$password),
             'Content-Type' => 'application/json',
         );
     }

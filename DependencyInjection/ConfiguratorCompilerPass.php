@@ -33,7 +33,7 @@ class ConfiguratorCompilerPass implements CompilerPassInterface
         $contextDocument->addMethodCall('setServerBuilder', array(new Reference('smartapi.soap.server.builder')));
 
         $complexTypeLoader = $container->getDefinition('besimple.soap.definition.loader.annot_complextype');
-        $complexTypeLoader->addMethodCall('setSerializer', array(new Reference('serializer')));
+        $complexTypeLoader->addMethodCall('setSerializer', array(new Reference('jms_serializer')));
 
         /** @var SmartboxApiExtension $extension */
         $extension = $container->getExtension('smartbox_api');

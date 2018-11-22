@@ -31,7 +31,7 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
         $this->typeRepository = $this->getMockBuilder(TypeRepository::class)->getMock();
         $this->complexTypeLoader = new ComplexTypeLoader($this->annotationReader, $this->typeRepository);
         /** @var Serializer $serializer */
-        $serializer = $this->getContainer()->get('serializer');
+        $serializer = $this->getContainer()->get('jms_serializer');
         $this->complexTypeLoader->setSerializer($serializer);
     }
 

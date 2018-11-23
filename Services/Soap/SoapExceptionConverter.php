@@ -110,7 +110,8 @@ class SoapExceptionConverter
 
             if (!$exception instanceof \SoapFault) {
                 $this->logger->error(
-                    sprintf('Raised "%s" in SOAP mode with message: "%s"',
+                    sprintf(
+                        'Raised "%s" in SOAP mode with message: "%s"',
                         get_class($exception),
                         $exception->getMessage()
                     ),

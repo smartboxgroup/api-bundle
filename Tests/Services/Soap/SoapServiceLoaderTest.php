@@ -371,7 +371,8 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
                 ],
                 [
                     'sendBoxBrief' => [
-                        'input' => $this->newMessage('sendBoxBriefRequest',
+                        'input' => $this->newMessage(
+                            'sendBoxBriefRequest',
                             [
                                 [
                                     'name' => 'boxBrief',

@@ -15,9 +15,21 @@ cache:
 before_script:
   - composer-install
 
+PHP7:
+  stage: test
+  image: docker-registry.production.smartbox.com/ci/php:7.0
+  script:
+    -  bin/simple-phpunit --coverage-text --colors=never
+
+PHP71:
+  stage: test
+  image: docker-registry.production.smartbox.com/ci/php:7.1
+  script:
+    -  bin/simple-phpunit --coverage-text --colors=never
+
 PHP72:
   stage: test
-  image: docker-registry.production.smartbox.com/ci/php:72
+  image: docker-registry.production.smartbox.com/ci/php:7.2
   script:
     -  bin/simple-phpunit --coverage-text --colors=never
 

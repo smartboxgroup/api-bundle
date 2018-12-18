@@ -3,6 +3,7 @@ services:
 
 variables:
   GIT_STRATEGY: clone
+  SYMFONY_PHPUNIT_VERSION: '6.5'
 
 stages:
   - test

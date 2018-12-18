@@ -18,7 +18,7 @@ class PreserveArrayTypeStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function shouldSkipClass(ClassMetadata $metadata, Context $context) : bool
+    public function shouldSkipClass(ClassMetadata $metadata, Context $context): bool
     {
         return false;
     }
@@ -26,7 +26,7 @@ class PreserveArrayTypeStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $context) :bool
+    public function shouldSkipProperty(PropertyMetadata $property, Context $context): bool
     {
         return
             isset($property->type['name']) &&

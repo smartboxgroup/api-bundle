@@ -20,13 +20,13 @@ PHP7:
   stage: test
   image: docker-registry.production.smartbox.com/mint/php:7.0-cli
   script:
-    -  bin/simple-phpunit
+    -  bin/simple-phpunit --colors=never
 
 PHP71:
   stage: test
   image: docker-registry.production.smartbox.com/mint/php:7.1-cli
   script:
-    -  bin/simple-phpunit --coverage-text --colors=never
+    -  bin/simple-phpunit --colors=never
 
 PHP72:
   stage: test

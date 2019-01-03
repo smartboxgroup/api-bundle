@@ -27,7 +27,7 @@
         "predis/predis": "^1.0",
         "nikic/php-parser": "^2.0@dev",
         "psr/cache": "^1.0",
-        "smartbox/core-bundle": "dev-feature/update_jms_serializer",
+        "smartbox/core-bundle": "~1.4",
         "jms/serializer-bundle": "*",
         "smartbox/besimple-soap": "^1.0"
     },

@@ -162,7 +162,8 @@ class FileList implements UserListInterface
 
             default:
                 throw new \InvalidArgumentException(
-                    "Unsupported config file format: \"{$file->getExtension()}\".", 400
+                    "Unsupported config file format: \"{$file->getExtension()}\".",
+                    400
                 );
         }
     }

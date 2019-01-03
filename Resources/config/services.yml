@@ -65,7 +65,7 @@ services:
       arguments:
         - "@smartapi.configurator"
         - "@fos_rest.converter.request_body"
-        - "@serializer"
+        - "@jms_serializer"
         - "@validator"
       tags:
         - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 0 }

@@ -160,10 +160,12 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
                     'version' => $input['version'],
                 ];
                 $parameters[$param]['children'] = array_merge(
-                    $parameters[$param]['children'], $this->postParse($paramInput, $parameters[$param]['children'])
+                    $parameters[$param]['children'],
+                    $this->postParse($paramInput, $parameters[$param]['children'])
                 );
                 $parameters[$param]['children'] = array_merge(
-                    $parameters[$param]['children'], $this->parse($paramInput, $parameters[$param]['children'])
+                    $parameters[$param]['children'],
+                    $this->parse($paramInput, $parameters[$param]['children'])
                 );
             }
         }

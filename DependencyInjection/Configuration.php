@@ -61,7 +61,8 @@ class Configuration implements ConfigurationInterface
                 ")
             ->end()
             ->scalarNode('usersFile')
-                ->info(<<<'EOL'
+                ->info(
+                    <<<'EOL'
 Full path to your JSON/YAML user config file, if you want to use the file user provider.
    
     f.e.: '%kernel.root_dir%/config/users.json'
@@ -70,7 +71,8 @@ EOL
 )
             ->end()
             ->scalarNode('passwordsFile')
-                ->info(<<<'EOL'
+                ->info(
+                    <<<'EOL'
 Full path to your JSON/YAML user password file, if you want to use the file user provider.
    
     f.e.: '%kernel.root_dir%/config/users_passwords.json'

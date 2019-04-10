@@ -5,6 +5,8 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 
 class AppKernel extends Kernel
 {
+    private static $cacheDir;
+
     public function registerBundles()
     {
         return array(
@@ -28,5 +30,14 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__.'/config/config.yml');
+    }
+
+    public function getCacheDir()
+    {
+        if (!static::$cacheDir) {
+            static::$cacheDir = sys_get_temp_dir().'/api_bundle_test_'.md5(random_bytes(10));
+        }
+
+        return static::$cacheDir;
     }
 }

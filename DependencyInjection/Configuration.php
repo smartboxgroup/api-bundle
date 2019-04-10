@@ -22,6 +22,7 @@ class Configuration implements ConfigurationInterface
     const FLOAT = 'float';
     const BOOL = 'bool';
     const STRING = 'string';
+    const NUMBER = 'number';
 
     const MODE_FILTER = 'filter';
     const MODE_BODY = 'body';
@@ -29,7 +30,7 @@ class Configuration implements ConfigurationInterface
 
     public static $INPUT_MODES = array(self::MODE_BODY, self::MODE_FILTER, self::MODE_REQUIREMENT);
 
-    public static $BASIC_TYPES = array(self::INTEGER, self::FLOAT, self::STRING, self::BOOL, self::DATETIME);
+    public static $BASIC_TYPES = array(self::INTEGER, self::FLOAT, self::STRING, self::BOOL, self::DATETIME, self::NUMBER);
     public static $KEYWORDS = array(
         'filters',
         '_controller',
@@ -288,6 +289,10 @@ EOL
 
     public function addInputNode()
     {
+        $allowedTypes = array_merge(Configuration::$BASIC_TYPES, array_map(function (string $type) {
+            return "{$type}[]";
+        }, Configuration::$BASIC_TYPES));
+
         $builder = new TreeBuilder();
         $node = $builder->root('input');
         $node->info('Section where the input parameters are specified.');
@@ -324,14 +329,12 @@ EOL
             ->end()
             ->validate()
             ->ifTrue(
-                function ($input) {
-                    $isBasic = in_array($input['type'], Configuration::$BASIC_TYPES);
-
-                    return Configuration::MODE_BODY != $input['mode'] && !$isBasic;
+                function ($input) use ($allowedTypes) {
+                    return Configuration::MODE_BODY !== $input['mode'] && !in_array($input['type'], $allowedTypes);
                 }
             )
             ->thenInvalid(
-                'Except the body, all other inputs must be of basic types: '.join(', ', Configuration::$BASIC_TYPES)
+                'Except the body, all other inputs must be of basic types: '.join(', ', $allowedTypes)
             )
 
             ->end()

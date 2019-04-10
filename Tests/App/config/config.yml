@@ -126,10 +126,18 @@ smartbox_api:
                 testWithFilters:
                     description: Method using filters
                     input:
-                        size: { type: integer, format: \d+, mode: filter }
+                        size: { type: number, format: '[\d.]+', mode: filter }
                         limit: { type: integer, format: \d+, mode: filter }
                         page: { type: integer, format: \d+, mode: filter }
-                    output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: public }
+                        listOfNumber:
+                            type: number[]
+                            mode: filter
+                            format: .+
+                        listOfString:
+                            type: string[]
+                            mode: filter
+                            format: foo|bar|baz
+                    #output: { type: Smartbox\ApiBundle\Tests\Fixtures\Entity\Box, group: public }
                     rest:
                       route: "/test3/filters"
                       httpMethod: GET

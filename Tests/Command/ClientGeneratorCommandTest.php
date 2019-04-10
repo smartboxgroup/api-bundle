@@ -76,15 +76,15 @@ EOT;
 
         $methodTestWithRequirements = $reflection->getMethod('testWithFilters');
         $parameters = $methodTestWithRequirements->getParameters();
-        $this->assertEquals(4, count($parameters));
+        $this->assertEquals(6, count($parameters));
         $this->assertEquals('size', $parameters['0']->getName());
         $this->assertEquals('limit', $parameters['1']->getName());
         $this->assertEquals('page', $parameters['2']->getName());
         $this->assertTrue($parameters['0']->isOptional());
         $this->assertTrue($parameters['1']->isOptional());
         $this->assertTrue($parameters['2']->isOptional());
-        $this->assertTrue($parameters['3']->isOptional());
-        $this->assertTrue($parameters['3']->isArray());
+        $this->assertTrue($parameters['5']->isOptional());
+        $this->assertTrue($parameters['5']->isArray(), 'Parameter should be an array');
 
         $methodTestWithHeadersAndFiltersAndBody = $reflection->getMethod('testWithHeadersAndFiltersAndBody');
         $parameters = $methodTestWithHeadersAndFiltersAndBody->getParameters();

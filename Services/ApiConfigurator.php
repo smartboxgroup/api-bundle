@@ -149,7 +149,7 @@ class ApiConfigurator
      * @param string $version
      * @param string $methodName
      *
-     * @return null|array
+     * @return array|null
      */
     public function getConfigByServiceNameVersionAndMethod($serviceName, $version, $methodName)
     {

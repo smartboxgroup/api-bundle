@@ -37,6 +37,10 @@ class ThrottlingListenerTest extends WebTestCase
 
         $this->application = new Application($kernel);
         $this->container = $kernel->getContainer();
+
+        if ('redis' === gethostbyname('redis')) {
+            $this->markTestSkipped('DNS "redis" is not available');
+        }
     }
 
     public function getConfig()

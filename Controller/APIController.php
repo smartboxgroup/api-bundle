@@ -14,9 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Validator\Constraints\DateTime;
-use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -25,7 +23,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 class APIController extends FOSRestController
 {
     /**
-     * @return null|\Symfony\Component\HttpFoundation\Request
+     * @return \Symfony\Component\HttpFoundation\Request|null
      */
     public function getRequest()
     {
@@ -154,20 +152,22 @@ class APIController extends FOSRestController
         $constraints = array();
 
         switch ($type) {
+            case 'datetime[]':
             case Configuration::DATETIME:
-                $constraints[] = new DateTime(
-                    array(
-                        'message' => sprintf(
-                            "Parameter '%s' with value '%s', doesn't have a valid date format",
-                            $name,
-                            $param->format('c')
-                        ),
-                    )
-                );
+                $constraint = new Assert\DateTime([
+                    'message' => "Parameter '$name' with value '{{ value }}', doesn't have a valid date format",
+                ]);
+                $constraints[] = 'datetime[]' === $type ? new Assert\All(['constraints' => [$constraint]]) : $constraint;
             break;
+            case Configuration::NUMBER:
+                $constraints[] = new Assert\Type([
+                    'type' => 'numeric',
+                    'message' => "Parameter '$name' with value {{ value }} is not a valid number.",
+                ]);
+                break;
             case Configuration::BOOL:
                 // do some thing here
-                $constraints[] = new Type(
+                $constraints[] = new Assert\Type(
                     array(
                         'message' => sprintf(
                             "Parameter '%s' with value '%s', is not a valid bool.",
@@ -178,8 +178,32 @@ class APIController extends FOSRestController
                     )
                 );
                 break;
+            /* @noinspection PhpMissingBreakStatementInspection */
+            case 'number[]':
+                $subType = 'numeric';
+                // no break
+            case 'integer[]':
+            case 'float[]':
+            case 'bool[]':
+            case 'string[]':
+                $subConstraints = [
+                    new Assert\Type([
+                        'type' => $subType ?? str_replace('[]', '', $type),
+                        'message' => "Parameter '$name' with value {{ value }} is not a valid {{ type }}.",
+                    ]),
+                ];
+
+                if ($format) {
+                    $subConstraints[] = new Assert\Regex([
+                        'pattern' => "#^{$format}$#xsu",
+                        'message' => "Parameter '$name' with value {{ value }}, does not match format '$format'",
+                    ]);
+                }
+
+                $constraints[] = new Assert\All(['constraints' => $subConstraints]);
+                break;
             default:
-                $constraints[] = new Type(
+                $constraints[] = new Assert\Type(
                     array(
                         'type' => $type,
                         'message' => sprintf(
@@ -192,13 +216,13 @@ class APIController extends FOSRestController
                 );
 
                 if ($format) {
-                    $constraints[] = new Regex(
+                    $constraints[] = new Assert\Regex(
                         array(
                             'pattern' => '#^'.$format.'$#xsu',
                             'message' => sprintf(
                                 "Parameter '%s' with value '%s', does not match format '%s'",
                                 $name,
-                                $param,
+                                gettype($param),
                                 $format
                             ),
                         )
@@ -340,7 +364,7 @@ class APIController extends FOSRestController
     /**
      * @param $body
      *
-     * @return null|BasicResponse|\Symfony\Component\HttpFoundation\Response
+     * @return BasicResponse|\Symfony\Component\HttpFoundation\Response|null
      *
      * @throws \Exception
      */

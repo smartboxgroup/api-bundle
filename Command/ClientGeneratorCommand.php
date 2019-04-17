@@ -263,6 +263,12 @@ class ClientGeneratorCommand extends ContainerAwareCommand
             $inputMode = $input['mode'];
 
             $type = ApiConfigurator::getSingleType($input['type']);
+            $typeForAnnotations = $type;
+            $parameterInitializationType = new ConstFetch(new Name('null'));
+            if (self::isArray($input['type'])) {
+                $typeForAnnotations = $type.'[]';
+                $parameterInitializationType = new Array_();
+            }
 
             switch ($inputMode) {
                 case Configuration::MODE_BODY:
@@ -299,18 +305,18 @@ class ClientGeneratorCommand extends ContainerAwareCommand
 
                     $methodArgs[] = $factory->param($inputName);
 
-                    $comment = "* @param $type \$$inputName \r\n";
+                    $comment = "* @param $typeForAnnotations \$$inputName \r\n";
                     break;
                 case Configuration::MODE_FILTER:
                     $filter = new Variable($inputName);
 
                     $param = $factory->param($inputName);
-                    $param->setDefault(new ConstFetch(new Name('null')));
+                    $param->setDefault($parameterInitializationType);
                     $methodArgs[] = $param;
 
                     $filters[] = new ArrayItem($filter, new String_($inputName));
 
-                    $comment = "* @param $type \$$inputName \r\n";
+                    $comment = "* @param $typeForAnnotations \$$inputName \r\n";
                     break;
                 default:
                     throw new \Exception("Unknown input mode $inputMode");

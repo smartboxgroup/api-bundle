@@ -1,14 +1,11 @@
 version: '3'
-
 services:
-  redis:
-    image: redis:alpine
   app:
-    image: docker-registry.production.smartbox.com/mint/php:7.0-cli
+    build: .
+    container_name: sbx_apibundle
     environment:
       SYMFONY_PHPUNIT_VERSION: '6.5'
-    working_dir: /app
+      COMPOSER_ALLOW_SUPERUSER: 1
+    working_dir: /var/www/html
     volumes:
-      - .:/app
-    depends_on:
-      - redis
+      - .:/var/www/html:rw

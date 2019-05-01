@@ -8,15 +8,13 @@ use JMS\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\Serializer\SerializationContext;
 use Metadata\MetadataFactoryInterface;
 use Nelmio\ApiDocBundle\DataTypes;
-use Nelmio\ApiDocBundle\Parser\ParserInterface;
-use Nelmio\ApiDocBundle\Parser\PostParserInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\PropertyMetadata;
 use Symfony\Component\Validator\Constraints\Type;
 
-class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser implements ParserInterface, PostParserInterface
+class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser
 {
     /**
      * @var \Metadata\MetadataFactoryInterface
@@ -24,15 +22,17 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser impl
     protected $jmsFactory;
 
     /***
-     * @param \Symfony\Component\Validator\MetadataFactoryInterface $factory
+     * ValidationParser constructor.
+     * @param \Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface $factory
      * @param MetadataFactoryInterface $jmsFactory
      */
     public function __construct(
-        \Symfony\Component\Validator\MetadataFactoryInterface $factory,
+        \Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface $factory,
         MetadataFactoryInterface $jmsFactory
     ) {
-        $this->factory = $factory;
         $this->jmsFactory = $jmsFactory;
+
+        parent::__construct($factory);
     }
 
     /**

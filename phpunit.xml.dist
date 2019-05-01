@@ -9,6 +9,8 @@
 >
     <php>
         <server name="KERNEL_DIR" value="Tests/App/" />
+        <ini name="error_reporting" value="-1" />
+        <server name="SHELL_VERBOSITY" value="-1" />
     </php>
 
     <testsuite name="SmartApi Suite">

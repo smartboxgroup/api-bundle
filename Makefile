@@ -21,22 +21,24 @@ kill:
 	$(DOCKER_COMPOSE) kill
 	$(DOCKER_COMPOSE) down --volumes --remove-orphans
 
-start: ## Start the project
+start: up test ## Start the project
+
+up: ## Up the project
 	$(DOCKER_COMPOSE) up -d --build --remove-orphans --no-recreate
 
 stop: ## Stop the project
 	$(DOCKER_COMPOSE) stop
 
 composer-install: ## Execute composer instalation
-	$(RUN) composer install --prefer-dist
+	$(COMPOSER) install --prefer-dist
 
 test: composer-install ## Execute composer instalation
 	$(RUN) bin/simple-phpunit
 
 composer-update: ## Execute package update
-	$(RUN) composer update $(BUNDLE)
+	$(COMPOSER) update $(BUNDLE)
 
-apply-php-cs-fixer: ## apply php-cs-fixer fixes
+php-cs-fixer: ## apply php-cs-fixer fixes
 	$(QA) php-cs-fixer fix . --using-cache=no --verbose --diff --rules @Symfony
 
 enter: ## enter docker container

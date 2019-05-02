@@ -23,7 +23,7 @@ kill:
 
 start: up test ## Start the project
 
-up: ## Up the project
+up: rights ## Up the project
 	$(DOCKER_COMPOSE) up -d --build --remove-orphans --no-recreate
 
 stop: ## Stop the project
@@ -34,6 +34,9 @@ composer-install: ## Execute composer instalation
 
 test: composer-install ## Execute composer instalation
 	$(RUN) bin/simple-phpunit
+
+rights:
+	-sudo chown -R $(USER):$(USER) ./
 
 composer-update: ## Execute package update
 	$(COMPOSER) update $(BUNDLE)

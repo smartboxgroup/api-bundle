@@ -6,6 +6,8 @@ RUN        = $(DOCKER_COMPOSE) run app
 SYMFONY         = $(EXEC_PHP) app/console
 COMPOSER        = $(EXEC_PHP) composer
 
+QA        = docker run -it --rm -v `pwd`:/project mykiwi/phaudit:7.2
+
 ## 
 ## Project
 ## -------
@@ -33,6 +35,9 @@ test: composer-install ## Execute composer instalation
 
 composer-update: ## Execute package update
 	$(RUN) composer update $(BUNDLE)
+
+apply-php-cs-fixer: ## apply php-cs-fixer fixes
+	$(QA) php-cs-fixer fix . --using-cache=no --verbose --diff --rules @Symfony
 
 enter: ## enter docker container
 	$(EXEC) bash

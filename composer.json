@@ -29,7 +29,7 @@
         "psr/cache": "^1.0",
         "smartbox/core-bundle": "~1.4",
         "jms/serializer-bundle": "^2.4",
-        "smartbox/besimple-soap": "dev-feature/sf3.4-compatible as v1.3.0"
+        "smartbox/besimple-soap": "dev-feature/sf3.4-compatible as v2.0"
     },
     "require-dev": {
         "digitalnature/php-ref": "dev-master",

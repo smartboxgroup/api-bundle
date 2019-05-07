@@ -15,7 +15,7 @@
     },
     "require": {
         "php": ">=7.0",
-        "symfony/symfony": "^2.8|^3.0|^4.0",
+        "symfony/symfony": "~2.8 || ~3.4",
         "symfony/assetic-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.4",
         "sensio/distribution-bundle": ">=4.0",
@@ -23,24 +23,24 @@
         "friendsofsymfony/rest-bundle": "^1.7",
         "nelmio/api-doc-bundle": "^2.11.2",
         "noxlogic/ratelimit-bundle": "^1.5",
-        "snc/redis-bundle": "^1.1",
+        "snc/redis-bundle": "~1.1 || ~2.1",
         "predis/predis": "^1.0",
         "nikic/php-parser": "^2.0@dev",
         "psr/cache": "^1.0",
         "smartbox/core-bundle": "~1.4",
-        "jms/serializer-bundle": "*",
-        "smartbox/besimple-soap": "^1.0"
+        "jms/serializer-bundle": "^2.4",
+        "smartbox/besimple-soap": "dev-feature/sf3.4-compatible as v2.0"
     },
     "require-dev": {
         "digitalnature/php-ref": "dev-master",
         "guzzlehttp/guzzle": "^6.3",
-        "sensio/generator-bundle": "~2.3",
+        "sensio/generator-bundle": "~3.1",
         "symfony/phpunit-bridge": "*",
         "phpspec/prophecy": "^1.7",
         "symfony/cache": "~3.0 || ~4.0"
     },
     "config": {
-         "bin-dir": "bin"
+        "bin-dir": "bin"
     },
     "minimum-stability": "dev",
     "prefer-stable" : true

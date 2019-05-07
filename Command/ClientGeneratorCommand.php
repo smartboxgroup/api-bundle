@@ -164,9 +164,11 @@ class ClientGeneratorCommand extends ContainerAwareCommand
      * @param array $service
      * @param $namespace
      * @param $outputPath
-     * @param string $classToExtend
+     * @param $classToExtend
      *
-     * @return string
+     * @return string|null
+     *
+     * @throws \Exception
      */
     private function buildClass(array $service, $namespace, $outputPath, $classToExtend)
     {

@@ -83,7 +83,7 @@ class APIControllerTest extends WebTestCase
      */
     public function testHandleCallAction($version, $methodName, $methodConfig, array $inputValues, $exceptionClass)
     {
-        if (!is_null($exceptionClass)) {
+        if (null !== $exceptionClass) {
             $this->expectException($exceptionClass);
         }
 
@@ -107,7 +107,7 @@ class APIControllerTest extends WebTestCase
 
         // Call handleCallAction
         $controller = $this->getContainer()->get('test.dummy.controller');
-        $respond = $controller->handleCallAction('demo_v1', 'dummy', $methodConfig, $version, $methodName, $inputValues);
+        $controller->handleCallAction('demo_v1', 'dummy', $methodConfig, $version, $methodName, $inputValues);
     }
 
     /**

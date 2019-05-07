@@ -23,7 +23,7 @@
         "friendsofsymfony/rest-bundle": "^1.7",
         "nelmio/api-doc-bundle": "^2.11.2",
         "noxlogic/ratelimit-bundle": "^1.5",
-        "snc/redis-bundle": "^2.1",
+        "snc/redis-bundle": "~1.1 || ~2.1",
         "predis/predis": "^1.0",
         "nikic/php-parser": "^2.0@dev",
         "psr/cache": "^1.0",

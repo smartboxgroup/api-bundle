@@ -1,7 +1,7 @@
 DOCKER_COMPOSE  	= docker-compose
 EXEC        		= $(DOCKER_COMPOSE) exec app
 RUN        			= $(DOCKER_COMPOSE) run app
-COMPOSER        	= $(RUN) composer
+COMPOSER        	= $(RUN) php -d memory_limit=-1 /usr/bin/composer
 QA        			= docker run --rm -v `pwd`:/project mykiwi/phaudit:7.2
 
 ## 
@@ -43,7 +43,7 @@ php-cs-fixer: ## apply php-cs-fixer fixes
 enter: ## enter docker container
 	$(EXEC) bash
 
-.PHONY: build start stop enter
+.PHONY: up build start stop enter
 
 .DEFAULT_GOAL := help
 help:

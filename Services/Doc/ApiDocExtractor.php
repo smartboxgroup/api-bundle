@@ -141,7 +141,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                             $resources[] = $resource;
                         } else {
                             // remove format from routes used for resource grouping
-                            $resources[] = str_replace('.{_format}', '', $route->getPattern());
+                            $resources[] = str_replace('.{_format}', '', $route->getPath());
                         }
                     }
 
@@ -204,7 +204,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
         rsort($resources);
         foreach ($array as $index => $element) {
             $hasResource = false;
-            $pattern = $element['annotation']->getRoute()->getPattern();
+            $pattern = $element['annotation']->getRoute()->getPath();
 
             foreach ($resources as $resource) {
                 if (0 === strpos($pattern, $resource) || $resource === $element['annotation']->getResource()) {
@@ -225,7 +225,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
             $array,
             function ($a, $b) use ($methodOrder) {
                 if ($a['resource'] === $b['resource']) {
-                    if ($a['annotation']->getRoute()->getPattern() === $b['annotation']->getRoute()->getPattern()) {
+                    if ($a['annotation']->getRoute()->getPath() === $b['annotation']->getRoute()->getPath()) {
                         $methodA = array_search($a['annotation']->getRoute()->getRequirement('_method'), $methodOrder);
                         $methodB = array_search($b['annotation']->getRoute()->getRequirement('_method'), $methodOrder);
 
@@ -240,8 +240,8 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                     }
 
                     return strcmp(
-                        $a['annotation']->getRoute()->getPattern(),
-                        $b['annotation']->getRoute()->getPattern()
+                        $a['annotation']->getRoute()->getPath(),
+                        $b['annotation']->getRoute()->getPath()
                     );
                 }
 

@@ -1,4 +1,9 @@
 services:
+    _defaults:
+        public: true
+
+    test.annotation_reader: '@annotation_reader'
+
     test.dummy.controller:
         class: Smartbox\ApiBundle\Tests\Fixtures\Controller\APIController
         calls:

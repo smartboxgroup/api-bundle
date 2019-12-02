@@ -193,7 +193,6 @@ EOL
         $node = $builder->root('services');
         $node->isRequired()
             ->requiresAtLeastOneElement()
-            ->cannotBeEmpty()
             ->useAttributeAsKey('id')
             ->prototype('array')
             ->info("This is the place where the name and version of the API must be defined, e.g.::\n
@@ -229,7 +228,6 @@ EOL
         $node = $builder->root('methods');
         $node->isRequired()
             ->requiresAtLeastOneElement()
-            ->cannotBeEmpty()
             ->useAttributeAsKey('name')
             ->info('Endpoint definitions.
     Example:

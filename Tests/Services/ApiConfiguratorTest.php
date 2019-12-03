@@ -69,6 +69,9 @@ class ApiConfiguratorTest extends BaseKernelTestCase
         );
     }
 
+    /**
+     * @return array
+     */
     public function validCodesArrayInputProvider()
     {
         $data = array(
@@ -85,6 +88,24 @@ class ApiConfiguratorTest extends BaseKernelTestCase
         );
 
         return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function validGetSuccessCodeDescriptionProvider()
+    {
+        return [
+            [
+                [
+                    'A' => 'XXX-1',
+                    'B' => 'XXX-1',
+                    'C' => 'XXX-2',
+                    'XXX' => 'XXX-3',
+                ]
+            ]
+        ];
+
     }
 
     public function notRegisteredAliasProvider()
@@ -144,11 +165,11 @@ class ApiConfiguratorTest extends BaseKernelTestCase
     }
 
     /**
-     * @dataProvider validCodesArrayInputProvider
+     * @dataProvider validGetSuccessCodeDescriptionProvider
      *
-     * @param $codes
+     * @param array $codes
      */
-    public function testSetGetSuccessCodesValid($codes)
+    public function testSetGetSuccessCodesDescriptionValid(array $codes)
     {
         $this->configurator->setSuccessCodes($codes);
 
@@ -156,6 +177,14 @@ class ApiConfiguratorTest extends BaseKernelTestCase
             $storedDesc = $this->configurator->getSuccessCodeDescription($code);
             $this->assertEquals($storedDesc, $desc);
         }
+    }
+
+    public function testSetGetSuccessCodesDescriptionException()
+    {
+        $this->expectException(\OutOfRangeException::class);
+
+        $this->configurator->setSuccessCodes(['Will throw exception' => 'OutOfRangeException']);
+        $this->configurator->getSuccessCodeDescription('Index does not exist');
     }
 
     /**

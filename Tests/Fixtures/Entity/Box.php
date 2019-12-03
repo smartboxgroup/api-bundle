@@ -51,7 +51,7 @@ class Box extends ApiEntity implements LocatableEntity
      *
      * @Assert\Type(type="string")
      * @Assert\NotBlank(groups={"list", "public"})
-     * @Assert\Choice(choices = {"transit", "stored"})
+     * @Assert\Choice(choices = {"transit", "stored"}, strict=true)
      * @JMS\Type("string")
      * @JMS\Expose
      * @JMS\Groups({"update","list", "public"})

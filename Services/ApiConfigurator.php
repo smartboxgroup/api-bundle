@@ -361,6 +361,9 @@ class ApiConfigurator
      */
     public function getSuccessCodeDescription($key)
     {
+        if (!isset($this->successCodes[$key])) {
+            throw new \OutOfRangeException('Requested code does not exist');
+        }
         return $this->successCodes[$key];
     }
 

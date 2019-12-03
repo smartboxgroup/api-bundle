@@ -102,10 +102,9 @@ class ApiConfiguratorTest extends BaseKernelTestCase
                     'B' => 'XXX-1',
                     'C' => 'XXX-2',
                     'XXX' => 'XXX-3',
-                ]
-            ]
+                ],
+            ],
         ];
-
     }
 
     public function notRegisteredAliasProvider()

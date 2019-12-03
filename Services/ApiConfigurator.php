@@ -364,6 +364,7 @@ class ApiConfigurator
         if (!isset($this->successCodes[$key])) {
             throw new \OutOfRangeException('Requested code does not exist');
         }
+
         return $this->successCodes[$key];
     }
 

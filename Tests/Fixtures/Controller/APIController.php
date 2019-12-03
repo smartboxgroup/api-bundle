@@ -71,7 +71,6 @@ class APIController extends \Smartbox\ApiBundle\Controller\APIController
                 $item->setType('Item type '.$input['id']);
                 $response = $item;
                 break;
-
         }
 
         return $this->respond($response);

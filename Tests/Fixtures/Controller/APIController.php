@@ -56,6 +56,9 @@ class APIController extends \Smartbox\ApiBundle\Controller\APIController
             case 'updateBox':
             case 'createBoxes':
             case 'setBoxPicked':
+            case 'deleteItem':
+            case 'updateItem':
+            case 'createItem':
             case 'deleteBox':
                 $response = null;
                 break;
@@ -69,11 +72,6 @@ class APIController extends \Smartbox\ApiBundle\Controller\APIController
                 $response = $item;
                 break;
 
-            case 'createItem':
-            case 'updateItem':
-            case 'deleteItem':
-                $response = null;
-                break;
         }
 
         return $this->respond($response);

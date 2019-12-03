@@ -3,6 +3,7 @@
 namespace Smartbox\ApiBundle\Tests\Controller;
 
 use Smartbox\ApiBundle\Services\ApiConfigurator;
+use Smartbox\ApiBundle\Tests\Fixtures\Entity\Box;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -107,7 +108,10 @@ class APIControllerTest extends WebTestCase
 
         // Call handleCallAction
         $controller = $this->getContainer()->get('test.dummy.controller');
-        $controller->handleCallAction('demo_v1', 'dummy', $methodConfig, $version, $methodName, $inputValues);
+        $response = $controller->handleCallAction('demo_v1', 'dummy', $methodConfig, $version, $methodName, $inputValues);
+
+        $this->assertIsArray($response);
+        $this->assertInstanceOf(Box::class, $response[0]);
     }
 
     /**

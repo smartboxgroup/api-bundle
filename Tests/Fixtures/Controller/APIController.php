@@ -56,6 +56,9 @@ class APIController extends \Smartbox\ApiBundle\Controller\APIController
             case 'updateBox':
             case 'createBoxes':
             case 'setBoxPicked':
+            case 'deleteItem':
+            case 'updateItem':
+            case 'createItem':
             case 'deleteBox':
                 $response = null;
                 break;
@@ -67,12 +70,6 @@ class APIController extends \Smartbox\ApiBundle\Controller\APIController
                 $item->setDescription('Item description '.$input['id']);
                 $item->setType('Item type '.$input['id']);
                 $response = $item;
-                break;
-
-            case 'createItem':
-            case 'updateItem':
-            case 'deleteItem':
-                $response = null;
                 break;
         }
 

@@ -1,4 +1,30 @@
 services:
+    _defaults:
+        public: true
+
+    test.annotation_reader: '@annotation_reader'
+
+    fos_rest.view_handler:
+        alias: fos_rest.view_handler.default
+
+    fos_rest.exception_handler:
+        alias: fos_rest.view.exception_wrapper_handler
+
+    fos_rest.exception_format_negotiator:
+        class: '%fos_rest.format_negotiator.class%'
+
+    fos_rest.serializer: '@jms_serializer.serializer'
+
+    smartcore.hydrator.group_version:
+        class: '%smartcore.hydrator.group_version.class%'
+        arguments: ['@jms_serializer.metadata_factory']
+
+    besimple.soap.response:
+        class: '%besimple.soap.response.class%'
+
+    fos_rest.controller.exception:
+        class: '%fos_rest.controller.exception.class%'
+
     test.dummy.controller:
         class: Smartbox\ApiBundle\Tests\Fixtures\Controller\APIController
         calls:

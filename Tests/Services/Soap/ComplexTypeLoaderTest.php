@@ -27,7 +27,7 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
     public function setUp()
     {
         $this->bootKernel();
-        $this->annotationReader = $this->getContainer()->get('annotation_reader');
+        $this->annotationReader = $this->getContainer()->get('test.annotation_reader');
         $this->typeRepository = $this->getMockBuilder(TypeRepository::class)->getMock();
         $this->complexTypeLoader = new ComplexTypeLoader($this->annotationReader, $this->typeRepository);
         /** @var Serializer $serializer */

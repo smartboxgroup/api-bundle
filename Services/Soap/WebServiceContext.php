@@ -95,7 +95,7 @@ class WebServiceContext extends \BeSimple\SoapBundle\WebServiceContext
             $cache->write($dumper->dump());
         }
 
-        return (string) $cache;
+        return $cache->getPath();
     }
 
     /**

@@ -21,7 +21,7 @@ class SoapController extends SoapWebServiceController
     {
         $webServiceContext = $this->getWebServiceContext($webservice);
 
-        $soapRequest = SoapRequest::createFromHttpRequest($this->container->get('request'));
+        $soapRequest = SoapRequest::createFromHttpRequest($this->container->get('request_stack'))->getCurrentRequest();
 
         if (null == $soapRequest) {
             throw new \Exception('Soap request is empty');

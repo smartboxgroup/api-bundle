@@ -2,6 +2,8 @@
 
 The API bundle allows you to create REST and SOAP APIs in a seamless way. It also auto generates documentation for both APIs
 
+[![Build Status](https://travis-ci.com/smartboxgroup/integration-framework-bundle.svg?branch=master)](https://travis-ci.com/smartboxgroup/integration-framework-bundle)
+
 ## Installation and usage
 To install the bundle, you just need to:
 

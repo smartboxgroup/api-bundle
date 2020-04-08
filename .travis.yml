@@ -21,7 +21,8 @@ before_script:
   - composer require friendsofphp/php-cs-fixer
 
 script:
-  - vendor/bin/php-cs-fixer fix --verbose --rules=@Symfony --dry-run --using-cache=no
+  - vendor/bin/php-cs-fixer fix . --verbose --rules=@Symfony --dry-run --using-cache=no
+  - bin/php-cs-fixer fix . --verbose --rules=@Symfony --dry-run --using-cache=no
   - SYMFONY_PHPUNIT_VERSION=6.5 SYMFONY_DEPRECATIONS_HELPER=417 bin/simple-phpunit --coverage-text # TODO: Fix deprecations
 
 notifications:

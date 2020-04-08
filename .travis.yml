@@ -18,9 +18,10 @@ before_script:
   - echo $TRAVIS_PHP_VERSION
   - composer require symfony/symfony:${SYMFONY_VERSION} --no-update
   - composer install --no-interaction
+  - composer require friendsofphp/php-cs-fixer
 
 script:
-  - vendor/bin/php-cs-fixer fix -v --dry-run
+  - vendor/bin/php-cs-fixer fix --verbose --rules=@Symfony --dry-run --using-cache=no
   - SYMFONY_PHPUNIT_VERSION=6.5 SYMFONY_DEPRECATIONS_HELPER=417 bin/simple-phpunit --coverage-text # TODO: Fix deprecations
 
 notifications:

@@ -11,6 +11,7 @@ matrix:
     - php: '7.3'
 
 env:
+  - SYMFONY_VERSION=2.8.* SYMFONY_PHPUNIT_VERSION=6.5
   - SYMFONY_VERSION=3.4.* SYMFONY_PHPUNIT_VERSION=6.5
 
 before_install:

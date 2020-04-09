@@ -2,6 +2,8 @@
 
 The API bundle allows you to create REST and SOAP APIs in a seamless way. It also auto generates documentation for both APIs
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/smartbox/api-bundle.svg?style=flat-square)](https://packagist.org/packages/smartbox/api-bundle)
+[![Minimum PHP Version](https://img.shields.io/badge/php-~%207.0-8892BF.svg?style=flat-square)](https://php.net/)
 [![Build Status](https://travis-ci.com/smartboxgroup/api-bundle.svg?branch=master)](https://travis-ci.com/smartboxgroup/api-bundle)
 
 ## Installation and usage

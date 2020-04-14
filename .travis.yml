@@ -11,8 +11,8 @@ matrix:
     - php: '7.3'
 
 env:
-  - SYMFONY_VERSION=2.8.* SYMFONY_PHPUNIT_VERSION=6.5
-  - SYMFONY_VERSION=3.4.* SYMFONY_PHPUNIT_VERSION=6.5
+  - SYMFONY_VERSION=2.8.* SYMFONY_PHPUNIT_VERSION=6.5 PHP_CS_FIXER_VERSION=2.2.20
+  - SYMFONY_VERSION=3.4.* SYMFONY_PHPUNIT_VERSION=6.5 PHP_CS_FIXER_VERSION=^2
 
 before_install:
   - phpenv config-add travis/z_php.ini
@@ -22,7 +22,7 @@ before_script:
   - echo $TRAVIS_PHP_VERSION
   - composer require symfony/symfony:${SYMFONY_VERSION} --no-update
   - composer install --no-interaction
-  - composer require friendsofphp/php-cs-fixer
+  - composer require friendsofphp/php-cs-fixer@${PHP_CS_FIXER_VERSION}
 
 script:
   - bin/php-cs-fixer fix . --verbose --rules=@Symfony --dry-run --using-cache=no

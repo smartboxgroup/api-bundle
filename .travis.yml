@@ -22,7 +22,7 @@ before_script:
   - echo $TRAVIS_PHP_VERSION
   - composer require symfony/symfony:${SYMFONY_VERSION} --no-update
   - composer install --no-interaction
-  - composer require friendsofphp/php-cs-fixer@${PHP_CS_FIXER_VERSION}
+  - composer require friendsofphp/php-cs-fixer:${PHP_CS_FIXER_VERSION}
 
 script:
   - bin/php-cs-fixer fix . --verbose --rules=@Symfony --dry-run --using-cache=no

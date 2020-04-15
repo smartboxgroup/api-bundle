@@ -11,21 +11,23 @@ matrix:
     - php: '7.3'
 
 env:
-  - SYMFONY_VERSION=2.8.* SYMFONY_PHPUNIT_VERSION=6.5 PHP_CS_FIXER_VERSION=2.7.0
-  - SYMFONY_VERSION=3.4.* SYMFONY_PHPUNIT_VERSION=6.5 PHP_CS_FIXER_VERSION=^2
+  - SYMFONY_VERSION=2.8.* SYMFONY_PHPUNIT_VERSION=6.5
+  - SYMFONY_VERSION=3.4.* SYMFONY_PHPUNIT_VERSION=6.5
 
 before_install:
   - phpenv config-add travis/z_php.ini
   - composer self-update
 
 before_script:
+  - curl -L https://cs.symfony.com/download/php-cs-fixer-v2.phar -o php-cs-fixer
+  - sudo chmod a+x php-cs-fixer
+  - sudo mv php-cs-fixer /usr/local/bin/php-cs-fixer
   - echo $TRAVIS_PHP_VERSION
   - composer require symfony/symfony:${SYMFONY_VERSION} --no-update
   - composer install --no-interaction
-  - composer require friendsofphp/php-cs-fixer:${PHP_CS_FIXER_VERSION}
 
 script:
-  - bin/php-cs-fixer fix . --verbose --rules=@Symfony --dry-run --using-cache=no
+  - php-cs-fixer fix . --verbose --rules=@Symfony --dry-run --using-cache=no
   - SYMFONY_PHPUNIT_VERSION=6.5 SYMFONY_DEPRECATIONS_HELPER=417 bin/simple-phpunit --coverage-text # TODO: Fix deprecations
 
 notifications:

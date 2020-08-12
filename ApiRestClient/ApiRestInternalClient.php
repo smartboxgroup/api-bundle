@@ -74,7 +74,7 @@ class ApiRestInternalClient
      *
      * @param $method
      * @param $path
-     * @param null   $object
+     * @param mixed|null   $object
      * @param array  $filters
      * @param array  $headers
      * @param string $deserializationType

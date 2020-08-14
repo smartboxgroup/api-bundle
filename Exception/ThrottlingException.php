@@ -19,11 +19,9 @@ class ThrottlingException extends \Exception
     /**
      * ThrottlingException constructor.
      *
-     * @param string        $message
-     * @param int           $code
-     * @param RateLimitInfo $rateLimitInfo
+     * @param string $message
+     * @param int    $code
      * @param $serviceId
-     * @param \Exception|null $previous
      */
     public function __construct($message, $code, RateLimitInfo $rateLimitInfo, $serviceId, \Exception $previous = null)
     {

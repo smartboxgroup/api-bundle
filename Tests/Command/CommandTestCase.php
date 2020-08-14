@@ -2,11 +2,11 @@
 
 namespace Smartbox\ApiBundle\Tests\Command;
 
+use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\StreamOutput;
-use Symfony\Bundle\FrameworkBundle\Client;
 
 /**
  * Base class for testing the CLI tools.
@@ -16,7 +16,6 @@ abstract class CommandTestCase extends WebTestCase
     /**
      * Runs a command and returns it output.
      *
-     * @param Client $client
      * @param $command
      *
      * @return string|StreamOutput

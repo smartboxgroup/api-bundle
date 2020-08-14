@@ -28,10 +28,10 @@ class Configuration implements ConfigurationInterface
     const MODE_BODY = 'body';
     const MODE_REQUIREMENT = 'requirement';
 
-    public static $INPUT_MODES = array(self::MODE_BODY, self::MODE_FILTER, self::MODE_REQUIREMENT);
+    public static $INPUT_MODES = [self::MODE_BODY, self::MODE_FILTER, self::MODE_REQUIREMENT];
 
-    public static $BASIC_TYPES = array(self::INTEGER, self::FLOAT, self::STRING, self::BOOL, self::DATETIME, self::NUMBER);
-    public static $KEYWORDS = array(
+    public static $BASIC_TYPES = [self::INTEGER, self::FLOAT, self::STRING, self::BOOL, self::DATETIME, self::NUMBER];
+    public static $KEYWORDS = [
         'filters',
         '_controller',
         '_generated',
@@ -42,7 +42,7 @@ class Configuration implements ConfigurationInterface
         ApiConfigurator::METHOD_NAME,
         ApiConfigurator::METHOD_CONFIG,
         ApiConfigurator::INPUT,
-    );
+    ];
 
     /**
      * {@inheritdoc}
@@ -258,14 +258,14 @@ EOL
             ->scalarNode('controller')->info('Controller to handle the requests to this method')->defaultValue('default')->end()
             ->arrayNode('roles')
             ->useAttributeAsKey('role')
-            ->defaultValue(array('ROLE_USER'))
+            ->defaultValue(['ROLE_USER'])
             ->prototype('scalar')
             ->info('Roles allowed to use this method')
             ->end()
             ->end()
             ->arrayNode('defaults')
             ->useAttributeAsKey('key')
-            ->defaultValue(array())
+            ->defaultValue([])
             ->prototype('scalar')
             ->info('Default values')
             ->end()

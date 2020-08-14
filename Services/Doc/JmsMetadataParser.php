@@ -55,7 +55,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
         $groups = $input['groups'];
         $version = $input['version'];
 
-        return $this->doParse($className, array(), $groups, $version);
+        return $this->doParse($className, [], $groups, $version);
     }
 
     /**
@@ -69,7 +69,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
      *
      * @throws \InvalidArgumentException
      */
-    protected function doParse($className, $visited = array(), array $groups = array(), $version = null)
+    protected function doParse($className, $visited = [], array $groups = [], $version = null)
     {
         $meta = $this->factory->getMetadataForClass($className);
 
@@ -77,7 +77,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
             throw new \InvalidArgumentException(sprintf('No metadata found for class %s', $className));
         }
 
-        $exclusionStrategies = array();
+        $exclusionStrategies = [];
         if ($groups) {
             $exclusionStrategies[] = new GroupsExclusionStrategy($groups);
         }
@@ -86,7 +86,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
             $exclusionStrategies[] = new VersionExclusionStrategy($version);
         }
 
-        $params = array();
+        $params = [];
 
         $reflection = new \ReflectionClass($className);
         $defaultProperties = array_map(
@@ -115,7 +115,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
                 }
 
                 if (!$dataType['inline']) {
-                    $params[$name] = array(
+                    $params[$name] = [
                         'dataType' => $dataType['normalized'],
                         'actualType' => $dataType['actualType'],
                         'subType' => $dataType['class'],
@@ -126,7 +126,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
                         'readonly' => $item->readOnly,
                         'sinceVersion' => $item->sinceVersion,
                         'untilVersion' => $item->untilVersion,
-                    );
+                    ];
 
                     if (!is_null($dataType['class']) && false === $dataType['primitive']) {
                         $params[$name]['class'] = $dataType['class'];

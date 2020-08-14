@@ -10,9 +10,9 @@ use Metadata\MetadataFactoryInterface;
 use Nelmio\ApiDocBundle\DataTypes;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\PropertyMetadata;
-use Symfony\Component\Validator\Constraints\Type;
 
 class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser
 {
@@ -44,27 +44,26 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser
         $groups = $input['groups'];
         $version = $input['version'];
 
-        return $this->doParse($className, array(), $version, $groups);
+        return $this->doParse($className, [], $version, $groups);
     }
 
     /**
      * Recursively parse constraints.
      *
      * @param  $className
-     * @param array $visited
      *
      * @return array
      */
     protected function doParse($className, array $visited, $version = null, $groups = null)
     {
-        $params = array();
+        $params = [];
 
         // Validator properties
         /** @var ClassMetadata $meta */
         $meta = $this->factory->getMetadataFor($className);
         $properties = $meta->getConstrainedProperties();
 
-        $exclusionStrategies = array();
+        $exclusionStrategies = [];
         $c = SerializationContext::create();
         $exclusionStrategies[] = new VersionExclusionStrategy($version);
 
@@ -112,7 +111,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser
                 $validationParams['format'] = join(', ', $validationParams['format']);
             }
 
-            foreach (array('dataType', 'readonly', 'required', 'subType') as $reqprop) {
+            foreach (['dataType', 'readonly', 'required', 'subType'] as $reqprop) {
                 if (!isset($validationParams[$reqprop])) {
                     $validationParams[$reqprop] = null;
                 }
@@ -190,7 +189,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser
      *
      * @return mixed the parsed list of validation parameters
      */
-    protected function parseConstraint(Constraint $constraint, $vparams, $className, &$visited = array())
+    protected function parseConstraint(Constraint $constraint, $vparams, $className, &$visited = [])
     {
         $class = substr(get_class($constraint), strlen('Symfony\\Component\\Validator\\Constraints\\'));
 
@@ -232,7 +231,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser
                 $vparams['actualType'] = DataTypes::TIME;
                 break;
             case 'Length':
-                $messages = array();
+                $messages = [];
                 if (isset($constraint->min)) {
                     $messages[] = "min: {$constraint->min}";
                 }
@@ -247,7 +246,7 @@ class ValidationParser extends \Nelmio\ApiDocBundle\Parser\ValidationParser
                 if ($constraint->multiple) {
                     $vparams['actualType'] = DataTypes::COLLECTION;
                     $vparams['subType'] = DataTypes::ENUM;
-                    $messages = array();
+                    $messages = [];
                     if (isset($constraint->min)) {
                         $messages[] = "min: {$constraint->min} ";
                     }

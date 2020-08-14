@@ -34,8 +34,6 @@ class Server extends SoapServer
 
     /**
      * Holds the knowledge about how to generate a fault.
-     *
-     * @param \SoapFault $fault
      */
     protected function raiseFaultForException(\SoapFault $fault)
     {

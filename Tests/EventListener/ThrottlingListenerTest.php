@@ -3,10 +3,10 @@
 namespace Smartbox\ApiBundle\Tests\EventListener;
 
 use FOS\RestBundle\Util\Codes;
+use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Bundle\FrameworkBundle\Client;
 
 /**
  * Class ThrottlingListenerTest.
@@ -45,12 +45,12 @@ class ThrottlingListenerTest extends WebTestCase
 
     public function getConfig()
     {
-        return array(
+        return [
             'PHP_AUTH_USER' => 'test',
             'PHP_AUTH_PW' => 'test',
             'CONTENT_TYPE' => 'application/json',
             'HTTP_ACCEPT' => 'application/json',
-        );
+        ];
     }
 
     /**
@@ -143,9 +143,9 @@ class ThrottlingListenerTest extends WebTestCase
             $client->request(
                 'POST',
                 '/api/soap/throttling_v1',
-                array(),
-                array(),
-                array('CONTENT_TYPE' => 'application/xml'),
+                [],
+                [],
+                ['CONTENT_TYPE' => 'application/xml'],
                 \sprintf($payload, $nonce)
             );
             $response = $client->getResponse();

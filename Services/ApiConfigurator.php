@@ -85,7 +85,7 @@ class ApiConfigurator
         return $this;
     }
 
-    public static $typeToSoap = array(
+    public static $typeToSoap = [
         'int' => 'int',
         'integer' => 'int',
         'bool' => 'boolean',
@@ -95,17 +95,17 @@ class ApiConfigurator
         'DateTime' => 'dateTime',
         'date' => 'dateTime',
         'datetime' => 'dateTime',
-    );
+    ];
 
-    protected static $jmsTypes = array(
+    protected static $jmsTypes = [
         Configuration::INTEGER => 'integer',
         Configuration::FLOAT => 'double',
         Configuration::BOOL => 'boolean',
         Configuration::STRING => 'string',
         Configuration::DATETIME => 'DateTime',
-    );
+    ];
 
-    protected $registeredAliases = array();
+    protected $registeredAliases = [];
 
     public function __construct(MetadataFactoryInterface $metadataFactory, $config, $successCodes, $errorCodes, $restEmptyBodyResponseCodes, $cacheDir, $fixturePath = null)
     {
@@ -618,9 +618,9 @@ class ApiConfigurator
                 }
                 break;
             case Configuration::BOOL:
-                if (in_array($value, array('1', 'true', 1, true), true)) {
+                if (in_array($value, ['1', 'true', 1, true], true)) {
                     $param = true;
-                } elseif (in_array($value, array('0', 'false', 0, false), true)) {
+                } elseif (in_array($value, ['0', 'false', 0, false], true)) {
                     $param = false;
                 } else {
                     throw new BadRequestHttpException("Parameter $inputName with value $value doesn't have a valid bool");

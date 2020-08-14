@@ -7,8 +7,8 @@ use JMS\Serializer\SerializerBuilder;
 use Smartbox\ApiRestClient\ApiRestException;
 use Smartbox\ApiRestClient\ApiRestInternalClient;
 use Smartbox\ApiRestClient\ApiRestResponse;
-use Smartbox\ApiRestClient\Tests\Fixture\MockApiRestInternalClient;
 use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
+use Smartbox\ApiRestClient\Tests\Fixture\MockApiRestInternalClient;
 
 /**
  * Class ApiRestInternalClientTest.
@@ -19,12 +19,9 @@ class ApiRestInternalClientTest extends \PHPUnit\Framework\TestCase
     const TEST_PASSWORD = 'admin';
 
     /**
-     * @param array $responses
-     * @param array $exceptions
-     *
      * @return MockApiRestInternalClient
      */
-    public function getClient(array $responses = array(), array $exceptions = array())
+    public function getClient(array $responses = [], array $exceptions = [])
     {
         return new MockApiRestInternalClient(self::TEST_USERNAME, self::TEST_USERNAME, 'http://example.com/', $responses, $exceptions);
     }
@@ -37,12 +34,12 @@ class ApiRestInternalClientTest extends \PHPUnit\Framework\TestCase
         $serializer = SerializerBuilder::create()->build();
         $jsonContent = $serializer->serialize($product, ApiRestInternalClient::FORMAT_JSON);
 
-        $response = new Response(200, array(), $jsonContent);
-        $client = $this->getClient(array($response));
+        $response = new Response(200, [], $jsonContent);
+        $client = $this->getClient([$response]);
 
         $otherProduct = new Product();
         $otherProduct->setName('name');
-        $response = $client->request('POST', '/createProduct', $otherProduct, array(), array(), 'Smartbox\ApiRestClient\Tests\Fixture\Entity\Product');
+        $response = $client->request('POST', '/createProduct', $otherProduct, [], [], 'Smartbox\ApiRestClient\Tests\Fixture\Entity\Product');
 
         $this->assertInstanceOf(ApiRestResponse::$class, $response);
         $this->assertEquals($product, $response->getBody());
@@ -59,19 +56,19 @@ class ApiRestInternalClientTest extends \PHPUnit\Framework\TestCase
         $product2->setId('id2');
 
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize(array($product1, $product2), ApiRestInternalClient::FORMAT_JSON);
+        $jsonContent = $serializer->serialize([$product1, $product2], ApiRestInternalClient::FORMAT_JSON);
 
-        $headers = array(
+        $headers = [
             ApiRestResponse::RATE_LIMIT_LIMIT => 'rateLimitLimit',
             ApiRestResponse::RATE_LIMIT_REMAINING => 'rateLimitRemaining',
             ApiRestResponse::RATE_LIMIT_RESET_REMAINING => 'rateLimitResetRemaining',
             ApiRestResponse::RATE_LIMIT_RESET => 'rateLimitReset',
             'x-transaction-id' => '42',
-        );
+        ];
 
-        $client = $this->getClient(array(new Response(200, $headers, $jsonContent)));
+        $client = $this->getClient([new Response(200, $headers, $jsonContent)]);
 
-        $response = $client->request('GET', '/products', null, array(), array(), 'array<Smartbox\ApiRestClient\Tests\Fixture\Entity\Product>');
+        $response = $client->request('GET', '/products', null, [], [], 'array<Smartbox\ApiRestClient\Tests\Fixture\Entity\Product>');
 
         $this->assertInstanceOf(ApiRestResponse::$class, $response);
 
@@ -93,14 +90,14 @@ class ApiRestInternalClientTest extends \PHPUnit\Framework\TestCase
      */
     public function testHandleException()
     {
-        $client = $this->getClient(array(new Response(400, array('my_header' => 'value'), 'Bad request')));
+        $client = $this->getClient([new Response(400, ['my_header' => 'value'], 'Bad request')]);
 
         $client->request('GET', '/products');
     }
 
     public function testTransformException()
     {
-        $client = $this->getClient(array(new Response(400, array('my_header' => 'value'), 'Bad request')));
+        $client = $this->getClient([new Response(400, ['my_header' => 'value'], 'Bad request')]);
 
         try {
             $client->request('GET', '/products');

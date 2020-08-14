@@ -24,8 +24,8 @@ class SmartboxApiExtension extends Extension
 
     protected $config;
 
-    protected $unResolvedApiServices = array();
-    protected $resolvedApiServices = array();
+    protected $unResolvedApiServices = [];
+    protected $resolvedApiServices = [];
 
     /**
      * @return array
@@ -41,7 +41,7 @@ class SmartboxApiExtension extends Extension
         $serviceConfig = $this->unResolvedApiServices[$service];
         $mergedMethods = array_merge($parentConfig['methods'], $serviceConfig['methods']);
 
-        $serviceConfig['methods'] = array();
+        $serviceConfig['methods'] = [];
 
         $removedMethods = $serviceConfig['removed'];
         foreach ($mergedMethods as $methodName => $methodConfig) {
@@ -80,9 +80,7 @@ class SmartboxApiExtension extends Extension
                 if (array_key_exists($parent, $this->resolvedApiServices)) {
                     $this->resolveServiceConfig($service, $parent);
                 } else {
-                    throw new InvalidConfigurationException(
-                        "Parent service $parent not resolved. Please define services after their parent, not before"
-                    );
+                    throw new InvalidConfigurationException("Parent service $parent not resolved. Please define services after their parent, not before");
                 }
             }
         }

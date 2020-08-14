@@ -22,9 +22,6 @@ class WsAuthenticationFilter extends WsSecurityFilter
 
     /**
      * WsAuthenticationFilter constructor.
-     *
-     * @param AuthenticationProviderInterface $authProvider
-     * @param TokenStorageInterface           $tokenStorage
      */
     public function __construct(
         AuthenticationProviderInterface $authProvider,

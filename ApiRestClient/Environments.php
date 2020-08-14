@@ -9,9 +9,9 @@ class Environments
 {
     const ENV_TEST = 'test';
 
-    protected static $environments = array(
+    protected static $environments = [
         self::ENV_TEST => 'http://real.smartesb.local',
-    );
+    ];
 
     /**
      * Return the entry point of the given environment.

@@ -28,7 +28,7 @@ class RestInputHandler
     /** @var Serializer */
     protected $serializer;
 
-    protected $context = array();
+    protected $context = [];
 
     /** @var ValidatorInterface */
     protected $validator;
@@ -54,8 +54,6 @@ class RestInputHandler
     }
 
     /**
-     * @param GetResponseEvent $event
-     *
      * @throws \Exception
      */
     public function onKernelRequest(GetResponseEvent $event)
@@ -74,7 +72,7 @@ class RestInputHandler
         $inputParamsConfig = $config[ApiConfigurator::INPUT];
 
         // Gather all input parameters
-        $bag = array();
+        $bag = [];
 
         foreach ($inputParamsConfig as $inputName => $inputConfig) {
             $mode = $inputConfig['mode'];
@@ -87,9 +85,7 @@ class RestInputHandler
             $param = $request->get($inputName);
 
             if (empty($param) && Configuration::MODE_FILTER != $mode) {
-                throw new BadRequestHttpException(
-                    "Missing required input parameter: $inputName"
-                );
+                throw new BadRequestHttpException("Missing required input parameter: $inputName");
             }
 
             if (!empty($param)) {
@@ -105,21 +101,21 @@ class RestInputHandler
         // Group support
         $group = $config['group'];
 
-        $options = array(
-            'deserializationContext' => array(
+        $options = [
+            'deserializationContext' => [
                 'version' => $version,
-            ),
-        );
+            ],
+        ];
 
-        $options['deserializationContext']['groups'] = array($group);
+        $options['deserializationContext']['groups'] = [$group];
 
         $configuration = new ParamConverterConfiguration(
-            array(
+            [
                 'name' => $name,
                 'class' => ApiConfigurator::getJMSType($config['type']),
                 'options' => $options,
                 'converter' => 'fos_rest.request_body',
-            )
+            ]
         );
 
         // Convert
@@ -129,13 +125,11 @@ class RestInputHandler
     /**
      * Check if we should try to decode the body.
      *
-     * @param Request $request
-     *
      * @return bool
      */
     protected function isDecodeable(Request $request)
     {
-        if (!in_array($request->getMethod(), array('POST', 'PUT', 'PATCH', 'DELETE'))) {
+        if (!in_array($request->getMethod(), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
             return false;
         }
 
@@ -145,8 +139,6 @@ class RestInputHandler
     /**
      * Check if the content type indicates a form submission.
      *
-     * @param Request $request
-     *
      * @return bool
      */
     protected function isFormRequest(Request $request)
@@ -154,7 +146,7 @@ class RestInputHandler
         $contentTypeParts = explode(';', $request->headers->get('Content-Type'));
 
         if (isset($contentTypeParts[0])) {
-            return in_array($contentTypeParts[0], array('multipart/form-data', 'application/x-www-form-urlencoded'));
+            return in_array($contentTypeParts[0], ['multipart/form-data', 'application/x-www-form-urlencoded']);
         }
 
         return false;

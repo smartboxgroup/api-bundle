@@ -42,11 +42,6 @@ class ThrottlingListener extends BaseListener implements LoggerAwareInterface
      */
     protected $pathLimitProcessor;
 
-    /**
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param RateLimitService         $rateLimitService
-     * @param PathLimitProcessor       $pathLimitProcessor
-     */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         RateLimitService $rateLimitService,
@@ -58,8 +53,6 @@ class ThrottlingListener extends BaseListener implements LoggerAwareInterface
     }
 
     /**
-     * @param FilterControllerEvent $event
-     *
      * @throws \Exception
      */
     public function onKernelController(FilterControllerEvent $event)
@@ -68,8 +61,6 @@ class ThrottlingListener extends BaseListener implements LoggerAwareInterface
     }
 
     /**
-     * @param FilterControllerEvent $event
-     *
      * @throws ThrottlingException
      */
     protected function handleOnKernelController(FilterControllerEvent $event)
@@ -135,10 +126,7 @@ class ThrottlingListener extends BaseListener implements LoggerAwareInterface
                     // Throw an exception if configured.
                     if ($this->getParameter('rate_response_exception')) {
                         $class = $this->getParameter('rate_response_exception');
-                        throw new $class(
-                            $this->getParameter('rate_response_message'),
-                            $this->getParameter('rate_response_code')
-                        );
+                        throw new $class($this->getParameter('rate_response_message'), $this->getParameter('rate_response_code'));
                     }
 
                     $event->setController(
@@ -158,8 +146,6 @@ class ThrottlingListener extends BaseListener implements LoggerAwareInterface
     }
 
     /**
-     * @param \Symfony\Component\HttpKernel\Event\FilterControllerEvent $event
-     *
      * @return string
      */
     private function getKey(FilterControllerEvent $event)

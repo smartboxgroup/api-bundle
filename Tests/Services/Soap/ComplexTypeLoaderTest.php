@@ -235,9 +235,7 @@ class ComplexTypeLoaderTest extends BaseKernelTestCase
     /**
      * @dataProvider loadsMetadataProvider
      *
-     * @param array  $data
      * @param string $type
-     * @param array  $expectedElements
      */
     public function testItLoadsMetadata(array $data, $type, array $expectedElements)
     {

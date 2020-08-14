@@ -26,9 +26,6 @@ class RoutesLoader extends Loader
         return $this->apiConfigurator;
     }
 
-    /**
-     * @param ApiConfigurator $apiConfigurator
-     */
     public function setApiConfigurator(ApiConfigurator $apiConfigurator)
     {
         $this->apiConfigurator = $apiConfigurator;
@@ -59,7 +56,7 @@ class RoutesLoader extends Loader
         foreach ($serviceConfig['methods'] as $method => $methodConfig) {
             $controller = $methodConfig['controller'];
             $route_path = $methodConfig['rest']['route'];
-            $requirements = array();
+            $requirements = [];
 
             foreach ($methodConfig[ApiConfigurator::INPUT] as $input => $inputConfig) {
                 if (Configuration::MODE_REQUIREMENT == $inputConfig['mode'] && array_key_exists(
@@ -72,7 +69,7 @@ class RoutesLoader extends Loader
             }
 
             $route_method = $methodConfig['rest']['httpMethod'];
-            $defaults = array(
+            $defaults = [
                 '_controller' => $controller,
                 '_generated' => 'smartapi',
                 'api' => 'rest',
@@ -81,7 +78,7 @@ class RoutesLoader extends Loader
                 ApiConfigurator::SERVICE_NAME => $name,
                 ApiConfigurator::METHOD_NAME => $method,
                 ApiConfigurator::METHOD_CONFIG => $methodConfig,
-            );
+            ];
 
             $defaults = array_merge($defaults, $methodConfig['defaults']);
 
@@ -89,10 +86,10 @@ class RoutesLoader extends Loader
                 $restBasePath.$route_path,
                 $defaults,
                 $requirements,
-                array(),
+                [],
                 '',
-                array(),
-                array($route_method)
+                [],
+                [$route_method]
             );
             $routeName = $this->apiConfigurator->getRestRouteNameFor($resource, $method);
             $routes->add($routeName, $routeRest);

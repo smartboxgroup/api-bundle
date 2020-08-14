@@ -8,7 +8,7 @@ class WSToken extends AbstractToken
 {
     protected $soapRequest;
 
-    public function __construct(array $roles = array())
+    public function __construct(array $roles = [])
     {
         parent::__construct($roles);
 

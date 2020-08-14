@@ -161,7 +161,6 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     /**
      * Generate a PHP class for a given API service.
      *
-     * @param array $service
      * @param $namespace
      * @param $outputPath
      * @param $classToExtend
@@ -240,7 +239,6 @@ class ClientGeneratorCommand extends ContainerAwareCommand
      *
      * @param $methodName
      * @param $apiMethod
-     * @param BuilderFactory $factory
      * @param $apiName
      * @param $version
      *
@@ -471,7 +469,6 @@ class ClientGeneratorCommand extends ContainerAwareCommand
     /**
      * Generate the files and folder for a the full SDK.
      *
-     * @param array $generatedFilePaths
      * @param $outputPath
      *
      * @throws \Exception

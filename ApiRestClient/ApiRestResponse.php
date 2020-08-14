@@ -17,7 +17,7 @@ class ApiRestResponse
     /**
      * @var array
      */
-    protected $headers = array();
+    protected $headers = [];
 
     /**
      * @var mixed

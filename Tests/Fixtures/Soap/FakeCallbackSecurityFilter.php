@@ -3,8 +3,8 @@
 namespace Smartbox\ApiBundle\Tests\Fixtures\Soap;
 
 use BeSimple\SoapCommon\SoapRequest;
-use BeSimple\SoapServer\WsSecurityFilter;
 use BeSimple\SoapCommon\SoapResponse;
+use BeSimple\SoapServer\WsSecurityFilter;
 
 /**
  * Fake class to simulate the behaviour of the real soap security filter based on a callback.

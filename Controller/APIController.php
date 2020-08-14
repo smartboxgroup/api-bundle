@@ -107,7 +107,7 @@ class APIController extends FOSRestController
             $expectedInputType = $inputConfig['type'];
             $expectedLimitElements = $inputConfig['limitElements'];
 
-            $errors = array();
+            $errors = [];
 
             if (Configuration::MODE_BODY == $mode) {
                 if (!array_key_exists($inputName, $inputValues)) {
@@ -126,9 +126,9 @@ class APIController extends FOSRestController
                 try {
                     $errors = $this->validateBody($body, $expectedInputType, $expectedInputGroup, $expectedLimitElements, $version);
                 } catch (\Exception $e) {
-                    $errors = new ConstraintViolationList(array(
-                        new ConstraintViolation($e->getMessage(), '', array(), 'body', 'body', $body),
-                    ));
+                    $errors = new ConstraintViolationList([
+                        new ConstraintViolation($e->getMessage(), '', [], 'body', 'body', $body),
+                    ]);
                 }
             } else {
                 if (array_key_exists($inputName, $inputValues)) {
@@ -149,7 +149,7 @@ class APIController extends FOSRestController
     {
         $validator = $this->getValidator();
 
-        $constraints = array();
+        $constraints = [];
 
         switch ($type) {
             case 'datetime[]':
@@ -168,14 +168,14 @@ class APIController extends FOSRestController
             case Configuration::BOOL:
                 // do some thing here
                 $constraints[] = new Assert\Type(
-                    array(
+                    [
                         'message' => sprintf(
                             "Parameter '%s' with value '%s', is not a valid bool.",
                             $name,
                             $param
                         ),
                         'type' => 'bool',
-                    )
+                    ]
                 );
                 break;
             /* @noinspection PhpMissingBreakStatementInspection */
@@ -204,7 +204,7 @@ class APIController extends FOSRestController
                 break;
             default:
                 $constraints[] = new Assert\Type(
-                    array(
+                    [
                         'type' => $type,
                         'message' => sprintf(
                             "Parameter '%s' with value '%s', is not of type '%s'",
@@ -212,12 +212,12 @@ class APIController extends FOSRestController
                             $param,
                             $type
                         ),
-                    )
+                    ]
                 );
 
                 if ($format) {
                     $constraints[] = new Assert\Regex(
-                        array(
+                        [
                             'pattern' => '#^'.$format.'$#xsu',
                             'message' => sprintf(
                                 "Parameter '%s' with value '%s', does not match format '%s'",
@@ -225,7 +225,7 @@ class APIController extends FOSRestController
                                 gettype($param),
                                 $format
                             ),
-                        )
+                        ]
                     );
                 }
         }
@@ -350,9 +350,9 @@ class APIController extends FOSRestController
             try {
                 $errors = $this->validateBody($outputValue, $outputType, $outputGroup, $expectedLimitElements, $version);
             } catch (\Exception $e) {
-                $errors = new ConstraintViolationList(array(
-                    new ConstraintViolation($e->getMessage(), '', array(), 'body', 'body', $outputValue),
-                ));
+                $errors = new ConstraintViolationList([
+                    new ConstraintViolation($e->getMessage(), '', [], 'body', 'body', $outputValue),
+                ]);
             }
 
             if (count($errors)) {
@@ -397,7 +397,7 @@ class APIController extends FOSRestController
             $view = $this->view($body, $successCode, $headers);
 
             $context = SerializationContext::create()->setVersion($request->get('version'));
-            $context->setGroups(array($outputGroup));
+            $context->setGroups([$outputGroup]);
 
             $view->setSerializationContext($context);
 

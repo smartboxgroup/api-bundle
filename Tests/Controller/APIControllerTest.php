@@ -79,7 +79,6 @@ class APIControllerTest extends WebTestCase
      * @param $methodConfig
      * @param $version
      * @param $methodName
-     * @param array $inputValues
      * @param $exceptionClass
      */
     public function testHandleCallAction($version, $methodName, $methodConfig, array $inputValues, $exceptionClass)

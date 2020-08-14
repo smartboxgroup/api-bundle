@@ -11,8 +11,6 @@ class BodyListener extends \FOS\RestBundle\EventListener\BodyListener
     /**
      * Core request handler.
      *
-     * @param GetResponseEvent $event
-     *
      * @throws BadRequestHttpException
      * @throws UnsupportedMediaTypeHttpException
      */

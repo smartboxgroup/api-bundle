@@ -2,9 +2,9 @@
 
 namespace Smartbox\ApiBundle\Tests\Fixtures\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as JMS;
 use Smartbox\ApiBundle\Entity\ApiEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class Response extends ApiEntity
 {

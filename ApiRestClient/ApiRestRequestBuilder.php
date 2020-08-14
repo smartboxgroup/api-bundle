@@ -26,7 +26,7 @@ class ApiRestRequestBuilder
      *
      * @return \GuzzleHttp\Psr7\Request|mixed
      */
-    public static function buildRequest($method, $url, $username = null, $password = null, $object = null, $headers = array(), $filters = array())
+    public static function buildRequest($method, $url, $username = null, $password = null, $object = null, $headers = [], $filters = [])
     {
         $jsonContent = null;
         if (!empty($object)) {
@@ -58,9 +58,9 @@ class ApiRestRequestBuilder
      */
     protected static function getOptions($username, $password)
     {
-        return array(
+        return [
             'Authorization' => 'Basic '.\base64_encode($username.':'.$password),
             'Content-Type' => 'application/json',
-        );
+        ];
     }
 }

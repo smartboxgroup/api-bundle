@@ -401,9 +401,6 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
 
     /**
      * @dataProvider serviceConfigProvider
-     *
-     * @param array $methods
-     * @param array $expectedResult
      */
     public function testIfServiceDefinitionIsLoadedCorrectly(array $methods, array $expectedResult)
     {
@@ -463,8 +460,6 @@ class SoapServiceLoaderTest extends BaseKernelTestCase
 
     /**
      * Helper method to map the service definition response in an easily way to compare with the expected result.
-     *
-     * @param Definition $serviceDefinition
      *
      * @return array
      */

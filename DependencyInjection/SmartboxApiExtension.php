@@ -3,6 +3,7 @@
 namespace Smartbox\ApiBundle\DependencyInjection;
 
 use Smartbox\ApiBundle\HttpKernel\CacheWarmer\UserFileListCacheWarmer;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -10,6 +11,7 @@ use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -86,6 +88,79 @@ class SmartboxApiExtension extends Extension
         }
     }
 
+    private function processUserFileList($usersFile, $passwordsFile)
+    {
+        return [$this->validateUsersDefinition($this->getFileContent($usersFile)), $this->getFileContent($passwordsFile)];
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return array
+     */
+    private function getFileContent($filename)
+    {
+        if (!\is_file($filename)) {
+            throw new \InvalidArgumentException("Invalid config file provided: \"$filename\".", 404);
+        }
+
+        $file = new \SplFileInfo($filename);
+
+        switch (\strtolower($file->getExtension())) {
+            case 'yml':
+            case 'yaml':
+                return Yaml::parse(file_get_contents($file->getRealPath()));
+
+            case 'json':
+                return json_decode(file_get_contents($file->getRealPath()), true);
+
+            default:
+                throw new \InvalidArgumentException("Unsupported config file format: \"{$file->getExtension()}\".", 400);
+        }
+    }
+
+    private function validateUsersDefinition(array $config)
+    {
+        $treeBuilder = new TreeBuilder();
+        $rootNode = $treeBuilder->root('api');
+        $rootNode
+            ->children()
+            ->arrayNode('users')
+            ->useAttributeAsKey('username')
+            ->requiresAtLeastOneElement()
+            ->prototype('array')
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->booleanNode('is_admin')->defaultFalse()->end()
+            ->arrayNode('methods')
+            ->defaultValue([])
+            ->prototype('scalar')->end()
+            ->end()
+            ->arrayNode('groups')
+            ->defaultValue([])
+            ->prototype('scalar')->end()
+            ->end()
+            ->end()
+            ->end()
+            ->end() //users
+            ->arrayNode('groups')
+            ->useAttributeAsKey('name')
+            ->prototype('array')
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->arrayNode('methods')
+            ->defaultValue([])
+            ->prototype('scalar')->end()
+            ->end()
+            ->end()
+            ->end()
+            ->end() // groups
+            ->end()
+        ;
+
+        return $treeBuilder->buildTree()->finalize($config);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -110,8 +185,10 @@ class SmartboxApiExtension extends Extension
                 $loader->load('services_cache.yml');
             }
 
+            list($usersConfig, $passwords) = $this->processUserFileList($config['usersFile'], $config['passwordsFile']);
+
             $container->findDefinition(static::SERVICE_ID_FILE_LIST)
-                ->setArguments([$config['usersFile'], $config['passwordsFile'], new Reference('cache.app')]);
+                ->setArguments([$usersConfig, $passwords, new Reference('cache.app')]);
 
             $container->findDefinition(static::SERVICE_ID_USER_PROVIDER)
                 ->setArguments([new Reference(static::SERVICE_ID_FILE_LIST)]);

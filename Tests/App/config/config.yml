@@ -74,8 +74,8 @@ smartbox_core:
 
 smartbox_api:
     userProvider: smartapi.security.user_provider
-    usersFile: '%user_list.file.dir%/valid_config.json'
-    passwordsFile: '%user_list.file.dir%/passwords.json'
+    usersFile: '%user_list.file.dir%/users.yml'
+    passwordsFile: '%user_list.file.dir%/passwords.yml'
     restEmptyBodyResponseCodes: []
     default_controller: "test.dummy.controller:handleCallAction"
 

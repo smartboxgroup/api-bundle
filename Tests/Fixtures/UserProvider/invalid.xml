@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<users>
-    <user is_admin="true">
-        <username>foo</username>
-        <groups name="ADMIN"/>
-        <groups name="FOO"/>
-    </user>
-</users>

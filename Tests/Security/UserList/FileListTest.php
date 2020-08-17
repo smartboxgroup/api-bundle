@@ -48,34 +48,6 @@ class FileListTest extends BaseKernelTestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Password is missing for user "box_picker".
-     */
-    public function testMissingPassword()
-    {
-        $this->getFileList('valid_config.json', 'passwords.yml')->buildCache();
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testInvalidFilename()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("Invalid config file provided: \"{$this->getFixtureDir()}/I'm invalid\".");
-        $this->getFileList('I\'m invalid', 'And I know it')->buildCache();
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Unsupported config file format: "xml".
-     */
-    public function testInvalidExtension()
-    {
-        $this->getFileList('invalid.xml', 'passwords.json');
-    }
-
-    /**
      * Test if an exception is raised when an user cannot be found.
      */
     public function testUnknownUser()

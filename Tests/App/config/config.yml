@@ -6,8 +6,6 @@ imports:
 parameters:
     smartapi.rate_response_message: 'You exceeded the rate limit'
     user_list.file.dir: '%kernel.root_dir%/../Fixtures/UserProvider'
-    usersFile: "%kernel.root_dir%/Tests/Fixtures/UserProvider/valid_config.yml"
-    passwordsFile: "%kernel.root_dir%/Tests/Fixtures/UserProvider/passwords.yml"
 
 framework:
     test: ~

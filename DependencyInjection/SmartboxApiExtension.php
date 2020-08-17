@@ -90,7 +90,7 @@ class SmartboxApiExtension extends Extension
 
     private function processUserFileList($usersFile, $passwordsFile)
     {
-        return [$this->validateUsersDefinition($this->getFileContent($usersFile)), $this->getFileContent($passwordsFile)];
+        return [$this->validateUsersDefinition($this->getConfigFileContent($usersFile)), $this->getConfigFileContent($passwordsFile)];
     }
 
     /**
@@ -98,7 +98,7 @@ class SmartboxApiExtension extends Extension
      *
      * @return array
      */
-    private function getFileContent($filename)
+    private function getConfigFileContent($filename)
     {
         if (!\is_file($filename)) {
             throw new \InvalidArgumentException("Invalid config file provided: \"$filename\".", 404);

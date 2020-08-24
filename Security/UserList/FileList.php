@@ -5,8 +5,6 @@ namespace Smartbox\ApiBundle\Security\UserList;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Cache\InvalidArgumentException;
 use Smartbox\ApiBundle\Security\User\ApiUser;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * File based user list.
@@ -32,13 +30,13 @@ class FileList implements UserListInterface
     /**
      * FileList constructor.
      *
-     * @param string $usersFile
-     * @param string $passwordsFile
+     * @param $config
+     * @param $passwords
      */
-    public function __construct($usersFile, $passwordsFile, CacheItemPoolInterface $cache)
+    public function __construct($config, $passwords, CacheItemPoolInterface $cache)
     {
-        $this->validate($this->getContent($usersFile));
-        $this->passwords = $this->getContent($passwordsFile);
+        $this->config = $config;
+        $this->passwords = $passwords;
         $this->cache = $cache;
     }
 
@@ -93,74 +91,6 @@ class FileList implements UserListInterface
     {
         foreach (\array_keys($this->config['users']) as $username) {
             $this->get($username);
-        }
-    }
-
-    private function validate(array $config)
-    {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('api');
-        $rootNode
-            ->children()
-            ->arrayNode('users')
-                ->useAttributeAsKey('username')
-                ->requiresAtLeastOneElement()
-                ->prototype('array')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->booleanNode('is_admin')->defaultFalse()->end()
-                        ->arrayNode('methods')
-                            ->defaultValue([])
-                            ->prototype('scalar')->end()
-                        ->end()
-                        ->arrayNode('groups')
-                            ->defaultValue([])
-                            ->prototype('scalar')->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end() //users
-            ->arrayNode('groups')
-                ->useAttributeAsKey('name')
-                ->prototype('array')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->arrayNode('methods')
-                            ->defaultValue([])
-                            ->prototype('scalar')->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end() // groups
-        ->end()
-        ;
-
-        $this->config = $treeBuilder->buildTree()->finalize($config);
-    }
-
-    /**
-     * @param string $filename
-     *
-     * @return array
-     */
-    private function getContent($filename)
-    {
-        if (!\is_file($filename)) {
-            throw new \InvalidArgumentException("Invalid config file provided: \"$filename\".", 404);
-        }
-
-        $file = new \SplFileInfo($filename);
-
-        switch (\strtolower($file->getExtension())) {
-            case 'yml':
-            case 'yaml':
-                return Yaml::parse(file_get_contents($file->getRealPath()));
-
-            case 'json':
-                return json_decode(file_get_contents($file->getRealPath()), true);
-
-            default:
-                throw new \InvalidArgumentException("Unsupported config file format: \"{$file->getExtension()}\".", 400);
         }
     }
 }

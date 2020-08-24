@@ -1,7 +1,4 @@
 services:
-    _defaults:
-        public: true
-
     test.annotation_reader: '@annotation_reader'
 
     fos_rest.view_handler:
@@ -21,9 +18,6 @@ services:
 
     besimple.soap.response:
         class: '%besimple.soap.response.class%'
-
-    fos_rest.controller.exception:
-        class: '%fos_rest.controller.exception.class%'
 
     test.dummy.controller:
         class: Smartbox\ApiBundle\Tests\Fixtures\Controller\APIController

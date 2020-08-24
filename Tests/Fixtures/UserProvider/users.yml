@@ -1,17 +1,18 @@
 users:
     regular:
-        password: P4$$W0rd
         is_admin: false
         methods:
             - getBoxes
             - fooBar
         groups:
           - BOX_PICKER
-    useless:
-        password: P4$$W0rd
     admin:
-        password: P4$$W0rd
         is_admin: true
+    box_picker:
+        methods:
+            - setBoxPicked
+    useless:
+        methods: []
 groups:
     BOX_PICKER:
       methods:

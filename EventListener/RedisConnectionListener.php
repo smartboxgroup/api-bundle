@@ -16,8 +16,6 @@ class RedisConnectionListener
 
     /**
      * RedisConnectionListener constructor.
-     *
-     * @param Client $redis
      */
     public function __construct(Client $redis)
     {
@@ -32,17 +30,11 @@ class RedisConnectionListener
         $this->redis->disconnect();
     }
 
-    /**
-     * @param PostResponseEvent $event
-     */
     public function onKernelTerminate(PostResponseEvent $event)
     {
         $this->doDestroy();
     }
 
-    /**
-     * @param ConsoleTerminateEvent $event
-     */
     public function onConsoleTerminate(ConsoleTerminateEvent $event)
     {
         $this->doDestroy();

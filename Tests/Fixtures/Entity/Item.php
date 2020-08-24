@@ -2,10 +2,10 @@
 
 namespace Smartbox\ApiBundle\Tests\Fixtures\Entity;
 
-use Smartbox\ApiBundle\Entity\LocatableEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as JMS;
 use Smartbox\ApiBundle\Entity\ApiEntity;
+use Smartbox\ApiBundle\Entity\LocatableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Item.
@@ -146,6 +146,6 @@ class Item extends ApiEntity implements LocatableEntity
      */
     public function getIdParameters()
     {
-        return array('id');
+        return ['id'];
     }
 }

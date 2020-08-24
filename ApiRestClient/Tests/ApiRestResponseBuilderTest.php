@@ -21,9 +21,9 @@ class ApiRestResponseBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testRandomHeadersResponse()
     {
-        $headers = array(
+        $headers = [
             'status' => 'accepted',
-        );
+        ];
 
         $guzzleResponse = new Response('200', $headers);
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, null);
@@ -35,12 +35,12 @@ class ApiRestResponseBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testCorrectHeadersResponse()
     {
-        $headers = array(
+        $headers = [
             ApiRestResponse::RATE_LIMIT_LIMIT => 'rateLimitLimit',
             ApiRestResponse::RATE_LIMIT_REMAINING => 'rateLimitRemaining',
             ApiRestResponse::RATE_LIMIT_RESET_REMAINING => 'rateLimitResetRemaining',
             ApiRestResponse::RATE_LIMIT_RESET => 'rateLimitReset',
-        );
+        ];
 
         $guzzleResponse = new Response('200', $headers);
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, null);
@@ -54,7 +54,7 @@ class ApiRestResponseBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testStringBodyResponse()
     {
-        $guzzleResponse = new Response('200', array(), 'string');
+        $guzzleResponse = new Response('200', [], 'string');
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, null);
         $this->assertNotNull($response);
         $this->assertEquals('string', $response->getBody());
@@ -70,7 +70,7 @@ class ApiRestResponseBuilderTest extends \PHPUnit\Framework\TestCase
         $serializer = SerializerBuilder::create()->build();
         $jsonContent = $serializer->serialize($product, ApiRestInternalClient::FORMAT_JSON);
 
-        $guzzleResponse = new Response('200', array(), $jsonContent);
+        $guzzleResponse = new Response('200', [], $jsonContent);
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, 'Smartbox\ApiRestClient\Tests\Fixture\Entity\Product');
         $this->assertNotNull($response);
         $this->assertEquals($product, $response->getBody());
@@ -86,12 +86,12 @@ class ApiRestResponseBuilderTest extends \PHPUnit\Framework\TestCase
         $product2->setType(Product::TYPE_BOX);
         $product2->setId('id2');
 
-        $products = array($product1, $product2);
+        $products = [$product1, $product2];
 
         $serializer = SerializerBuilder::create()->build();
         $jsonContent = $serializer->serialize($products, ApiRestInternalClient::FORMAT_JSON);
 
-        $guzzleResponse = new Response('200', array(), $jsonContent);
+        $guzzleResponse = new Response('200', [], $jsonContent);
         $response = ApiRestResponseBuilder::buildResponse($guzzleResponse, 'array<Smartbox\ApiRestClient\Tests\Fixture\Entity\Product>');
         $this->assertNotNull($response);
         $this->assertEquals($products, $response->getBody());

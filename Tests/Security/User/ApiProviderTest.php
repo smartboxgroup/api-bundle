@@ -6,8 +6,8 @@ use PHPUnit\Framework\TestCase;
 use Smartbox\ApiBundle\Security\User\ApiProvider;
 use Smartbox\ApiBundle\Security\User\ApiUserInterface;
 use Smartbox\ApiBundle\Security\UserList\UserListInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @group user-provider

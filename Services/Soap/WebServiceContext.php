@@ -27,10 +27,6 @@ class WebServiceContext extends \BeSimple\SoapBundle\WebServiceContext
 
     /**
      * WebServiceContext constructor.
-     *
-     * @param LoaderInterface         $loader
-     * @param TypeConverterCollection $converters
-     * @param array                   $options
      */
     public function __construct(
         LoaderInterface $loader,
@@ -91,7 +87,7 @@ class WebServiceContext extends \BeSimple\SoapBundle\WebServiceContext
                 $definition->setOption('location', $endpoint);
             }
 
-            $dumper = new Dumper($definition, array('stylesheet' => $this->options['wsdl_stylesheet']));
+            $dumper = new Dumper($definition, ['stylesheet' => $this->options['wsdl_stylesheet']]);
             $cache->write($dumper->dump());
         }
 
@@ -99,8 +95,6 @@ class WebServiceContext extends \BeSimple\SoapBundle\WebServiceContext
     }
 
     /**
-     * @param \BeSimple\SoapServer\SoapServerBuilder $serverBuilder
-     *
      * @return $this
      */
     public function setServerBuilder(SoapServerBuilder $serverBuilder)

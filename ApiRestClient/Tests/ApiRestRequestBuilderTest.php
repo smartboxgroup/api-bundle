@@ -3,12 +3,12 @@
 namespace Smartbox\ApiRestClient\Tests;
 
 use GuzzleHttp\Client;
-use Smartbox\ApiRestClient\ApiRestRequestBuilder;
-use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
-use Smartbox\ApiRestClient\Tests\Fixture\Entity\Universe;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use Smartbox\ApiRestClient\ApiRestRequestBuilder;
+use Smartbox\ApiRestClient\Tests\Fixture\Entity\Product;
+use Smartbox\ApiRestClient\Tests\Fixture\Entity\Universe;
 
 class ApiRestRequestBuilderTest extends \PHPUnit\Framework\TestCase
 {
@@ -40,30 +40,30 @@ class ApiRestRequestBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testUrlRequest()
     {
-        $actualRequest = ApiRestRequestBuilder::buildRequest('GET', 'http://example.com', self::TEST_USERNAME, self::TEST_PASSWORD, null, array('header1' => 'h1', 'header2' => 'h2'));
+        $actualRequest = ApiRestRequestBuilder::buildRequest('GET', 'http://example.com', self::TEST_USERNAME, self::TEST_PASSWORD, null, ['header1' => 'h1', 'header2' => 'h2']);
         $this->assertEquals('http://example.com', (string) $actualRequest->getUri());
     }
 
     public function testHeaderRequest()
     {
-        $actualRequest = ApiRestRequestBuilder::buildRequest('GET', '/', self::TEST_USERNAME, self::TEST_PASSWORD, null, array('header1' => 'h1', 'header2' => 'h2'));
+        $actualRequest = ApiRestRequestBuilder::buildRequest('GET', '/', self::TEST_USERNAME, self::TEST_PASSWORD, null, ['header1' => 'h1', 'header2' => 'h2']);
 
-        $this->assertEquals(array('Basic '.\base64_encode(self::TEST_USERNAME.':'.self::TEST_PASSWORD)), $actualRequest->getHeader('Authorization'));
-        $this->assertEquals(array('application/json'), $actualRequest->getHeader('Content-Type'));
-        $this->assertEquals(array('h1'), $actualRequest->getHeader('header1'));
-        $this->assertEquals(array('h2'), $actualRequest->getHeader('header2'));
+        $this->assertEquals(['Basic '.\base64_encode(self::TEST_USERNAME.':'.self::TEST_PASSWORD)], $actualRequest->getHeader('Authorization'));
+        $this->assertEquals(['application/json'], $actualRequest->getHeader('Content-Type'));
+        $this->assertEquals(['h1'], $actualRequest->getHeader('header1'));
+        $this->assertEquals(['h2'], $actualRequest->getHeader('header2'));
     }
 
     public function testFilterRequest()
     {
-        $actualRequest = ApiRestRequestBuilder::buildRequest('GET', '/', self::TEST_USERNAME, self::TEST_PASSWORD, null, array('header1' => 'h1', 'header2' => 'h2'), array('page' => '12', ';limit' => '12'));
+        $actualRequest = ApiRestRequestBuilder::buildRequest('GET', '/', self::TEST_USERNAME, self::TEST_PASSWORD, null, ['header1' => 'h1', 'header2' => 'h2'], ['page' => '12', ';limit' => '12']);
 
-        $this->assertEquals(array('h1'), $actualRequest->getHeader('header1'));
-        $this->assertEquals(array('h2'), $actualRequest->getHeader('header2'));
+        $this->assertEquals(['h1'], $actualRequest->getHeader('header1'));
+        $this->assertEquals(['h2'], $actualRequest->getHeader('header2'));
         $query = $actualRequest->getUri()->getQuery();
         $result = [];
         \parse_str($query, $result);
-        $this->assertEquals(array('page' => '12', ';limit' => '12'), $result);
+        $this->assertEquals(['page' => '12', ';limit' => '12'], $result);
     }
 
     public function testEmptyStringRequest()
@@ -71,7 +71,7 @@ class ApiRestRequestBuilderTest extends \PHPUnit\Framework\TestCase
         $actualRequest = ApiRestRequestBuilder::buildRequest('POST', '/', self::TEST_USERNAME, self::TEST_PASSWORD, '');
         $this->assertInstanceOf('GuzzleHttp\Psr7\Request', $actualRequest);
         $response = new Response(200, [], '');
-        $responses = array();
+        $responses = [];
         $responses[] = $response;
         $mockHandler = new MockHandler($responses);
         $handler = HandlerStack::create($mockHandler);
@@ -92,35 +92,35 @@ class ApiRestRequestBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testBooleanRequest()
     {
-        $actualRequest = ApiRestRequestBuilder::buildRequest('PUT', '/', self::TEST_USERNAME, self::TEST_PASSWORD, null, array(), array('myBool' => true));
+        $actualRequest = ApiRestRequestBuilder::buildRequest('PUT', '/', self::TEST_USERNAME, self::TEST_PASSWORD, null, [], ['myBool' => true]);
         $query = $actualRequest->getUri()->getQuery();
         $result = [];
         \parse_str($query, $result);
-        $this->assertEquals(array('myBool' => 'true'), $result);
+        $this->assertEquals(['myBool' => 'true'], $result);
     }
 
     public function testObjectRequest()
     {
         $actualRequest = ApiRestRequestBuilder::buildRequest('POST', '/', self::TEST_USERNAME, self::TEST_PASSWORD, $this->buildProduct('productName', 'universeId'));
 
-        $this->assertEquals(\json_encode(array('name' => 'productName', 'universe' => array('id' => 'universeId'))), (string) $actualRequest->getBody());
+        $this->assertEquals(\json_encode(['name' => 'productName', 'universe' => ['id' => 'universeId']]), (string) $actualRequest->getBody());
     }
 
     public function testArrayObjectRequest()
     {
-        $products = array(
+        $products = [
             $this->buildProduct('productName1', 'universeId1'),
             $this->buildProduct('productName2', 'universeId2'),
             $this->buildProduct('productName3', 'universeId3'),
-        );
+        ];
 
         $actualRequest = ApiRestRequestBuilder::buildRequest('POST', '/', self::TEST_USERNAME, self::TEST_PASSWORD, $products);
 
-        $this->assertEquals(\json_encode(array(
-            array('name' => 'productName1', 'universe' => array('id' => 'universeId1')),
-            array('name' => 'productName2', 'universe' => array('id' => 'universeId2')),
-            array('name' => 'productName3', 'universe' => array('id' => 'universeId3')),
-        )), (string) $actualRequest->getBody());
+        $this->assertEquals(\json_encode([
+            ['name' => 'productName1', 'universe' => ['id' => 'universeId1']],
+            ['name' => 'productName2', 'universe' => ['id' => 'universeId2']],
+            ['name' => 'productName3', 'universe' => ['id' => 'universeId3']],
+        ]), (string) $actualRequest->getBody());
     }
 
     protected function buildProduct($productName, $universeId)

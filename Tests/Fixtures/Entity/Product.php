@@ -89,6 +89,6 @@ class Product extends ApiEntity implements LocatableEntity
      */
     public function getIdParameters()
     {
-        return array('id');
+        return ['id'];
     }
 }

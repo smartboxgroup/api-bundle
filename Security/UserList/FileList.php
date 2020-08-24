@@ -32,9 +32,8 @@ class FileList implements UserListInterface
     /**
      * FileList constructor.
      *
-     * @param string                 $usersFile
-     * @param string                 $passwordsFile
-     * @param CacheItemPoolInterface $cache
+     * @param string $usersFile
+     * @param string $passwordsFile
      */
     public function __construct($usersFile, $passwordsFile, CacheItemPoolInterface $cache)
     {
@@ -161,10 +160,7 @@ class FileList implements UserListInterface
                 return json_decode(file_get_contents($file->getRealPath()), true);
 
             default:
-                throw new \InvalidArgumentException(
-                    "Unsupported config file format: \"{$file->getExtension()}\".",
-                    400
-                );
+                throw new \InvalidArgumentException("Unsupported config file format: \"{$file->getExtension()}\".", 400);
         }
     }
 }

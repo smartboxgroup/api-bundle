@@ -4,8 +4,8 @@ namespace Smartbox\ApiBundle\Utils\SmokeTest;
 
 use Predis\Client;
 use Predis\PredisException;
-use Smartbox\CoreBundle\Utils\SmokeTest\SmokeTestInterface;
 use Smartbox\CoreBundle\Utils\SmokeTest\Output\SmokeTestOutput;
+use Smartbox\CoreBundle\Utils\SmokeTest\SmokeTestInterface;
 
 /**
  * Class RedisConnectionSmokeTest.

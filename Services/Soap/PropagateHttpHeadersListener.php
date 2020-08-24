@@ -19,8 +19,6 @@ class PropagateHttpHeadersListener
 
     /**
      * ExposedHeadersListener constructor.
-     *
-     * @param ApiConfigurator $apiConfigurator
      */
     public function __construct(ApiConfigurator $apiConfigurator)
     {
@@ -28,8 +26,6 @@ class PropagateHttpHeadersListener
     }
 
     /**
-     * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
-     *
      * @throws \Exception
      */
     public function onKernelResponse(FilterResponseEvent $event)

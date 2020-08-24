@@ -22,8 +22,6 @@ class ApiProvider implements UserProviderInterface
 
     /**
      * ApiProvider constructor.
-     *
-     * @param UserListInterface $list
      */
     public function __construct(UserListInterface $list)
     {

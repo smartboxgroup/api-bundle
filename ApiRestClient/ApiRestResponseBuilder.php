@@ -12,8 +12,7 @@ class ApiRestResponseBuilder
     /**
      * Build the ApiRestResponse from the Guzzle response.
      *
-     * @param Response $guzzleResponse
-     * @param string   $deserializationType
+     * @param string $deserializationType
      *
      * @return ApiRestResponse
      */
@@ -33,7 +32,7 @@ class ApiRestResponseBuilder
             $apiRestResponse->setRawBody($content);
         }
         //Flatten headers array
-        $headers = array();
+        $headers = [];
         foreach ($guzzleResponse->getHeaders() as $name => $value) {
             $headers[$name] = \is_array($value) ? (string) $value[0] : (string) $value;
         }

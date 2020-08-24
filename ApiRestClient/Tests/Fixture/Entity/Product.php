@@ -21,10 +21,10 @@ class Product
      */
     public static function getValidTypes()
     {
-        return array(
+        return [
             self::TYPE_BOX,
             self::TYPE_EXPERIENCE,
-        );
+        ];
     }
 
     /**

@@ -8,13 +8,13 @@ use Smartbox\ApiBundle\Services\Serializer\Exclusion\PreserveArrayTypeStrategy;
 
 class PreserveArrayTypeStrategyTest extends TestCase
 {
-    /** @var PreserveArrayTypeStrategy $strategy */
+    /** @var PreserveArrayTypeStrategy */
     private $strategy;
 
-    /** @var string $class */
+    /** @var string */
     private $class;
 
-    /** @var string $sampleProperty used to test some metadata */
+    /** @var string used to test some metadata */
     public $sampleProperty = 'sampleValue';
 
     public function setUp()

@@ -29,9 +29,6 @@ class SoapExceptionConverter
 
     /**
      * SoapExceptionConverter constructor.
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param RequestStack             $requestStack
      */
     public function __construct(LoggerInterface $logger, RequestStack $requestStack)
     {
@@ -39,9 +36,6 @@ class SoapExceptionConverter
         $this->requestStack = $requestStack;
     }
 
-    /**
-     * @param \Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent $event
-     */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $api = $event->getRequest()->get('api');

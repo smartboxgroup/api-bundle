@@ -10,8 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class ApiUserListenerTest extends WebTestCase
 {
     /**
-     * @param array $server
-     * @param int   $expected
+     * @param int $expected
      *
      * @dataProvider provideEndpoints
      */

@@ -34,39 +34,39 @@ class ApiConfiguratorTest extends BaseKernelTestCase
 
     public function validTypesAndGroupsProvider()
     {
-        return array(
-            array(Entity::class.ApiConfigurator::$arraySymbol, 'TestGroupA'),
-            array(Entity::class, 'TestGroupB'),
-            array(BasicResponse::class, 'TestGroupA'),
-            array(BasicResponse::class.ApiConfigurator::$arraySymbol, 'TestGroupB'),
-            array(BasicResponse::class, 'C'),
-        );
+        return [
+            [Entity::class.ApiConfigurator::$arraySymbol, 'TestGroupA'],
+            [Entity::class, 'TestGroupB'],
+            [BasicResponse::class, 'TestGroupA'],
+            [BasicResponse::class.ApiConfigurator::$arraySymbol, 'TestGroupB'],
+            [BasicResponse::class, 'C'],
+        ];
     }
 
     public function invalidCodesArrayInputProvider()
     {
-        return array(
-            array(null),
-            array(array('A', 'B')),
-            array(array(45, 45)),
-            array(array(null, null)),
-            array(array('A' => null)),
-            array(array('A' => 12)),
-        );
+        return [
+            [null],
+            [['A', 'B']],
+            [[45, 45]],
+            [[null, null]],
+            [['A' => null]],
+            [['A' => 12]],
+        ];
     }
 
     public function invalidTypesAndGroupsProvider()
     {
-        return array(
-            array(EntityInterface::class, ''),
-            array('', 'TestGroupB'),
-            array('InexistentClass', 'TestGroupA'),
-            array(null, 'TestGroupB'),
-            array(BasicResponse::class, null),
-            array(EntityInterface::class, 38),
-            array(13, 'C'),
-            array(array('A', 'B'), 'C'),
-        );
+        return [
+            [EntityInterface::class, ''],
+            ['', 'TestGroupB'],
+            ['InexistentClass', 'TestGroupA'],
+            [null, 'TestGroupB'],
+            [BasicResponse::class, null],
+            [EntityInterface::class, 38],
+            [13, 'C'],
+            [['A', 'B'], 'C'],
+        ];
     }
 
     /**
@@ -74,18 +74,18 @@ class ApiConfiguratorTest extends BaseKernelTestCase
      */
     public function validCodesArrayInputProvider()
     {
-        $data = array(
-            array(
-                array(
+        $data = [
+            [
+                [
                     'A' => 'XXX-1',
                     'B' => 'XXX-1',
                     'C' => 'XXX-2',
                     'XXX' => 'XXX-3',
-                ),
-            ),
-            array(array()),
-            array(array(123213 => 'XXX')),
-        );
+                ],
+            ],
+            [[]],
+            [[123213 => 'XXX']],
+        ];
 
         return $data;
     }
@@ -109,13 +109,13 @@ class ApiConfiguratorTest extends BaseKernelTestCase
 
     public function notRegisteredAliasProvider()
     {
-        return array(
-            array('INEXISTENT_XXXXX', false),
-            array(null, false),
-            array('', false),
-            array(21, false),
-            array(BasicResponse::class, false),
-        );
+        return [
+            ['INEXISTENT_XXXXX', false],
+            [null, false],
+            ['', false],
+            [21, false],
+            [BasicResponse::class, false],
+        ];
     }
 
     /**
@@ -165,8 +165,6 @@ class ApiConfiguratorTest extends BaseKernelTestCase
 
     /**
      * @dataProvider validGetSuccessCodeDescriptionProvider
-     *
-     * @param array $codes
      */
     public function testSetGetSuccessCodesDescriptionValid(array $codes)
     {

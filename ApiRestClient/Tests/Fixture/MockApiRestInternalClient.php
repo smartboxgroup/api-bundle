@@ -26,7 +26,7 @@ class MockApiRestInternalClient extends ApiRestInternalClient
      * @param array $responses
      * @param array $exceptions
      */
-    public function __construct($username, $password, $baseUrl, $responses = array(), $exceptions = array())
+    public function __construct($username, $password, $baseUrl, $responses = [], $exceptions = [])
     {
         $mockHandler = new MockHandler($responses);
         $handler = HandlerStack::create($mockHandler);
@@ -40,28 +40,22 @@ class MockApiRestInternalClient extends ApiRestInternalClient
     }
 
     /**
-     * @param Product $entity
-     * @param array   $headers
-     *
      * @return ApiRestResponse
      */
-    public function sendProductCreate(Product $entity, array $headers = array())
+    public function sendProductCreate(Product $entity, array $headers = [])
     {
         $uri = '/product_create';
 
-        return $this->request('POST', $uri, $entity, array(), $headers, 'Smartbox\ApiBundle\SDK\Tests\Fixture\Entity\Product');
+        return $this->request('POST', $uri, $entity, [], $headers, 'Smartbox\ApiBundle\SDK\Tests\Fixture\Entity\Product');
     }
 
     /**
-     * @param Product $entity
-     * @param array   $headers
-     *
      * @return ApiRestResponse
      */
-    public function sendProductConfirmation(Product $entity, array $headers = array())
+    public function sendProductConfirmation(Product $entity, array $headers = [])
     {
         $uri = '/product_confirmation';
 
-        return $this->request('POST', $uri, $entity, array(), $headers, null);
+        return $this->request('POST', $uri, $entity, [], $headers, null);
     }
 }

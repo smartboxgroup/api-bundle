@@ -20,17 +20,12 @@ class ApiUserListener
 
     /**
      * ApiUserListener constructor.
-     *
-     * @param TokenStorageInterface $storage
      */
     public function __construct(TokenStorageInterface $storage)
     {
         $this->storage = $storage;
     }
 
-    /**
-     * @param GetResponseEvent $event
-     */
     public function onKernelRequest(GetResponseEvent $event)
     {
         $name = $event->getRequest()->attributes->get(ApiConfigurator::METHOD_NAME);

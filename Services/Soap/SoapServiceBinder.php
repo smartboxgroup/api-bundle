@@ -33,13 +33,6 @@ class SoapServiceBinder
     /** @var ApiConfigurator */
     protected $apiConfigurator;
 
-    /**
-     * @param ApiConfigurator        $configurator
-     * @param Definition             $definition
-     * @param MessageBinderInterface $requestHeaderMessageBinder
-     * @param MessageBinderInterface $requestMessageBinder
-     * @param MessageBinderInterface $responseMessageBinder
-     */
     public function __construct(
         ApiConfigurator $configurator,
         Definition $definition,
@@ -181,7 +174,7 @@ class SoapServiceBinder
 
         $arguments = array_merge(
             $defaults,
-            array(
+            [
                 '_controller' => $methodDefinition->getController(),
                 ApiConfigurator::METHOD_NAME => $methodName,
                 ApiConfigurator::METHOD_CONFIG => $methodConfig,
@@ -189,7 +182,7 @@ class SoapServiceBinder
                 ApiConfigurator::SERVICE_NAME => $serviceConfig['name'],
                 ApiConfigurator::VERSION => $serviceConfig['version'],
                 ApiConfigurator::INPUT => $input,
-            )
+            ]
         );
 
         return $arguments;

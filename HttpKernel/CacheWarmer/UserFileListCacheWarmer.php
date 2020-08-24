@@ -17,8 +17,6 @@ class UserFileListCacheWarmer extends CacheWarmer
 
     /**
      * UserFileListCacheWarmer constructor.
-     *
-     * @param FileList $list
      */
     public function __construct(FileList $list)
     {

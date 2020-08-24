@@ -14,9 +14,6 @@ class ApiRestException extends \Exception
 
     /**
      * ApiRestException constructor.
-     *
-     * @param ApiRestResponse $apiRestResponse
-     * @param \Exception|null $previous
      */
     public function __construct(ApiRestResponse $apiRestResponse, \Exception $previous = null)
     {

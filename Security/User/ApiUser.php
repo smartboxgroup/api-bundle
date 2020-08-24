@@ -35,7 +35,6 @@ class ApiUser implements UserInterface, ApiUserInterface
      * @param string $username
      * @param string $password
      * @param bool   $admin
-     * @param array  $methods
      */
     public function __construct($username, $password, $admin = false, array $methods = [])
     {

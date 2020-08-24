@@ -44,13 +44,13 @@ class ApiRestInternalClient
      */
     public static function getAvailableHttpMethod()
     {
-        return array(
+        return [
             self::HTTP_METHOD_DELETE,
             self::HTTP_METHOD_GET,
             self::HTTP_METHOD_POST,
             self::HTTP_METHOD_PUT,
             self::HTTP_METHOD_PATCH,
-        );
+        ];
     }
 
     /**
@@ -75,15 +75,13 @@ class ApiRestInternalClient
      * @param $method
      * @param $path
      * @param null   $object
-     * @param array  $filters
-     * @param array  $headers
      * @param string $deserializationType
      *
      * @return ApiRestResponse
      *
      * @throws \Exception
      */
-    public function request($method, $path, $object = null, array $filters = array(), array $headers = array(), $deserializationType = null)
+    public function request($method, $path, $object = null, array $filters = [], array $headers = [], $deserializationType = null)
     {
         if (!\in_array($method, self::getAvailableHttpMethod())) {
             throw new \Exception("Unknown HTTP method $method");

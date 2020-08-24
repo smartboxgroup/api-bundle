@@ -2,8 +2,8 @@
 
 namespace Smartbox\ApiBundle\Services\Soap;
 
-use BeSimple\SoapBundle\ServiceDefinition as Definition;
 use BeSimple\SoapBundle\ServiceDefinition\Annotation;
+use BeSimple\SoapBundle\ServiceDefinition as Definition;
 use BeSimple\SoapCommon\Definition\Type\ComplexType;
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
 use Smartbox\ApiBundle\DependencyInjection\Configuration;
@@ -22,10 +22,6 @@ class SoapServiceLoader extends Loader
     /** @var ApiConfigurator */
     protected $apiConfigurator;
 
-    /**
-     * @param ApiConfigurator $configurator
-     * @param TypeRepository  $typeRepository
-     */
     public function __construct(ApiConfigurator $configurator, TypeRepository $typeRepository)
     {
         $this->apiConfigurator = $configurator;

@@ -9,9 +9,9 @@ class MocksEnvironments extends Environments
 {
     //const ENV_TEST      = "test";
 
-    protected static $environments = array(
+    protected static $environments = [
         //self::ENV_TEST      => "http://mocks.eai",
-    );
+    ];
 
     /**
      * Return the entry point of the given environment.

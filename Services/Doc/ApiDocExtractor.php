@@ -23,15 +23,13 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
         /** @var ApiConfigurator $configurator */
         $configurator = $this->container->get('smartapi.configurator');
 
-        $array = array();
-        $resources = array();
+        $array = [];
+        $resources = [];
         $excludeSections = $this->container->getParameter('nelmio_api_doc.exclude_sections');
 
         foreach ($routes as $route) {
             if (!$route instanceof Route) {
-                throw new \InvalidArgumentException(
-                    sprintf('All elements of $routes must be instances of Route. "%s" given', gettype($route))
-                );
+                throw new \InvalidArgumentException(sprintf('All elements of $routes must be instances of Route. "%s" given', gettype($route)));
             }
 
             if ($method = $this->getReflectionMethod($route->getDefault('_controller'))) {
@@ -46,17 +44,17 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                     $statusCodes = $configurator->getErrorCodes();
                     $statusCodes[$successCode] = $configurator->getSuccessCodeDescription($successCode);
 
-                    $annotationData = array(
+                    $annotationData = [
                         'section' => $serviceName.'/'.$version,
-                        'views' => array('default', $serviceId),
+                        'views' => ['default', $serviceId],
                         'resource' => true,
                         'description' => $methodConfig['description'],
                         'statusCodes' => $statusCodes,
                         'authentication' => true,
                         'authenticationRoles' => $methodConfig['roles'],
-                    );
+                    ];
 
-                    $annotationData['filters'] = array();
+                    $annotationData['filters'] = [];
 
                     // If there is input
                     foreach ($methodConfig[ApiConfigurator::INPUT] as $paramName => $paramConfig) {
@@ -68,38 +66,38 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
 
                         switch ($paramConfig['mode']) {
                             case Configuration::MODE_BODY:
-                                $annotationData['input'] = array(
+                                $annotationData['input'] = [
                                     'description' => $paramConfig['description'],
                                     'class' => $jmsType,
                                     'version' => $version,
-                                    'parsers' => array(
+                                    'parsers' => [
                                         'Smartbox\ApiBundle\Services\Doc\JmsMetadataParser',
                                         'Nelmio\ApiDocBundle\Parser\CollectionParser',
                                         'Smartbox\ApiBundle\Services\Doc\ValidationParser',
-                                    ),
-                                );
+                                    ],
+                                ];
 
                                 if (array_key_exists('group', $paramConfig)) {
-                                    $annotationData['input']['groups'] = array($paramConfig['group']);
+                                    $annotationData['input']['groups'] = [$paramConfig['group']];
                                 }
                                 break;
                             case Configuration::MODE_REQUIREMENT:
-                                $annotationData['requirements'][$paramName] = array(
+                                $annotationData['requirements'][$paramName] = [
                                     'name' => $paramName,
                                     'dataType' => $jmsType,
                                     'required' => true,
                                     'description' => $paramConfig['description'],
                                     'requirement' => $paramConfig['format'],
-                                );
+                                ];
                                 break;
                             case Configuration::MODE_FILTER:
-                                $annotationData['filters'][] = array(
+                                $annotationData['filters'][] = [
                                     'name' => $paramName,
                                     'dataType' => $jmsType,
                                     'required' => false,
                                     'description' => $paramConfig['description'],
                                     'requirement' => $paramConfig['format'],
-                                );
+                                ];
                                 break;
                         }
                     }
@@ -108,18 +106,18 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                     if (array_key_exists('output', $methodConfig)) {
                         if (!in_array($methodConfig['successCode'], $configurator->getRestEmptyBodyResponseCodes())) {
                             $outputType = ApiConfigurator::getJMSType($methodConfig['output']['type']);
-                            $annotationData['output'] = array(
+                            $annotationData['output'] = [
                                 'class' => $outputType,
                                 'version' => $version,
-                                'parsers' => array(
+                                'parsers' => [
                                     'Smartbox\ApiBundle\Services\Doc\JmsMetadataParser',
                                     'Nelmio\ApiDocBundle\Parser\CollectionParser',
                                     'Smartbox\ApiBundle\Services\Doc\ValidationParser',
-                                ),
-                            );
+                                ],
+                            ];
 
                             if (array_key_exists('group', $methodConfig['output'])) {
-                                $annotationData['output']['groups'] = array($methodConfig['output']['group']);
+                                $annotationData['output']['groups'] = [$methodConfig['output']['group']];
                             }
                         }
                     }
@@ -153,7 +151,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                         $methodConfig = $configurator->getConfig($serviceId, $methodName);
 
                         // Add info about requirements
-                        $requirements = array();
+                        $requirements = [];
                         foreach ($annotationExtracted->getRequirements() as $reqName => $reqParams) {
                             if (array_key_exists($reqName, $methodConfig[ApiConfigurator::INPUT])) {
                                 $reqParams['dataType'] = ApiConfigurator::getJMSType(
@@ -183,7 +181,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
                         $annotationExtracted->setDocumentation($this->getDocumentationFor($serviceId, $methodName, $methodConfig));
                     }
 
-                    $array[] = array('annotation' => $annotationExtracted);
+                    $array[] = ['annotation' => $annotationExtracted];
                 }
             }
         }
@@ -191,13 +189,13 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
         foreach ($this->annotationsProviders as $annotationProvider) {
             foreach ($annotationProvider->getAnnotations() as $annotation) {
                 $route = $annotation->getRoute();
-                $array[] = array(
+                $array[] = [
                     'annotation' => $this->extractData(
                         $annotation,
                         $route,
                         $this->getReflectionMethod($route->getDefault('_controller'))
                     ),
-                );
+                ];
             }
         }
 
@@ -220,7 +218,7 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
             }
         }
 
-        $methodOrder = array('GET', 'POST', 'PUT', 'DELETE');
+        $methodOrder = ['GET', 'POST', 'PUT', 'DELETE'];
         usort(
             $array,
             function ($a, $b) use ($methodOrder) {
@@ -307,8 +305,6 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
     }
 
     /**
-     * @param array $parameter
-     *
      * @return array
      */
     public function cleanDatatype(array $parameter)
@@ -332,11 +328,11 @@ class ApiDocExtractor extends \Nelmio\ApiDocBundle\Extractor\ApiDocExtractor
 
         return $this->container->get('templating')->render(
             'SmartboxApiBundle:doc:documentation.html.twig',
-            array(
+            [
                 ApiConfigurator::METHOD_NAME => $methodName,
                 ApiConfigurator::METHOD_CONFIG => $methodConfig,
                 'wsdlUrl' => $wsdlUrl,
-            )
+            ]
         );
     }
 }

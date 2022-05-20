@@ -276,6 +276,7 @@ EOL
             ->append($this->addThrottlingNode())
             ->append($this->addHeadersNode())
             ->append($this->addOptionalHeadersNode())
+            ->append($this->addHeaderValidationNode())
             ->append($this->addTagsNode())
             ->booleanNode('logEnabled')->info('Add optional boolean to define if we should log the related events and transaction in the admin panel')->defaultValue(true)
             ->end()
@@ -461,6 +462,28 @@ EOL
             ->info('Add optional header names to use with this method')
             ->prototype('scalar')
             ->defaultValue([])
+            ->end();
+
+        return $node;
+    }
+
+    public function addHeaderValidationNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('headerValidations');
+
+        $node
+            ->info('Add optional header validations')
+            ->prototype('array')
+            ->children()
+            ->scalarNode('format')
+            ->info('The format of the header')
+            ->isRequired()->end()
+            ->scalarNode('description')->info('The description of the header validation')
+            ->defaultValue('')->end()
+            ->scalarNode('type')
+            ->info('The type of the input, it accepts scalar types (integer, double, string), entities (e.g.: MyNamespace\\MyEntity) and arrays of them (integer[], MyNamespace\\MyEntity[])')
+            ->isRequired()->end()
             ->end();
 
         return $node;

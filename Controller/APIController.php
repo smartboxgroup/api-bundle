@@ -270,11 +270,12 @@ class APIController extends FOSRestController
      *
      * @return array
      */
-    protected function validateHeaders(array $headers, $required = true)
+    protected function validateHeaders(array $headers, $required = true, array $headerValidations = null)
     {
         $request = $this->getRequest();
 
         $existingHeaders = [];
+        $errors = [];
 
         foreach ($headers as $headerName) {
             $headerValue = $this->getHeader($request, $headerName);
@@ -285,6 +286,14 @@ class APIController extends FOSRestController
 
             if (null === $headerValue && $required) {
                 throw new BadRequestHttpException(sprintf('"%s" header is required to use this method', $headerName));
+            }
+
+            if (!empty($headerValidations[$headerName])) {
+                $errors = $this->checkParam($headerName, $headerValue, $headerValidations[$headerName]['type'], $headerValidations[$headerName]['format']);
+            }
+
+            if (count($errors)) {
+                $this->throwInputValidationErrors($errors);
             }
         }
 

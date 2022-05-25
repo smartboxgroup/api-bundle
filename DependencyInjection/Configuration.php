@@ -276,7 +276,7 @@ EOL
             ->append($this->addThrottlingNode())
             ->append($this->addHeadersNode())
             ->append($this->addOptionalHeadersNode())
-            ->append($this->addHeaderValidationNode())
+            ->append($this->addHeaderValidationsNode())
             ->append($this->addTagsNode())
             ->booleanNode('logEnabled')->info('Add optional boolean to define if we should log the related events and transaction in the admin panel')->defaultValue(true)
             ->end()
@@ -467,7 +467,7 @@ EOL
         return $node;
     }
 
-    public function addHeaderValidationNode()
+    public function addHeaderValidationsNode()
     {
         $builder = new TreeBuilder();
         $node = $builder->root('headerValidations');

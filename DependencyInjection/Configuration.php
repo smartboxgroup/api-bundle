@@ -473,7 +473,7 @@ EOL
         $node = $builder->root('headerValidations');
 
         $node
-            ->info('Add optional header validations')
+            ->info('Add header validations')
             ->prototype('array')
             ->children()
             ->scalarNode('format')

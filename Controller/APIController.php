@@ -288,7 +288,7 @@ class APIController extends FOSRestController
                 throw new BadRequestHttpException(sprintf('"%s" header is required to use this method', $headerName));
             }
 
-            if (null === $headerValue && !empty($headerValidations[$headerName])) {
+            if (null !== $headerValue && !empty($headerValidations[$headerName])) {
                 $errors = $this->checkParam($headerName, $headerValue, $headerValidations[$headerName]['type'], $headerValidations[$headerName]['format']);
             }
 

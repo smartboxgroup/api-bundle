@@ -281,6 +281,13 @@ EOL
             ->booleanNode('logEnabled')->info('Add optional boolean to define if we should log the related events and transaction in the admin panel')->defaultValue(true)
             ->end()
             ->end()
+            ->validate()
+            ->ifTrue(
+                function ($input) {
+                    return !ApiConfigurator::isRequiredHeaderValidationsSet($input);
+                }
+            )
+            ->thenInvalid('If the optionalHeaders.delay is set, headerValidations.delay must be set too.')
             ->end();
 
         return $node;

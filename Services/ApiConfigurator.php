@@ -25,6 +25,8 @@ class ApiConfigurator
     const METHOD_CONFIG = 'methodConfig';
     const INPUT = 'input';
 
+    const REQUIRED_HEADER_VALIDATION = ['delay'];
+
     protected $cacheDir = '';
 
     /** @var MetadataFactoryInterface */
@@ -532,6 +534,25 @@ class ApiConfigurator
         $elementType = str_replace(self::$arraySymbol, '', $type);
 
         return self::isEntity($elementType);
+    }
+
+    /**
+     * Checks if the headerValidations array has been configured but only if one of the items in REQUIRED_HEADER_VALIDATION
+     * has been found in optionalHeaders.
+     *
+     * @param array $input
+     *
+     * @return bool
+     */
+    public static function isRequiredHeaderValidationsSet($input)
+    {
+        foreach (self::REQUIRED_HEADER_VALIDATION as $item) {
+            if (in_array($item, $input['optionalHeaders']) && !isset($input['headerValidations'][$item])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

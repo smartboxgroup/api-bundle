@@ -276,10 +276,18 @@ EOL
             ->append($this->addThrottlingNode())
             ->append($this->addHeadersNode())
             ->append($this->addOptionalHeadersNode())
+            ->append($this->addHeaderValidationsNode())
             ->append($this->addTagsNode())
             ->booleanNode('logEnabled')->info('Add optional boolean to define if we should log the related events and transaction in the admin panel')->defaultValue(true)
             ->end()
             ->end()
+            ->validate()
+            ->ifTrue(
+                function ($input) {
+                    return !ApiConfigurator::isRequiredHeaderValidationsSet($input);
+                }
+            )
+            ->thenInvalid('If the optionalHeaders.delay is set, headerValidations.delay must be set too.')
             ->end();
 
         return $node;
@@ -461,6 +469,28 @@ EOL
             ->info('Add optional header names to use with this method')
             ->prototype('scalar')
             ->defaultValue([])
+            ->end();
+
+        return $node;
+    }
+
+    public function addHeaderValidationsNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('headerValidations');
+
+        $node
+            ->info('Add header validations')
+            ->prototype('array')
+            ->children()
+            ->scalarNode('format')
+            ->info('The format of the header')
+            ->isRequired()->end()
+            ->scalarNode('description')->info('The description of the header validation')
+            ->defaultValue('')->end()
+            ->scalarNode('type')
+            ->info('The type of the input, it accepts scalar types (integer, double, string), entities (e.g.: MyNamespace\\MyEntity) and arrays of them (integer[], MyNamespace\\MyEntity[])')
+            ->isRequired()->end()
             ->end();
 
         return $node;

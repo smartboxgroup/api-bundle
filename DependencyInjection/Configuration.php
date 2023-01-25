@@ -278,6 +278,7 @@ EOL
             ->append($this->addOptionalHeadersNode())
             ->append($this->addHeaderValidationsNode())
             ->append($this->addTagsNode())
+            ->append($this->addIgnoreNode())
             ->booleanNode('logEnabled')->info('Add optional boolean to define if we should log the related events and transaction in the admin panel')->defaultValue(true)
             ->end()
             ->end()
@@ -492,6 +493,22 @@ EOL
             ->info('The type of the input, it accepts scalar types (integer, double, string), entities (e.g.: MyNamespace\\MyEntity) and arrays of them (integer[], MyNamespace\\MyEntity[])')
             ->isRequired()->end()
             ->end();
+
+        return $node;
+    }
+
+    public function addIgnoreNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('ignore');
+
+        $node
+            ->info('Define which service this endpoint should be ignored by.')
+            ->prototype('scalar')
+            ->defaultValue([])
+            ->end();
+
+        return $node;
 
         return $node;
     }

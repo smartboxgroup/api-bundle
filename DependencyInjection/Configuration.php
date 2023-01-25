@@ -279,7 +279,6 @@ EOL
             ->append($this->addOptionalHeadersNode())
             ->append($this->addHeaderValidationsNode())
             ->append($this->addTagsNode())
-            ->append($this->addIgnoreNode())
             ->booleanNode('logEnabled')->info('Add optional boolean to define if we should log the related events and transaction in the admin panel')->defaultValue(true)
             ->end()
             ->end()

@@ -47,7 +47,7 @@ class SoapServiceLoader extends Loader
         $serviceVersion = $serviceConfig['version'];
 
         foreach ($serviceConfig['methods'] as $methodName => $methodConfig) {
-            if (in_array(self::RESOURCE_TYPE, $methodConfig['ignore'])) {
+            if (true === $methodConfig['skipSoap']) {
                 continue;
             }
 

@@ -255,6 +255,7 @@ EOL
             ->scalarNode('successCode')->info('Success code to be returned')->defaultValue(200)->end()
             ->scalarNode('fixture')->info('Example payload related to this API')->end()
             ->scalarNode('description')->info('Description of the method, it will be used in the documentation')->isRequired()->end()
+            ->scalarNode('skipSoap')->info('Defines that this endpoint must be skipped by the Soap Service Loader.')->defaultFalse()->end()
             ->scalarNode('controller')->info('Controller to handle the requests to this method')->defaultValue('default')->end()
             ->arrayNode('roles')
             ->useAttributeAsKey('role')
@@ -493,22 +494,6 @@ EOL
             ->info('The type of the input, it accepts scalar types (integer, double, string), entities (e.g.: MyNamespace\\MyEntity) and arrays of them (integer[], MyNamespace\\MyEntity[])')
             ->isRequired()->end()
             ->end();
-
-        return $node;
-    }
-
-    public function addIgnoreNode()
-    {
-        $builder = new TreeBuilder();
-        $node = $builder->root('ignore');
-
-        $node
-            ->info('Define which service this endpoint should be ignored by.')
-            ->prototype('scalar')
-            ->defaultValue([])
-            ->end();
-
-        return $node;
 
         return $node;
     }

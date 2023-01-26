@@ -47,6 +47,10 @@ class SoapServiceLoader extends Loader
         $serviceVersion = $serviceConfig['version'];
 
         foreach ($serviceConfig['methods'] as $methodName => $methodConfig) {
+            if (true === $methodConfig['skipSoap']) {
+                continue;
+            }
+
             $methodArguments = [];
             $soapMethodName = $methodName;
             $methodReturnType = null;
